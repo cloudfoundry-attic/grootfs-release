@@ -43,3 +43,7 @@ zlib/zlib-1.2.8.tar.gz:
   object_id: afee57ee-62a9-4bb1-9926-f588e4995981
   sha: a4d316c404ff54ca545ea71a27af7dbc29817088
   size: 571091
+golang/go1.7.1.linux-amd64.tar.gz:
+  object_id: 14c7b3e7-5518-496d-a7af-ddd085be3332
+  sha: 919ab01305ada0078a9fdf8a12bb56fb0b8a1444
+  size: 81618401
