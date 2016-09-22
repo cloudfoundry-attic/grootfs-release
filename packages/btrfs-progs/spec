@@ -1,0 +1,9 @@
+---
+name: btrfs-progs
+
+dependencies:
+- grootfs-build-tools
+- btrfs-support-libs
+
+files:
+- btrfs-progs/*

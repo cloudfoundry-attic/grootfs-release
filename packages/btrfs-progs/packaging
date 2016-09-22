@@ -1,0 +1,23 @@
+# abort script on any command that exits with a non zero value
+set -e
+
+export PACKAGES=/var/vcap/packages
+export DEPENDENCIES=$PACKAGES/btrfs-support-libs
+export PATH=$PACKAGES/grootfs-build-tools/bin:$DEPENDENCIES/bin:$PATH
+export ACLOCAL_MACROS=$PACKAGES/grootfs-build-tools
+
+tar xvzf btrfs-progs/btrfs-progs-4.4.1.tar.gz
+(
+  cd btrfs-progs-4.4.1
+
+  export PKG_CONFIG_PATH=${DEPENDENCIES}/lib/pkgconfig
+  export LDFLAGS="-L${DEPENDENCIES}/lib"
+  export CFLAGS="-I${DEPENDENCIES}/include"
+  export AL_OPTS="-I${ACLOCAL_MACROS}"
+
+  ./autogen.sh
+  ./configure --prefix=$BOSH_INSTALL_TARGET --disable-documentation
+  make static
+  make install-static prefix=$BOSH_INSTALL_TARGET
+)
+

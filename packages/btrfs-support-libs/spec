@@ -1,0 +1,11 @@
+---
+name: btrfs-support-libs
+
+dependencies:
+- grootfs-build-tools
+
+files:
+- e2fsprogs/*
+- zlib/*
+- lzo/*
+- util-linux/*

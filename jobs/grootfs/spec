@@ -1,0 +1,9 @@
+---
+name: grootfs
+templates: {}
+
+packages:
+- uidmap
+- btrfs-progs
+
+properties: {}
