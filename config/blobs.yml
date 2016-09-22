@@ -1,1 +1,45 @@
---- {}
+---
+btrfs-progs/btrfs-progs-4.4.1.tar.gz:
+  object_id: 475919b3-ae01-4725-adfd-2cac7a6fef3f
+  sha: 97ae1f8a921e2089b2982267dbda7c254e423e45
+  size: 1362098
+e2fsprogs/e2fsprogs-1.43.3.tar.gz:
+  object_id: 0aa5e81d-7381-445e-b94f-878080dfadc3
+  sha: 927cb79c6399c559a83b4fa528ec8912a82d122f
+  size: 7405892
+grootfs-build-tools/autoconf-2.69.tar.gz:
+  object_id: 08fc1827-ac1e-42bc-a3bd-e6c9aff0dbb0
+  sha: 562471cbcb0dd0fa42a76665acf0dbb68479b78a
+  size: 1927468
+grootfs-build-tools/automake-1.15.tar.gz:
+  object_id: 6d029c1d-efdd-423f-b5f3-5a6ba5249bfe
+  sha: b5a840c7ec4321e78fdc9472e476263fa6614ca1
+  size: 2244206
+grootfs-build-tools/gettext-0.19.8.1.tar.gz:
+  object_id: 8081d7eb-71b9-4250-8628-c062e1d1a999
+  sha: b5d24ba2958c91fc5cc0058165837c99a0f58784
+  size: 19704011
+grootfs-build-tools/libtool-2.4.6.tar.gz:
+  object_id: c2e8836b-3539-495f-8acb-29c808bb1b1b
+  sha: 25b6931265230a06f0fc2146df64c04e5ae6ec33
+  size: 1806697
+grootfs-build-tools/pkg-config-0.29.tar.gz:
+  object_id: c847d5ee-820d-4413-94c9-3a932ade8262
+  sha: f4b19d203b3896a4293af4b62c7f908063c88a5a
+  size: 1973875
+lzo/lzo-2.09.tar.gz:
+  object_id: 075601cc-8805-4577-9458-08b8c83e482a
+  sha: e2a60aca818836181e7e6f8c4f2c323aca6ac057
+  size: 594855
+shadow/shadow-4.3.1.tar.gz:
+  object_id: d316808e-5a27-4f5a-b832-5be9f60280b9
+  sha: 56c5b100c13aa51f5814965b837b4a5e6c83861e
+  size: 2972238
+util-linux/util-linux-2.28.tar.gz:
+  object_id: 41fdb430-2e16-49e6-ad8d-14e27eff536f
+  sha: ad8f1a338c23bcf3519b856295fbdb6a820db64c
+  size: 8860808
+zlib/zlib-1.2.8.tar.gz:
+  object_id: afee57ee-62a9-4bb1-9926-f588e4995981
+  sha: a4d316c404ff54ca545ea71a27af7dbc29817088
+  size: 571091
