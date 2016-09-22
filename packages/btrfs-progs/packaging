@@ -21,3 +21,10 @@ tar xvzf btrfs-progs/btrfs-progs-4.4.1.tar.gz
   make install-static prefix=$BOSH_INSTALL_TARGET
 )
 
+(
+  cd $BOSH_INSTALL_TARGET/bin
+  for binary in $(ls)
+  do
+    mv $binary $(basename -s ".static" $binary)
+  done
+)

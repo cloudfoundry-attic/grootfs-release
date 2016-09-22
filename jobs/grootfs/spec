@@ -1,10 +1,22 @@
 ---
 name: grootfs
-templates: {}
+templates:
+  btrfs-setup.erb: bin/btrfs-setup
+  drax-setup.erb: bin/drax-setup
+  pre-start.erb: bin/pre-start
 
 packages:
-- uidmap
-- btrfs-progs
-- grootfs
+  - uidmap
+  - btrfs-progs
+  - grootfs
 
-properties: {}
+properties:
+  grootfs.store_path:
+    description: BTRFS volume mount point
+    default: /var/vcap/data/grootfs/store
+  grootfs.store_size_bytes:
+    description: Size of the loopback BTRFS volume to be created
+    default: 10737418240
+  grootfs.store_file:
+    description: BTRFS volume file to be created
+    default: /var/vcap/data/grootfs/volume

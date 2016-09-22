@@ -1,0 +1,92 @@
+#!/bin/bash
+
+set -x
+
+function main() {
+  export PATH=/var/vcap/packages/btrfs-progs/bin:$PATH
+  local store_path=<%= p('grootfs.store_path') %>
+  local volume_file=<%= p('grootfs.store_file') %>
+
+  mkdir -p "$store_path"
+
+  create_volume_file $volume_file
+  format_volume_file $volume_file
+
+  create_loop_devices
+  permit_device_control
+
+  mount_btrfs_volume $volume_file $store_path
+}
+
+function create_volume_file() {
+  local volume_file=$1
+
+  # Do no recreate the volume file if it already exists
+  if [ ! -f "$volume_file" ]
+  then
+    echo "creating btrfs volume..."
+    dd if=/dev/zero of="$volume_file" bs=<%= p('grootfs.store_size_bytes') %> count=1
+  fi
+}
+
+function format_volume_file() {
+  local volume_file=$1
+
+  # Verify if volume is already a btrfs file andm if it is, skip
+  if [ -z "$(file $volume_file | grep "BTRFS Filesystem")" ]
+  then
+    echo "fomatting btrfs volume..."
+    mkfs.btrfs $volume_file
+  fi
+}
+
+function create_loop_devices() {
+  echo "creating loop devices..."
+  for i in {0..255}
+  do
+    mknod -m 0660 /dev/loop${i} b 7 $i || true
+  done
+}
+
+# copied from https://github.com/concourse/concourse/blob/master/jobs/baggageclaim/templates/baggageclaim_ctl.erb#L54
+# break out of bosh-lite device limitations
+function permit_device_control() {
+  local devices_mount_info=$(cat /proc/self/cgroup | grep devices)
+
+  if [ -z "$devices_mount_info" ]; then
+    # cgroups not set up; must not be in a container
+    return
+  fi
+
+  local devices_subsytems=$(echo $devices_mount_info | cut -d: -f2)
+  local devices_subdir=$(echo $devices_mount_info | cut -d: -f3)
+
+  if [ "$devices_subdir" = "/" ]; then
+    # we're in the root devices cgroup; must not be in a container
+    return
+  fi
+
+  if [ ! -e /tmp/devices-cgroup ]; then
+    # mount our container's devices subsystem somewhere
+    mkdir /tmp/devices-cgroup
+    mount -t cgroup -o $devices_subsytems none /tmp/devices-cgroup
+  fi
+
+  # permit our cgroup to do everything with all devices
+  echo a > /tmp/devices-cgroup${devices_subdir}/devices.allow || true
+
+  umount /tmp/devices-cgroup || true
+}
+
+function mount_btrfs_volume() {
+  local volume_file=$1
+  local store_path=$2
+
+  echo "mounting the btrfs volume..."
+  umount $store_path || true
+  mount $volume_file $store_path
+
+  chown vcap:vcap $store_path
+}
+
+main

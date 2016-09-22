@@ -17,6 +17,9 @@ jobs:
     resource_pool: grootfs
     networks:
       - name: grootfs
+    properties:
+      grootfs:
+        store_size_bytes: 524288000
 
 networks:
   - name: grootfs
