@@ -1,0 +1,8 @@
+---
+name: grootfs
+
+dependencies:
+  - golang_1.7
+
+files:
+  - code.cloudfoundry.org/grootfs/**/*

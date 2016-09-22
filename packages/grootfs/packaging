@@ -1,0 +1,13 @@
+set -e
+
+mkdir -p ${BOSH_INSTALL_TARGET}/src
+cp -a . ${BOSH_INSTALL_TARGET}/src/.
+
+export GOROOT=$(readlink -nf /var/vcap/packages/golang_1.7)
+export GOPATH=$BOSH_INSTALL_TARGET
+export PATH=$GOROOT/bin:$PATH
+
+go install code.cloudfoundry.org/grootfs
+go install code.cloudfoundry.org/grootfs/store/volume_driver/drax
+
+rm -rf ${BOSH_INSTALL_TARGET}/src
