@@ -1,2 +1,7 @@
 # abort script on any command that exits with a non zero value
 set -e
+
+# download and package the dependencies
+pushd code.cloudfoundry.org/grootfs
+  make deps
+popd

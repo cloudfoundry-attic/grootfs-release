@@ -1,13 +1,16 @@
 set -e
 
-mkdir -p ${BOSH_INSTALL_TARGET}/src
-cp -a . ${BOSH_INSTALL_TARGET}/src/.
-
 export GOROOT=$(readlink -nf /var/vcap/packages/golang_1.7)
-export GOPATH=$BOSH_INSTALL_TARGET
+export GOPATH=${BOSH_INSTALL_TARGET}
 export PATH=$GOROOT/bin:$PATH
 
-go install code.cloudfoundry.org/grootfs
-go install code.cloudfoundry.org/grootfs/store/volume_driver/drax
+mkdir -p ${BOSH_INSTALL_TARGET}/src
+cp -ra * ${BOSH_INSTALL_TARGET}/src
+
+mkdir ${BOSH_INSTALL_TARGET}/bin
+pushd ${BOSH_INSTALL_TARGET}/src/code.cloudfoundry.org/grootfs
+  make
+  mv {grootfs,drax} ${BOSH_INSTALL_TARGET}/bin
+popd
 
 rm -rf ${BOSH_INSTALL_TARGET}/src
