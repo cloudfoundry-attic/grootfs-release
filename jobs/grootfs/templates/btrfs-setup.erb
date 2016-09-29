@@ -5,7 +5,7 @@ set -x
 function main() {
   export PATH=/var/vcap/packages/btrfs-progs/bin:$PATH
   local store_path=<%= p('grootfs.store_path') %>
-  local volume_file=<%= p('grootfs.store_file') %>
+  local volume_file=/var/vcap/data/grootfs/volume
 
   mkdir -p "$store_path"
 
@@ -32,7 +32,7 @@ function create_volume_file() {
 function format_volume_file() {
   local volume_file=$1
 
-  # Verify if volume is already a btrfs file andm if it is, skip
+  # Verify if volume is already a btrfs file and if it is, skip
   if [ -z "$(file $volume_file | grep "BTRFS Filesystem")" ]
   then
     echo "fomatting btrfs volume..."

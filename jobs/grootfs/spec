@@ -17,6 +17,3 @@ properties:
   grootfs.store_size_bytes:
     description: Size of the loopback BTRFS volume to be created
     default: 10737418240
-  grootfs.store_file:
-    description: BTRFS volume file to be created
-    default: /var/vcap/data/grootfs/volume
