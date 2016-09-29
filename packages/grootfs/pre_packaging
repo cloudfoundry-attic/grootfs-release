@@ -2,6 +2,7 @@
 set -e
 
 # download and package the dependencies
-pushd code.cloudfoundry.org/grootfs
-  make deps
-popd
+if [ ! -d code.cloudfoundry.org/grootfs/vendor/ ]; then
+  echo "please run scripts/update before creating this release"
+  exit 1
+fi

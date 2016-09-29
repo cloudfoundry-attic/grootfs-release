@@ -1,0 +1,12 @@
+#!/bin/bash -e
+
+git submodule update --init --recursive
+
+if [ $(which glide) == "" ]; then
+  echo "you need to install glide please"
+  exit 1
+fi
+
+pushd src/code.cloudfoundry.org/grootfs
+  make deps
+popd
