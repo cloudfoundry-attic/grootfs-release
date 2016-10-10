@@ -5,4 +5,5 @@ dependencies:
   - golang_1.7
 
 files:
-  - code.cloudfoundry.org/grootfs/**/*
+  - code.cloudfoundry.org/grootfs/Makefile
+  - code.cloudfoundry.org/grootfs/**/*.go

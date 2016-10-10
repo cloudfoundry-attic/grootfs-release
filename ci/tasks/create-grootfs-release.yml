@@ -1,0 +1,12 @@
+image_resource:
+  type: docker-image
+  source:
+    repository: cfgarden/garden-ci
+platform: linux
+inputs:
+  - name: grootfs-release-version
+  - name: grootfs-release-develop
+outputs:
+  - name: bosh-release
+run:
+  path: grootfs-release-develop/ci/scripts/create-grootfs-release.sh

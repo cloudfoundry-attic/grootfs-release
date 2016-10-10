@@ -5,7 +5,7 @@ name: grootfs
 director_uuid: <%= `bosh target lite > /dev/null 2>&1 && bosh status --uuid` %>
 
 releases:
-  - name: grootfs-release
+  - name: grootfs
     version: latest
 
 jobs:
@@ -13,7 +13,7 @@ jobs:
     instances: 1
     templates:
       - name: grootfs
-        release: grootfs-release
+        release: grootfs
     resource_pool: grootfs
     networks:
       - name: grootfs
