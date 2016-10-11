@@ -78,6 +78,11 @@ resources:
     branch: master
     private_key: {{gnome-private-key}}
 
+- name: performance-time-trigger
+  type: time
+  source:
+    interval: 30m
+
 - name: grootfs-deployment
   type: bosh-deployment
   source:
@@ -275,6 +280,7 @@ jobs:
         text: "<!subteam^S1U0HSJ9E|grootfsteam>: Final bosh release went super wrong. Sorry."
 
 - name: performance-tests
+  serial: true
   public: true
   plan:
   - aggregate:
@@ -282,6 +288,8 @@ jobs:
       trigger: true
       passed: [grootfs]
     - get: grootfs-bench-git-repo
+    - get: performance-time-trigger
+      trigger: true
   - task: benchmark
     privileged: true
     file: grootfs-git-repo/ci/tasks/performance-tests.yml
