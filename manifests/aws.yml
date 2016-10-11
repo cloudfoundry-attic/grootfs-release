@@ -15,7 +15,7 @@ stemcells:
 jobs:
   - name: grootfs
     instances: 1
-    vm_type: m3.medium
+    vm_type: m3.large
     stemcell: trusty
     azs: [z1]
     networks: [{ name: private }]
