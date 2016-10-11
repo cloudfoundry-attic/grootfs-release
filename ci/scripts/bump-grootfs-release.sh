@@ -7,7 +7,6 @@ pushd grootfs-git-repo
 popd
 
 pushd grootfs-release-develop/src/code.cloudfoundry.org/grootfs
-  current_sha=$(git rev-parse HEAD)
   git fetch
   git reset --hard $head
 popd
@@ -15,10 +14,10 @@ popd
 pushd grootfs-release-develop
   git add src/code.cloudfoundry.org/grootfs
   grootfs_changes=$(git diff --cached --submodule src/code.cloudfoundry.org/grootfs | tail -n +2)
-  git commit -m $(printf "Bump grootfs\n\n${grootfs_changes}")
+  git commit -m "$(printf "Bump grootfs\n\n${grootfs_changes}")"
   git submodule update --init --recursive
 popd
 
-cp -r  grootfs-release-develop/. bumped-release-git
+cp -r grootfs-release-develop/. bumped-release-git
 cd bumped-release-git
 
