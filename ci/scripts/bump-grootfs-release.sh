@@ -15,7 +15,7 @@ popd
 pushd grootfs-release-develop
   git add src/code.cloudfoundry.org/grootfs
   grootfs_changes=$(git diff --cached --submodule src/code.cloudfoundry.org/grootfs | tail -n +2)
-  git commit -m "Bump grootfs\n\n${grootfs_changes}"
+  git commit -m $(printf "Bump grootfs\n\n${grootfs_changes}")
   git submodule update --init --recursive
 popd
 
