@@ -16,6 +16,7 @@ function main() {
   permit_device_control
 
   mount_btrfs_volume $volume_file $store_path
+  enable_btrfs_quotas $store_path
 }
 
 function create_volume_file() {
@@ -87,6 +88,11 @@ function mount_btrfs_volume() {
   mount $volume_file $store_path
 
   chown vcap:vcap $store_path
+}
+
+function enable_btrfs_quotas() {
+  local store_path=$1
+  btrfs quota enable $store_path
 }
 
 main
