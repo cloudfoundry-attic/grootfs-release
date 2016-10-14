@@ -1,0 +1,46 @@
+---
+packages:
+- name: btrfs-progs
+  version: 7dfd404e847821f4a577ba176a5ad6c182181948
+  fingerprint: 7dfd404e847821f4a577ba176a5ad6c182181948
+  sha1: 1d0fcc6511bdf9cb8d00ae5da1d84d1f9c3a3b7b
+  dependencies:
+  - btrfs-support-libs
+  - grootfs-build-tools
+- name: btrfs-support-libs
+  version: 9196abe5cde5ffb828f48a242b7f831f0357a3d3
+  fingerprint: 9196abe5cde5ffb828f48a242b7f831f0357a3d3
+  sha1: 4c7f4eb8aa8a989252bab4db1d20b57dadd69266
+  dependencies:
+  - grootfs-build-tools
+- name: golang_1.7
+  version: 0b57f5dcaada47e721cde4afd1d2a892b95d40a5
+  fingerprint: 0b57f5dcaada47e721cde4afd1d2a892b95d40a5
+  sha1: 757d55670cc55f1c70f9a3c63c9c136e55bafe4e
+  dependencies: []
+- name: grootfs-build-tools
+  version: c978a3f3bfc6466e5c30b90f12a4dcd6a981afdd
+  fingerprint: c978a3f3bfc6466e5c30b90f12a4dcd6a981afdd
+  sha1: 4e647b9127ed6fa78385aae135a70f53e3bbe8b0
+  dependencies: []
+- name: grootfs
+  version: d6005867a3215cc99ee0905e6d32bb3493ee8b84
+  fingerprint: d6005867a3215cc99ee0905e6d32bb3493ee8b84
+  sha1: b64a2e221a1cc3706665008ae50eafcde6d732c1
+  dependencies:
+  - golang_1.7
+- name: uidmap
+  version: a83010ebdba953ccc7a5342beaf4eecce9a9d3f6
+  fingerprint: a83010ebdba953ccc7a5342beaf4eecce9a9d3f6
+  sha1: f211c45d44c518fd58bf36db1da83f1a2b092f3d
+  dependencies:
+  - grootfs-build-tools
+jobs:
+- name: grootfs
+  version: 5055d1ef6a102ced33929344a6e1e3b559991960
+  fingerprint: 5055d1ef6a102ced33929344a6e1e3b559991960
+  sha1: 8f37e43759ee2209952c5010ee43f7cb2680da2d
+commit_hash: a4ad5e86
+uncommitted_changes: true
+name: grootfs
+version: 0.1.0
