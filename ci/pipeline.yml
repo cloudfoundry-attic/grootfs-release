@@ -24,6 +24,14 @@ groups:
   - bump-minor-grootfs-release
 
 resources:
+- name: bosh-lock
+  type: pool
+  source:
+    uri: git@github.com:cloudfoundry/grootfs-ci-locks.git
+    branch: master
+    pool: bosh-lock
+    private_key: {{gnome-private-key}}
+
 - name: grootfs-git-repo
   type: git
   source:
@@ -313,6 +321,9 @@ jobs:
   serial: true
   plan:
   - aggregate:
+    - put: bosh-lock
+      params:
+        acquire: true
     - get: grootfs-git-repo
       passed:
       - create-grootfs-release
@@ -354,6 +365,9 @@ jobs:
   public: true
   plan:
   - aggregate:
+    - get: bosh-lock
+      passed:
+      - deploy-grootfs
     - get: grootfs-git-repo
       passed:
       - deploy-grootfs
@@ -385,6 +399,9 @@ jobs:
         icon_url: http://www.comicsblend.com/wp-content/uploads/2013/04/thanos.jpg
         channel: "#grootfs"
         text: "<!subteam^S1U0HSJ9E|grootfsteam>: You don't need metrics for a thing that doesn't even work! http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+  - put: bosh-lock
+    params:
+      release: bosh-lock
 
 - name: bump-major-grootfs-release
   serial: true
