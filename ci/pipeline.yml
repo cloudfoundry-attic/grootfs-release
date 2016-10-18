@@ -359,15 +359,18 @@ jobs:
         icon_url: http://www.comicsblend.com/wp-content/uploads/2013/04/thanos.jpg
         channel: "#grootfs"
         text: "<!subteam^S1U0HSJ9E|grootfsteam>: What the BOSH? You can deploy it yourself."
+  - put: bosh-lock
+    params:
+      release: bosh-lock
 
 - name: performance-tests
   serial: true
   public: true
   plan:
   - aggregate:
-    - get: bosh-lock
-      passed:
-      - deploy-grootfs
+    - put: bosh-lock
+      params:
+        acquire: true
     - get: grootfs-git-repo
       passed:
       - deploy-grootfs
