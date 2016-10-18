@@ -11,9 +11,6 @@ packages:
   - grootfs
 
 properties:
-  grootfs.store_path:
-    description: The path to the grootfs store
-    default: /var/vcap/data/grootfs/store
   grootfs.store_size_bytes:
     description: The size of the grootfs store
     default: 10737418240

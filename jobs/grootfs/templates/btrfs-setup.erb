@@ -4,7 +4,7 @@ set -x
 
 function main() {
   export PATH=/var/vcap/packages/btrfs-progs/bin:$PATH
-  local store_path=<%= p('grootfs.store_path') %>
+  local store_path=/var/vcap/data/grootfs/store
   local volume_file=/var/vcap/data/grootfs/volume
 
   mkdir -p "$store_path"
