@@ -39,7 +39,7 @@ resources:
     branch: master
     private_key: {{gnome-private-key}}
     ignore_paths:
-    - ci/pipeline.yml
+    - ci/tasks/
 
 - name: grootfs-release-develop
   type: git
@@ -47,6 +47,9 @@ resources:
     uri: git@github.com:cloudfoundry/grootfs-release.git
     branch: develop
     private_key: {{gnome-private-key}}
+    ignore_paths:
+    - ci/pipeline.yml
+    - ci/tasks/
 
 - name: grootfs-release-master
   type: git
@@ -97,6 +100,8 @@ resources:
     uri: git@github.com:cloudfoundry/grootfs-bench.git
     branch: master
     private_key: {{gnome-private-key}}
+    ignore_paths:
+    - ci/grootfs-bench-tests.yml
 
 - name: grootfs-bench-release
   type: git
@@ -104,6 +109,8 @@ resources:
     uri: git@github.com:cloudfoundry/grootfs-bench-release.git
     branch: master
     private_key: {{gnome-private-key}}
+    ignore_paths:
+    - ci/tasks/
 
 - name: grootfs-bench-release-version
   type: semver
