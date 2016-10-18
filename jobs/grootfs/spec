@@ -4,6 +4,7 @@ templates:
   btrfs-setup.erb: bin/btrfs-setup
   drax-setup.erb: bin/drax-setup
   pre-start.erb: bin/pre-start
+  grootfs_wrapper.erb: bin/grootfs_wrapper
 
 packages:
   - uidmap

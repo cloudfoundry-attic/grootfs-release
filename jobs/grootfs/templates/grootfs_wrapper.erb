@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -x
+
+PACKAGE_DIR=/var/vcap/packages
+GROOTFS_STORE=/var/vcap/data/grootfs/store
+
+export PATH=$PACKAGE_DIR/btrfs-progs/bin:$PACKAGE_DIR/uidmap/bin:$PACKAGE_DIR/grootfs/bin:$PATH
+
+echo -n $(grootfs --store $GROOTFS_STORE $@)
+
