@@ -22,6 +22,7 @@ groups:
   - ship-grootfs-release
   - bump-major-grootfs-release
   - bump-minor-grootfs-release
+  - bump-master-in-develop
 
 resources:
 - name: bosh-lock
@@ -30,6 +31,14 @@ resources:
     uri: git@github.com:cloudfoundry/grootfs-ci-locks.git
     branch: master
     pool: bosh-lock
+    private_key: {{gnome-private-key}}
+
+- name: release-lock
+  type: pool
+  source:
+    uri: git@github.com:cloudfoundry/grootfs-ci-locks.git
+    branch: master
+    pool: release-lock
     private_key: {{gnome-private-key}}
 
 - name: grootfs-git-repo
@@ -221,12 +230,15 @@ jobs:
 - name: bump-grootfs-release
   serial: true
   plan:
-    - aggregate:
-      - get: grootfs-release-develop
-      - get: grootfs-git-repo
-        trigger: true
-        passed: [grootfs]
     - do:
+      - put: release-lock
+        params:
+          acquire: true
+      - aggregate:
+        - get: grootfs-release-develop
+        - get: grootfs-git-repo
+          trigger: true
+          passed: [grootfs]
       - task: bump-grootfs-release
         file: grootfs-release-develop/ci/tasks/bump-grootfs-release.yml
       - put: grootfs-release-develop
@@ -239,6 +251,10 @@ jobs:
           icon_url: http://www.comicsblend.com/wp-content/uploads/2013/04/thanos.jpg
           channel: "#grootfs"
           text: "<!subteam^S1U0HSJ9E|grootfsteam>: What the BOSH? You can bump it yourself."
+      ensure:
+        put: release-lock
+        params:
+          release: release-lock
 
 - name: create-grootfs-release
   serial: true
@@ -327,38 +343,39 @@ jobs:
 - name: deploy-grootfs
   serial: true
   plan:
-  - aggregate:
-    - put: bosh-lock
+  - do:
+    - aggregate:
+      - put: bosh-lock
+        params:
+          acquire: true
+      - get: grootfs-git-repo
+        passed:
+        - create-grootfs-release
+      - get: grootfs-release-develop
+        passed:
+        - create-grootfs-release
+      - get: grootfs-release-tarball
+        trigger: true
+        passed:
+        - create-grootfs-release
+      - get: grootfs-bench-release
+        passed:
+        - create-grootfs-bench-release
+      - get: grootfs-bench-release-tarball
+        trigger: true
+        passed:
+        - create-grootfs-bench-release
+      - get: aws-stemcell
+        trigger: true
+      - get: grootfs-ci-secrets
+    - put: grootfs-bench-deployment
       params:
-        acquire: true
-    - get: grootfs-git-repo
-      passed:
-      - create-grootfs-release
-    - get: grootfs-release-develop
-      passed:
-      - create-grootfs-release
-    - get: grootfs-release-tarball
-      trigger: true
-      passed:
-      - create-grootfs-release
-    - get: grootfs-bench-release
-      passed:
-      - create-grootfs-bench-release
-    - get: grootfs-bench-release-tarball
-      trigger: true
-      passed:
-      - create-grootfs-bench-release
-    - get: aws-stemcell
-      trigger: true
-    - get: grootfs-ci-secrets
-  - put: grootfs-bench-deployment
-    params:
-      manifest: grootfs-ci-secrets/deployments/grootfs-bench/aws.yml
-      releases:
-      - grootfs-release-tarball/*.tgz
-      - grootfs-bench-release-tarball/*.tgz
-      stemcells:
-      - aws-stemcell/*.tgz
+        manifest: grootfs-ci-secrets/deployments/grootfs-bench/aws.yml
+        releases:
+        - grootfs-release-tarball/*.tgz
+        - grootfs-bench-release-tarball/*.tgz
+        stemcells:
+        - aws-stemcell/*.tgz
     on_failure:
       put: slack-alert
       params:
@@ -366,42 +383,44 @@ jobs:
         icon_url: http://www.comicsblend.com/wp-content/uploads/2013/04/thanos.jpg
         channel: "#grootfs"
         text: "<!subteam^S1U0HSJ9E|grootfsteam>: What the BOSH? You can deploy it yourself."
-  - put: bosh-lock
-    params:
-      release: bosh-lock
+    ensure:
+      put: bosh-lock
+      params:
+        release: bosh-lock
 
 - name: performance-tests
   serial: true
   public: true
   plan:
-  - aggregate:
-    - put: bosh-lock
+  - do:
+    - aggregate:
+      - put: bosh-lock
+        params:
+          acquire: true
+      - get: grootfs-git-repo
+        passed:
+        - deploy-grootfs
+      - get: grootfs-release-develop
+        trigger: true
+        passed:
+        - deploy-grootfs
+      - get: grootfs-bench-release
+        trigger: true
+        passed:
+        - deploy-grootfs
+      - get: performance-time-trigger
+        trigger: true
+      - get: grootfs-ci-secrets
+    - task: benchmark
+      privileged: true
+      file: grootfs-bench-release/ci/tasks/performance-tests.yml
       params:
-        acquire: true
-    - get: grootfs-git-repo
-      passed:
-      - deploy-grootfs
-    - get: grootfs-release-develop
-      trigger: true
-      passed:
-      - deploy-grootfs
-    - get: grootfs-bench-release
-      trigger: true
-      passed:
-      - deploy-grootfs
-    - get: performance-time-trigger
-      trigger: true
-    - get: grootfs-ci-secrets
-  - task: benchmark
-    privileged: true
-    file: grootfs-bench-release/ci/tasks/performance-tests.yml
-    params:
-      BOSH_TARGET: {{bosh-target}}
-      BOSH_USER: {{bosh-username}}
-      BOSH_PASSWORD: {{bosh-password}}
-      BOSH_MANIFEST: grootfs-ci-secrets/deployments/grootfs-bench/aws.yml
-      DATADOG_API_KEY: {{datadog-api-key}}
-      DATADOG_APPLICATION_KEY: {{datadog-application-key}}
+        BOSH_TARGET: {{bosh-target}}
+        BOSH_USER: {{bosh-username}}
+        BOSH_PASSWORD: {{bosh-password}}
+        BOSH_MANIFEST: grootfs-ci-secrets/deployments/grootfs-bench/aws.yml
+        DATADOG_API_KEY: {{datadog-api-key}}
+        DATADOG_APPLICATION_KEY: {{datadog-application-key}}
     on_failure:
       put: slack-alert
       params:
@@ -409,9 +428,10 @@ jobs:
         icon_url: http://www.comicsblend.com/wp-content/uploads/2013/04/thanos.jpg
         channel: "#grootfs"
         text: "<!subteam^S1U0HSJ9E|grootfsteam>: You don't need metrics for a thing that doesn't even work! http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
-  - put: bosh-lock
-    params:
-      release: bosh-lock
+    ensure:
+      put: bosh-lock
+      params:
+        release: bosh-lock
 
 - name: bump-major-grootfs-release
   serial: true
@@ -435,6 +455,9 @@ jobs:
   serial: true
   plan:
   - do:
+    - put: release-lock
+      params:
+        acquire: true
     - aggregate:
       - get: grootfs-ci-secrets
       - get: grootfs-release-develop
@@ -455,6 +478,9 @@ jobs:
         params:
           from: final-release/grootfs-([^/]*).tgz
           to: releases/
+      - put: grootfs-release-version
+        resource: grootfs-release-version
+        params: { bump: patch, pre: rc }
     on_failure:
       put: slack-alert
       params:
@@ -463,40 +489,67 @@ jobs:
         channel: "#grootfs"
         text: "<!subteam^S1U0HSJ9E|grootfsteam>: Final bosh release went super wrong. Sorry."
 
+- name: bump-master-in-develop
+  serial: true
+  plan:
+  - do:
+    - get: release-lock
+      passed: [ship-grootfs-release]
+    - aggregate:
+      - get: grootfs-release-develop
+      - get: grootfs-release-master
+        passed: [ship-grootfs-release]
+        trigger: true
+    - put: grootfs-release-develop
+      params:
+        repository: grootfs-release-master
+    on_failure:
+      put: slack-alert
+      params:
+        username: Thanos
+        icon_url: http://www.comicsblend.com/wp-content/uploads/2013/04/thanos.jpg
+        channel: "#grootfs"
+        text: "<!subteam^S1U0HSJ9E|grootfsteam>: I CAN'T BUMP DEVELOP"
+    ensure:
+      put: release-lock
+      params:
+        release: release-lock
+
 - name: create-github-release
   plan:
-  - aggregate:
-    - get: grootfs-git-repo
-      passed: [grootfs]
-    - get: grootfs-version
-      passed: [grootfs]
-      params: { bump: final }
-  - task: build-grootfs
-    file: grootfs-git-repo/ci/tasks/build-grootfs.yml
-  - put: grootfs-ci-image
-    params:
-      build: grootfs-git-repo
-      tag_prefix: v
-      tag: grootfs-version/number
-  - put: grootfs-git-repo
-    params:
-      tag: grootfs-version/number
-      tag_prefix: v
-      repository: build-grootfs
-  - put: grootfs-gh-release
-    params:
-      name: grootfs-version/number
-      tag: grootfs-version/number
-      tag_prefix: v
-      globs:
-      - build-grootfs/grootfs.tgz
-  - get: grootfs-next-dev-version
-    resource: grootfs-version
-    params: { bump: minor, pre: dev }
-  - put: grootfs-next-dev-version
-    resource: grootfs-version
-    params: { file: grootfs-next-dev-version/number }
-
+  - do:
+    - aggregate:
+      - get: grootfs-git-repo
+        passed: [grootfs]
+      - get: grootfs-version
+        passed: [grootfs]
+        params: { bump: final }
+    - task: build-grootfs
+      file: grootfs-git-repo/ci/tasks/build-grootfs.yml
+    - put: grootfs-ci-image
+      params:
+        build: grootfs-git-repo
+        tag_prefix: v
+        tag: grootfs-version/number
+    - put: grootfs-git-repo
+      params:
+        tag: grootfs-version/number
+        tag_prefix: v
+        repository: build-grootfs
+    - put: grootfs-gh-release
+      params:
+        name: grootfs-version/number
+        tag: grootfs-version/number
+        tag_prefix: v
+        globs:
+        - build-grootfs/grootfs.tgz
+    - get: grootfs-next-dev-version
+      resource: grootfs-version
+      params: { bump: minor, pre: dev }
+    - aggregate:
+      - put: grootfs-next-dev-version
+        resource: grootfs-version
+        params: { file: grootfs-next-dev-version/number }
 
 - name: grootfs-bench
   public: true
