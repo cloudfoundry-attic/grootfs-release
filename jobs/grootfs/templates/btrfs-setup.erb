@@ -85,7 +85,7 @@ function mount_btrfs_volume() {
 
   echo "mounting the btrfs volume..."
   umount $store_path || true
-  mount $volume_file $store_path
+  mount -o user_subvol_rm_allowed $volume_file $store_path
 
   chown vcap:vcap $store_path
 }
