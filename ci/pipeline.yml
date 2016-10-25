@@ -7,6 +7,7 @@ groups:
   - create-grootfs-release
   - deploy-grootfs
   - performance-tests
+  - reset-release-lock
 - name: grootfs-bench
   jobs:
   - grootfs-bench
@@ -387,6 +388,14 @@ jobs:
       put: bosh-lock
       params:
         release: bosh-lock
+
+- name: reset-release-lock
+  serial: true
+  plan:
+  - get: bosh-lock
+  - put: bosh-lock
+    params:
+      release: bosh-lock
 
 - name: performance-tests
   serial: true
