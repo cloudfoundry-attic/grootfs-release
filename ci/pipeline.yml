@@ -342,9 +342,6 @@ jobs:
       - put: bosh-lock
         params:
           acquire: true
-      - get: grootfs-git-repo
-        passed:
-        - create-grootfs-release
       - get: grootfs-release-develop
         passed:
         - create-grootfs-release
@@ -353,9 +350,6 @@ jobs:
         passed:
         - create-grootfs-release
       - get: grootfs-bench-release
-        passed:
-        - create-grootfs-bench-release
-      - get: grootfs-bench-git-repo
         passed:
         - create-grootfs-bench-release
       - get: grootfs-bench-release-tarball
@@ -402,18 +396,12 @@ jobs:
       - put: bosh-lock
         params:
           acquire: true
-      - get: grootfs-git-repo
-        passed:
-        - deploy-grootfs
       - get: grootfs-release-develop
         trigger: true
         passed:
         - deploy-grootfs
       - get: grootfs-bench-release
         trigger: true
-        passed:
-        - deploy-grootfs
-      - get: grootfs-bench-git-repo
         passed:
         - deploy-grootfs
       - get: performance-time-trigger
@@ -432,9 +420,9 @@ jobs:
     - put: grootfs-tracker
       params:
         repos:
-        - grootfs-git-repo
+        - grootfs-release-develop/src/code.cloudfoundry.org/grootfs
         - grootfs-release-develop
-        - grootfs-bench-git-repo
+        - grootfs-bench-release/src/code.cloudfoundry.org/grootfs-bench
         - grootfs-bench-release
     on_failure:
       put: slack-alert
