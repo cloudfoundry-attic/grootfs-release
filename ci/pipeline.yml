@@ -213,10 +213,6 @@ jobs:
         file: grootfs-git-repo/ci/tasks/root-tests.yml
       - task: go-vet
         file: grootfs-git-repo/ci/tasks/go-vet.yml
-    - put: grootfs-tracker
-      params:
-        repos:
-        - grootfs-git-repo
     on_failure:
       put: slack-alert
       params:
@@ -359,6 +355,9 @@ jobs:
       - get: grootfs-bench-release
         passed:
         - create-grootfs-bench-release
+      - get: grootfs-bench-git-repo
+        passed:
+        - create-grootfs-bench-release
       - get: grootfs-bench-release-tarball
         trigger: true
         passed:
@@ -414,6 +413,9 @@ jobs:
         trigger: true
         passed:
         - deploy-grootfs
+      - get: grootfs-bench-git-repo
+        passed:
+        - deploy-grootfs
       - get: performance-time-trigger
         trigger: true
       - get: grootfs-ci-secrets
@@ -427,6 +429,13 @@ jobs:
         BOSH_MANIFEST: grootfs-ci-secrets/deployments/grootfs-bench/aws.yml
         DATADOG_API_KEY: {{datadog-api-key}}
         DATADOG_APPLICATION_KEY: {{datadog-application-key}}
+    - put: grootfs-tracker
+      params:
+        repos:
+        - grootfs-git-repo
+        - grootfs-release-develop
+        - grootfs-bench-git-repo
+        - grootfs-bench-release
     on_failure:
       put: slack-alert
       params:
@@ -572,10 +581,6 @@ jobs:
         icon_url: http://www.comicsblend.com/wp-content/uploads/2013/04/thanos.jpg
         channel: "#grootfs"
         text: "<!subteam^S1U0HSJ9E|grootfsteam>: I've destroyed your build (groot tests are dead). Come and get me!  http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
-  - put: grootfs-tracker
-    params:
-      repos:
-      - grootfs-bench-git-repo
 
 - name: build-ci-image
   plan:
