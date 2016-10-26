@@ -57,9 +57,6 @@ resources:
     uri: git@github.com:cloudfoundry/grootfs-release.git
     branch: develop
     private_key: {{gnome-private-key}}
-    ignore_paths:
-    - ci/pipeline.yml
-    - ci/tasks/
 
 - name: grootfs-release-master
   type: git
