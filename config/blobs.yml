@@ -31,10 +31,6 @@ lzo/lzo-2.09.tar.gz:
   object_id: 075601cc-8805-4577-9458-08b8c83e482a
   sha: e2a60aca818836181e7e6f8c4f2c323aca6ac057
   size: 594855
-shadow/shadow-4.3.1.tar.gz:
-  object_id: d316808e-5a27-4f5a-b832-5be9f60280b9
-  sha: 56c5b100c13aa51f5814965b837b4a5e6c83861e
-  size: 2972238
 util-linux/util-linux-2.28.tar.gz:
   object_id: 41fdb430-2e16-49e6-ad8d-14e27eff536f
   sha: ad8f1a338c23bcf3519b856295fbdb6a820db64c

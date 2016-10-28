@@ -1,8 +1,0 @@
----
-name: uidmap
-
-dependencies:
-- grootfs-build-tools
-
-files:
-- shadow/*

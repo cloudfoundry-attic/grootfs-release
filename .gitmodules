@@ -2,3 +2,6 @@
 	path = src/code.cloudfoundry.org/grootfs
 	url = https://github.com/cloudfoundry/grootfs
 	branch = master
+[submodule "src/code.cloudfoundry.org/idmapper"]
+	path = src/code.cloudfoundry.org/idmapper
+	url = https://github.com/cloudfoundry/idmapper

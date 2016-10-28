@@ -7,7 +7,7 @@ templates:
   grootfs_wrapper.erb: bin/grootfs_wrapper
 
 packages:
-  - uidmap
+  - idmapper
   - btrfs-progs
   - grootfs
 

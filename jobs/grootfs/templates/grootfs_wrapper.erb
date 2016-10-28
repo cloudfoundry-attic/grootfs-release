@@ -3,7 +3,7 @@
 PACKAGE_DIR=/var/vcap/packages
 GROOTFS_STORE=/var/vcap/data/grootfs/store
 
-export PATH=$PACKAGE_DIR/btrfs-progs/bin:$PACKAGE_DIR/uidmap/bin:$PACKAGE_DIR/grootfs/bin:$PATH
+export PATH=$PACKAGE_DIR/btrfs-progs/bin:$PACKAGE_DIR/idmapper/bin:$PACKAGE_DIR/grootfs/bin:$PATH
 
 grootfs --store $GROOTFS_STORE $@
 
