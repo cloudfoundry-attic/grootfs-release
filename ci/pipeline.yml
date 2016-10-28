@@ -340,6 +340,7 @@ jobs:
   - do:
     - aggregate:
       - get: grootfs-release-develop
+        trigger: true
         passed:
         - create-grootfs-release
       - get: grootfs-release-tarball
