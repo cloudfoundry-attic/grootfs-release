@@ -7,11 +7,11 @@ image_resource:
 platform: linux
 
 inputs:
-  - name: grootfs-release-version
   - name: grootfs-release-develop
+  - name: garden-runc-release
 
 outputs:
-  - name: bosh-release
+- name: bosh-release
 
 run:
-  path: grootfs-release-develop/ci/scripts/create-grootfs-release.sh
+  path: grootfs-release-develop/ci/scripts/create-garden-runc-release.sh

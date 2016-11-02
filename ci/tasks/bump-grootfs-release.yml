@@ -1,12 +1,17 @@
+---
 image_resource:
   type: docker-image
   source:
     repository: cfgarden/garden-ci
+
 platform: linux
+
 inputs:
   - name: grootfs-release-develop
   - name: grootfs-git-repo
+
 outputs:
   - name: bumped-release-git
+
 run:
   path: grootfs-release-develop/ci/scripts/bump-grootfs-release.sh

@@ -5,7 +5,7 @@ groups:
   - grootfs
   - bump-grootfs-release
   - create-grootfs-release
-  - deploy-grootfs
+  - deploy-grootfs-bench
   - performance-tests
   - reset-release-lock
 - name: grootfs-bench
@@ -13,7 +13,11 @@ groups:
   - grootfs-bench
   - bump-grootfs-bench-release
   - create-grootfs-bench-release
-  - deploy-grootfs
+  - deploy-grootfs-bench
+- name: grootfs-garden
+  jobs:
+  - deploy-garden-grootfs
+  - gats
 - name: tools
   jobs:
   - build-ci-image
@@ -33,6 +37,14 @@ resources:
     branch: master
     pool: release-lock
     private_key: {{gnome-private-key}}
+
+- name: garden-runc-release
+  type: git
+  source:
+    uri: https://github.com/cloudfoundry/garden-runc-release
+    branch: develop
+    ignore_paths:
+    - ci
 
 - name: grootfs-git-repo
   type: git
@@ -136,6 +148,15 @@ resources:
     deployment: grootfs-bench
     ignore_ssl: true
 
+- name: garden-grootfs-deployment
+  type: bosh-deployment
+  source:
+    target: {{bosh-target}}
+    username: {{bosh-username}}
+    password: {{bosh-password}}
+    deployment: garden-grootfs
+    ignore_ssl: true
+
 - name: aws-stemcell
   type: bosh-io-stemcell
   source:
@@ -221,6 +242,52 @@ jobs:
         channel: "#grootfs"
         text: "<!subteam^S1U0HSJ9E|grootfsteam>: System Failure. Explosion Imminent. http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
+- name: deploy-garden-grootfs
+  serial_groups: [grootfs-garden-deployment]
+  plan:
+  - do:
+    - aggregate:
+      - get: aws-stemcell
+      - get: grootfs-ci-secrets
+      - get: grootfs-release-develop
+      - get: garden-runc-release
+        trigger: true
+      - get: grootfs-release-tarball
+        trigger: true
+        passed:
+        - create-grootfs-release
+    - task: create-garden-runc-release
+      file: grootfs-release-develop/ci/tasks/create-garden-runc-release.yml
+    - put: garden-grootfs-deployment
+      params:
+        manifest: grootfs-ci-secrets/deployments/garden-grootfs/aws.yml
+        releases:
+        - bosh-release/garden-runc.tgz
+        - grootfs-release-tarball/*.tgz
+        stemcells:
+        - aws-stemcell/*.tgz
+    on_failure:
+      put: slack-alert
+      params:
+        username: Thanos
+        icon_url: http://www.comicsblend.com/wp-content/uploads/2013/04/thanos.jpg
+        channel: "#grootfs"
+        text: "<!subteam^S1U0HSJ9E|grootfsteam>: System Failure. Explosion Imminent. http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+
+- name: gats
+  serial_groups: [grootfs-garden-deployment]
+  plan:
+    - aggregate:
+      - get: grootfs-release-develop
+        trigger: true
+        passed: [deploy-garden-grootfs]
+      - get: garden-runc-release
+        passed: [deploy-garden-grootfs]
+    - task: gats
+      file: grootfs-release-develop/ci/tasks/gats.yml
+      params:
+        GARDEN_ADDRESS: 10.0.16.7:7777
+
 - name: bump-grootfs-release
   serial: true
   plan:
@@ -232,7 +299,8 @@ jobs:
         - get: grootfs-release-develop
         - get: grootfs-git-repo
           trigger: true
-          passed: [grootfs]
+          passed:
+          - grootfs
       - task: bump-grootfs-release
         file: grootfs-release-develop/ci/tasks/bump-grootfs-release.yml
       - put: grootfs-release-develop
@@ -287,7 +355,8 @@ jobs:
       - get: grootfs-bench-release
       - get: grootfs-bench-git-repo
         trigger: true
-        passed: [grootfs-bench]
+        passed:
+        - grootfs-bench
     - do:
       - task: bump-grootfs-bench-release
         file: grootfs-bench-release/ci/tasks/bump-grootfs-bench-release.yml
@@ -334,8 +403,9 @@ jobs:
           channel: "#grootfs"
           text: "<!subteam^S1U0HSJ9E|grootfsteam>: You know what, fix it. http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
-- name: deploy-grootfs
-  serial_groups: [bosh-deployment]
+- name: deploy-grootfs-bench
+  serial_groups:
+  - bosh-deployment
   plan:
   - do:
     - aggregate:
@@ -374,7 +444,8 @@ jobs:
         text: "<!subteam^S1U0HSJ9E|grootfsteam>: What the BOSH? You can deploy it yourself. http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
 - name: performance-tests
-  serial_groups: [bosh-deployment]
+  serial_groups:
+  - bosh-deployment
   plan:
   public: true
   plan:
@@ -383,11 +454,11 @@ jobs:
       - get: grootfs-release-develop
         trigger: true
         passed:
-        - deploy-grootfs
+        - deploy-grootfs-bench
       - get: grootfs-bench-release
         trigger: true
         passed:
-        - deploy-grootfs
+        - deploy-grootfs-bench
       - get: performance-time-trigger
         trigger: true
       - get: grootfs-ci-secrets
@@ -444,7 +515,8 @@ jobs:
     - aggregate:
       - get: grootfs-ci-secrets
       - get: grootfs-release-develop
-        passed: [deploy-grootfs]
+        passed:
+        - deploy-grootfs-bench
       - get: grootfs-release-master
       - get: grootfs-release-version
         params:
@@ -477,11 +549,13 @@ jobs:
   plan:
   - do:
     - get: release-lock
-      passed: [ship-grootfs-release]
+      passed:
+      - ship-grootfs-release
     - aggregate:
       - get: grootfs-release-develop
       - get: grootfs-release-master
-        passed: [ship-grootfs-release]
+        passed:
+        - ship-grootfs-release
         trigger: true
     - put: grootfs-release-develop
       params:
@@ -503,9 +577,11 @@ jobs:
   - do:
     - aggregate:
       - get: grootfs-git-repo
-        passed: [grootfs]
+        passed:
+        - grootfs
       - get: grootfs-version
-        passed: [grootfs]
+        passed:
+        - grootfs
         params: { bump: final }
     - task: build-grootfs
       file: grootfs-git-repo/ci/tasks/build-grootfs.yml
@@ -533,6 +609,13 @@ jobs:
       - put: grootfs-next-dev-version
         resource: grootfs-version
         params: { file: grootfs-next-dev-version/number }
+    on_failure:
+      put: slack-alert
+      params:
+        username: Thanos
+        icon_url: http://www.comicsblend.com/wp-content/uploads/2013/04/thanos.jpg
+        channel: "#grootfs"
+        text: "<!subteam^S1U0HSJ9E|grootfsteam>: I don't know how to create github release anyway!  http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
 - name: grootfs-bench
   public: true
