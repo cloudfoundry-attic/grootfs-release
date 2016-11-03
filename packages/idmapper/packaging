@@ -10,7 +10,7 @@ cp -ra * ${BOSH_INSTALL_TARGET}/src
 mkdir ${BOSH_INSTALL_TARGET}/bin
 pushd ${BOSH_INSTALL_TARGET}/src/code.cloudfoundry.org/idmapper
   make
-  mv {newuidmap,newgidmap} ${BOSH_INSTALL_TARGET}/bin
+  mv {newuidmap,newgidmap,maximus} ${BOSH_INSTALL_TARGET}/bin
 popd
 
 chmod u+s ${BOSH_INSTALL_TARGET}/bin/*

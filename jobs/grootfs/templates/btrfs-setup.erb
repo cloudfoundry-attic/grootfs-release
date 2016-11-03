@@ -87,7 +87,8 @@ function mount_btrfs_volume() {
   umount $store_path || true
   mount -o user_subvol_rm_allowed $volume_file $store_path
 
-  chmod 777 $store_path
+  maximus_uid=$(/var/vcap/packages/idmapper/bin/maximus)
+  chown $maximus_uid:$maximus_uid $store_path
 }
 
 function enable_btrfs_quotas() {
