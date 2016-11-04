@@ -2,8 +2,8 @@
 image_resource:
   type: docker-image
   source:
-    repository: cfgarden/grootfs-ci
-    tag: latest
+      repository: cfgarden/garden-ci-ubuntu
+      tag: '0.4.0'
 
 platform: linux
 
