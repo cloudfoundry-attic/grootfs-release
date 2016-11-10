@@ -15,3 +15,6 @@ properties:
   grootfs.store_size_bytes:
     description: The size of the grootfs store
     default: 10737418240
+  grootfs.log_level:
+    description: "log level for grootfs - can be debug, info, error or fatal"
+    default: info
