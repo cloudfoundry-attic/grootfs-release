@@ -26,7 +26,7 @@ function create_volume_file() {
   if [ ! -f "$volume_file" ]
   then
     echo "creating btrfs volume..."
-    dd if=/dev/zero of="$volume_file" bs=<%= p('grootfs.store_size_bytes') %> count=1
+    truncate -s <%= p('grootfs.store_size_bytes') %> $volume_file
   fi
 }
 
