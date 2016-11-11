@@ -29,6 +29,7 @@ groups:
   - merge-master-into-develop
   - ship-bosh-release
   - ship-grootfs
+  - tag-grootfs-ci-image
 
 resources:
 - name: release-lock
@@ -50,7 +51,7 @@ resources:
 - name: grootfs-git-repo
   type: git
   source:
-    uri: git@github.com:cloudfoundry/grootfs.git
+    uri: {{grootfs-git-repo}}
     branch: master
     private_key: {{gnome-private-key}}
     ignore_paths:
@@ -59,14 +60,14 @@ resources:
 - name: grootfs-release-develop
   type: git
   source:
-    uri: git@github.com:cloudfoundry/grootfs-release.git
+    uri: {{grootfs-release-git-repo}}
     branch: develop
     private_key: {{gnome-private-key}}
 
 - name: grootfs-release-master
   type: git
   source:
-    uri: git@github.com:cloudfoundry/grootfs-release.git
+    uri: {{grootfs-release-git-repo}}
     branch: master
     private_key: {{gnome-private-key}}
 
@@ -74,7 +75,7 @@ resources:
   type: semver
   source:
     bucket: grootfs-ci-meta
-    key: grootfs/bosh-release-version
+    key: {{s3-version-key}}
     access_key_id: {{aws-access-key-id}}
     secret_access_key: {{aws-secret-access-key}}
     region_name: eu-west-1
@@ -92,7 +93,7 @@ resources:
   type: s3
   source:
     bucket: grootfs-bosh-releases
-    regexp: releases/grootfs-(.*).tgz
+    regexp: {{s3-release-tarball-regexp}}
     region_name: eu-west-1
     access_key_id: {{aws-access-key-id}}
     secret_access_key: {{aws-secret-access-key}}
@@ -158,10 +159,10 @@ resources:
     deployment: garden-grootfs
     ignore_ssl: true
 
-- name: aws-stemcell
+- name: bosh-stemcell
   type: bosh-io-stemcell
   source:
-    name: {{aws-stemcell-name}}
+    name: {{bosh-stemcell-name}}
 
 - name: slack-alert
   type: slack-notification-docker
@@ -178,7 +179,7 @@ resources:
 - name: grootfs-standalone-gh-release
   type: github-release
   source:
-    user: cloudfoundry
+    user: {{github-organization}}
     repository: grootfs
     access_token: {{github-access-token}}
     drafts: true
@@ -186,7 +187,7 @@ resources:
 - name: grootfs-gh-release
   type: github-release
   source:
-    user: cloudfoundry
+    user: {{github-organization}}
     repository: grootfs-release
     access_token: {{github-access-token}}
     drafts: true
@@ -287,7 +288,7 @@ jobs:
     - put: grootfs-release-tarball
       params:
         from: bosh-release/grootfs-([^/]*).tgz
-        to: releases/
+        to: {{s3-release-tarball-to}}
     on_failure:
       put: slack-alert
       params:
@@ -301,7 +302,7 @@ jobs:
   plan:
   - do:
     - aggregate:
-      - get: aws-stemcell
+      - get: bosh-stemcell
       - get: grootfs-ci-secrets
       - get: grootfs-release-develop
       - get: garden-runc-release
@@ -314,12 +315,12 @@ jobs:
       file: grootfs-release-develop/ci/tasks/create-garden-runc-release.yml
     - put: garden-grootfs-deployment
       params:
-        manifest: grootfs-ci-secrets/deployments/garden-grootfs/aws.yml
+        manifest: {{garden-grootfs-manifest}}
         releases:
         - bosh-release/garden-runc.tgz
         - grootfs-release-tarball/*.tgz
         stemcells:
-        - aws-stemcell/*.tgz
+        - bosh-stemcell/*.tgz
     on_failure:
       put: slack-alert
       params:
@@ -340,7 +341,7 @@ jobs:
     - task: gats
       file: grootfs-release-develop/ci/tasks/gats.yml
       params:
-        GARDEN_ADDRESS: 10.0.16.7:7777
+        GARDEN_ADDRESS: {{garden-address}}
 
 - name: bump-grootfs-bench-release
   serial: true
@@ -369,7 +370,7 @@ jobs:
   serial: true
   plan:
     - aggregate:
-      - get: aws-stemcell
+      - get: bosh-stemcell
       - get: grootfs-ci-secrets
       - get: grootfs-bench-release
         trigger: true
@@ -418,17 +419,17 @@ jobs:
         trigger: true
         passed:
         - create-grootfs-bench-release
-      - get: aws-stemcell
+      - get: bosh-stemcell
         trigger: true
       - get: grootfs-ci-secrets
     - put: grootfs-bench-deployment
       params:
-        manifest: grootfs-ci-secrets/deployments/grootfs-bench/aws.yml
+        manifest: {{grootfs-bench-manifest}}
         releases:
         - grootfs-release-tarball/*.tgz
         - grootfs-bench-release-tarball/*.tgz
         stemcells:
-        - aws-stemcell/*.tgz
+        - bosh-stemcell/*.tgz
     on_failure:
       put: slack-alert
       params:
@@ -463,7 +464,7 @@ jobs:
         BOSH_TARGET: {{bosh-target}}
         BOSH_USER: {{bosh-username}}
         BOSH_PASSWORD: {{bosh-password}}
-        BOSH_MANIFEST: grootfs-ci-secrets/deployments/grootfs-bench/aws.yml
+        BOSH_MANIFEST: {{grootfs-bench-manifest}}
         DATADOG_API_KEY: {{datadog-api-key}}
         DATADOG_APPLICATION_KEY: {{datadog-application-key}}
     - put: grootfs-tracker
@@ -537,7 +538,7 @@ jobs:
       - put: grootfs-release-tarball
         params:
           from: final-release/grootfs-([^/]*).tgz
-          to: releases/
+          to: {{s3-release-tarball-to}}
       - put: grootfs-gh-release
         params:
           name: grootfs-release-version/number
@@ -566,11 +567,6 @@ jobs:
         passed: [ship-bosh-release]
     - task: build-grootfs
       file: grootfs-release-master/src/code.cloudfoundry.org/grootfs/ci/tasks/build-grootfs.yml
-    - put: grootfs-ci-image
-      params:
-        build: grootfs-release-master/src/code.cloudfoundry.org/grootfs
-        tag_prefix: v
-        tag: grootfs-release-version/number
     - put: grootfs-git-repo
       params:
         tag: grootfs-release-version/number
@@ -591,6 +587,29 @@ jobs:
         icon_url: http://www.comicsblend.com/wp-content/uploads/2013/04/thanos.jpg
         channel: "#grootfs"
         text: "<!subteam^S1U0HSJ9E|grootfsteam>: I don't know how to create github release anyway!  http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+
+- name: tag-grootfs-ci-image
+  plan:
+  - do:
+    - aggregate:
+      - get: grootfs-release-master
+        passed: [ship-bosh-release]
+      - get: grootfs-release-version
+        trigger: true
+        passed: [ship-bosh-release]
+    - put: grootfs-ci-image
+      params:
+        build: grootfs-release-master/src/code.cloudfoundry.org/grootfs
+        tag_prefix: v
+        tag: grootfs-release-version/number
+    on_failure:
+      put: slack-alert
+      params:
+        username: Thanos
+        icon_url: http://www.comicsblend.com/wp-content/uploads/2013/04/thanos.jpg
+        channel: "#grootfs"
+        text: "<!subteam^S1U0HSJ9E|grootfsteam>: I don't know how to create github release anyway!  http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+
 
 - name: merge-master-into-develop
   serial: true

@@ -1,13 +1,12 @@
 #!/bin/bash -ex
-
 cd $(dirname $0)/..
 
-if [ -z $1 ]; then
+FLYRC_TARGET=$1
+if [ -z $FLYRC_TARGET ]; then
   echo "No target passed, using 'grootfs-ci'"
   FLYRC_TARGET="grootfs-ci"
-else
-  FLYRC_TARGET=$1
 fi
+[ -z $DEBUG ] && DEBUG=0
 
 check_fly_alias_exists() {
   set +e
@@ -19,6 +18,18 @@ check_fly_alias_exists() {
   set -e
 }
 
-check_fly_alias_exists
+main() {
+  check_fly_alias_exists
 
-fly --target="$FLYRC_TARGET" set-pipeline --pipeline=grootfs --config=ci/pipeline.yml --load-vars-from=/Users/pivotal/workspace/grootfs-ci-secrets/vars/aws.yml
+  pipeline_name="grootfs"
+  [ $DEBUG -eq 1 ] && pipeline_name="grootfs-test"
+  vars_name="aws"
+  [ $DEBUG -eq 1 ] && vars_name="lite"
+  vars_from_path="$HOME/workspace/grootfs-ci-secrets/vars/$vars_name.yml"
+  [ $DEBUG -eq 1 ] && FLYRC_TARGET="lite"
+
+  fly --target="$FLYRC_TARGET" set-pipeline --pipeline=$pipeline_name \
+    --config=ci/pipeline.yml --load-vars-from=$vars_from_path
+}
+
+main
