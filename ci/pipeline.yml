@@ -532,7 +532,7 @@ jobs:
           tag: grootfs-release-version/number
           tag_prefix: v
           globs:
-          - final-release/grootfs-([^/]*).tgz
+          - final-release/grootfs-*.tgz
       - put: rootfs-release-version-pushed
         resource: grootfs-release-version
         params: { bump: patch, pre: rc }
@@ -574,8 +574,8 @@ jobs:
         tag: grootfs-release-version/number
         tag_prefix: v
         globs:
-        - build-grootfs/grootfs.tgz
-        - build-grootfs/drax.tgz
+        - build-grootfs/grootfs-*.tgz
+        - build-grootfs/drax-*.tgz
     on_failure:
       put: slack-alert
       params:
