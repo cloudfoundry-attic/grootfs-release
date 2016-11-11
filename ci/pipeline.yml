@@ -23,11 +23,11 @@ groups:
   - build-ci-image
 - name: ship-it
   jobs:
-  - create-github-release
-  - ship-grootfs-release
   - bump-major-grootfs-release
   - bump-minor-grootfs-release
-  - bump-master-in-develop
+  - merge-master-into-develop
+  - ship-bosh-release
+  - ship-grootfs
 
 resources:
 - name: release-lock
@@ -498,7 +498,7 @@ jobs:
     resource: grootfs-release-version
     params: { file: grootfs-release-version/number }
 
-- name: ship-grootfs-release
+- name: ship-bosh-release
   serial: true
   plan:
   - do:
@@ -544,18 +544,15 @@ jobs:
         channel: "#grootfs"
         text: "<!subteam^S1U0HSJ9E|grootfsteam>: Final bosh release went super wrong. Sorry. http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
-- name: create-github-release
+- name: ship-grootfs
   plan:
   - do:
     - aggregate:
       - get: grootfs-release-master
-        passed:
-        - ship-grootfs-release
+        passed: [ship-bosh-release]
       - get: grootfs-release-version
         trigger: true
-        passed:
-        - ship-grootfs-release
-        params: { bump: final }
+        passed: [ship-bosh-release]
     - task: build-grootfs
       file: grootfs-release-master/src/code.cloudfoundry.org/grootfs/ci/tasks/build-grootfs.yml
     - put: grootfs-ci-image
@@ -584,18 +581,18 @@ jobs:
         channel: "#grootfs"
         text: "<!subteam^S1U0HSJ9E|grootfsteam>: I don't know how to create github release anyway!  http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
-- name: bump-master-in-develop
+- name: merge-master-into-develop
   serial: true
   plan:
   - do:
     - get: release-lock
       passed:
-      - ship-grootfs-release
+      - ship-bosh-release
     - aggregate:
       - get: grootfs-release-develop
       - get: grootfs-release-master
         passed:
-        - ship-grootfs-release
+        - ship-bosh-release
         trigger: true
     - put: grootfs-release-develop
       params:
