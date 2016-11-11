@@ -25,6 +25,7 @@ groups:
   jobs:
   - bump-major-grootfs-release
   - bump-minor-grootfs-release
+  - bump-patch-grootfs-release
   - merge-master-into-develop
   - ship-bosh-release
   - ship-grootfs
@@ -480,6 +481,17 @@ jobs:
         channel: "#grootfs"
         text: "<!subteam^S1U0HSJ9E|grootfsteam>: You don't need metrics for a thing that doesn't even work! http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
+- name: bump-patch-grootfs-release
+  serial: true
+  plan:
+  - get: grootfs-release-version
+    params: { bump: patch, pre: rc }
+    passed: [ship-bosh-release]
+    trigger: true
+  - put: grootfs-release-version
+    resource: grootfs-release-version
+    params: { file: grootfs-release-version/number }
+
 - name: bump-major-grootfs-release
   serial: true
   plan:
@@ -533,9 +545,8 @@ jobs:
           tag_prefix: v
           globs:
           - final-release/grootfs-*.tgz
-      - put: rootfs-release-version-pushed
-        resource: grootfs-release-version
-        params: { bump: patch, pre: rc }
+      - put: grootfs-release-version
+        params: { file: grootfs-release-version/number }
     on_failure:
       put: slack-alert
       params:
