@@ -7,7 +7,6 @@ groups:
   - create-grootfs-release
   - deploy-grootfs-bench
   - performance-tests
-  - reset-release-lock
 - name: grootfs-bench
   jobs:
   - grootfs-bench
@@ -32,14 +31,6 @@ groups:
   - tag-grootfs-ci-image
 
 resources:
-- name: release-lock
-  type: pool
-  source:
-    uri: git@github.com:cloudfoundry/grootfs-ci-locks.git
-    branch: master
-    pool: release-lock
-    private_key: {{gnome-private-key}}
-
 - name: garden-runc-release
   type: git
   source:
@@ -205,14 +196,6 @@ resources:
     password: {{dockerhub-password}}
 
 jobs:
-- name: reset-release-lock
-  serial: true
-  plan:
-  - get: release-lock
-  - put: release-lock
-    params:
-      release: release-lock
-
 - name: grootfs
   public: true
   plan:
@@ -241,9 +224,6 @@ jobs:
   serial: true
   plan:
     - do:
-      - put: release-lock
-        params:
-          acquire: true
       - aggregate:
         - get: grootfs-release-develop
         - get: grootfs-git-repo
@@ -262,10 +242,6 @@ jobs:
           icon_url: http://www.comicsblend.com/wp-content/uploads/2013/04/thanos.jpg
           channel: "#grootfs"
           text: "<!subteam^S1U0HSJ9E|grootfsteam>: What the BOSH? You can bump it yourself. http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
-      ensure:
-        put: release-lock
-        params:
-          release: release-lock
 
 - name: create-grootfs-release
   serial: true
@@ -515,9 +491,6 @@ jobs:
   serial: true
   plan:
   - do:
-    - put: release-lock
-      params:
-        acquire: true
     - aggregate:
       - get: grootfs-ci-secrets
       - get: grootfs-release-develop
@@ -615,9 +588,6 @@ jobs:
   serial: true
   plan:
   - do:
-    - get: release-lock
-      passed:
-      - ship-bosh-release
     - aggregate:
       - get: grootfs-release-develop
       - get: grootfs-release-master
@@ -636,10 +606,6 @@ jobs:
         icon_url: http://www.comicsblend.com/wp-content/uploads/2013/04/thanos.jpg
         channel: "#grootfs"
         text: "<!subteam^S1U0HSJ9E|grootfsteam>: I CAN'T BUMP DEVELOP. http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
-    ensure:
-      put: release-lock
-      params:
-        release: release-lock
 
 - name: grootfs-bench
   public: true
