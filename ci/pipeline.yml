@@ -624,9 +624,11 @@ jobs:
         passed:
         - ship-bosh-release
         trigger: true
+    - task: merge-master-into-develop
+      file: grootfs-release-develop/ci/tasks/merge-master-into-develop.yml
     - put: grootfs-release-develop
       params:
-        repository: grootfs-release-master
+        repository: release-merged
     on_failure:
       put: slack-alert
       params:

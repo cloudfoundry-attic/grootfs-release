@@ -1,0 +1,17 @@
+---
+image_resource:
+  type: docker-image
+  source:
+    repository: concourse/git-resource
+
+platform: linux
+
+inputs:
+  - name: grootfs-release-develop
+  - name: grootfs-release-master
+
+outputs:
+  - name: release-merged
+
+run:
+  path: grootfs-release-develop/ci/scripts/merge-master-into-develop.sh
