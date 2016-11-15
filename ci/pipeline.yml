@@ -313,6 +313,7 @@ jobs:
         trigger: true
         passed: [deploy-garden-grootfs]
       - get: garden-runc-release
+        trigger: true
         passed: [deploy-garden-grootfs]
     - task: gats
       file: grootfs-release-develop/ci/tasks/gats.yml
