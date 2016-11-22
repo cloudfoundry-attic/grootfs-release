@@ -16,5 +16,8 @@ properties:
     description: The size of the grootfs store
     default: 10737418240
   grootfs.log_level:
-    description: "log level for grootfs - can be debug, info, error or fatal"
+    description: "Log level for grootfs - can be debug, info, error or fatal"
     default: info
+  grootfs.dropsonde_port:
+    description: "Local metron agent's port"
+    default: 0
