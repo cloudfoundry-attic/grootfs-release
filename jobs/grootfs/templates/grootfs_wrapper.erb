@@ -8,7 +8,7 @@ export PATH=$PACKAGE_DIR/btrfs-progs/bin:$PACKAGE_DIR/idmapper/bin:$PACKAGE_DIR/
 grootfs \
   --store $GROOTFS_STORE \
   --log-level "<%= p('grootfs.log_level') %>" \
-  <% if p("grootfs.dropsonde_port") != 0 %> \
-    --metron-endpoint=127.0.0.1:<%=  p("grootfs.dropsonde_port") %> \
+  <% if_p("grootfs.dropsonde_port") do |dropsonde_port| %> \
+    --metron-endpoint=127.0.0.1:<%= dropsonde_port %> \
   <% end %> \
   $@

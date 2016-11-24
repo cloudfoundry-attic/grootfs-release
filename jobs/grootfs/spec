@@ -20,4 +20,3 @@ properties:
     default: info
   grootfs.dropsonde_port:
     description: "Local metron agent's port"
-    default: 0
