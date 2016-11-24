@@ -135,25 +135,30 @@ resources:
 - name: grootfs-bench-deployment
   type: bosh-deployment
   source:
-    target: {{bosh-target}}
-    username: {{bosh-username}}
-    password: {{bosh-password}}
+    target: {{thanos-bosh-target}}
+    username: {{thanos-bosh-username}}
+    password: {{thanos-bosh-password}}
     deployment: grootfs-bench
     ignore_ssl: true
 
 - name: garden-grootfs-deployment
   type: bosh-deployment
   source:
-    target: {{bosh-target}}
-    username: {{bosh-username}}
-    password: {{bosh-password}}
+    target: {{gamora-bosh-target}}
+    username: {{gamora-bosh-username}}
+    password: {{gamora-bosh-password}}
     deployment: garden-grootfs
     ignore_ssl: true
 
-- name: bosh-stemcell
+- name: thanos-bosh-stemcell
   type: bosh-io-stemcell
   source:
-    name: {{bosh-stemcell-name}}
+    name: {{thanos-bosh-stemcell-name}}
+
+- name: gamora-bosh-stemcell
+  type: bosh-io-stemcell
+  source:
+    name: {{gamora-bosh-stemcell-name}}
 
 - name: slack-alert
   type: slack-notification-docker
@@ -215,9 +220,9 @@ jobs:
     on_failure:
       put: slack-alert
       params:
-        username: Thanos
-        icon_url: http://www.comicsblend.com/wp-content/uploads/2013/04/thanos.jpg
-        channel: "#grootfs"
+        username: {{slack-alert-username}}
+        icon_url: {{slack-alert-icon-url}}
+        channel: {{slack-alert-channel}}
         text: "<!subteam^S1U0HSJ9E|grootfsteam>: System Failure. Explosion Imminent. http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
 - name: bump-grootfs-release
@@ -238,9 +243,9 @@ jobs:
       on_failure:
         put: slack-alert
         params:
-          username: Thanos
-          icon_url: http://www.comicsblend.com/wp-content/uploads/2013/04/thanos.jpg
-          channel: "#grootfs"
+          username: {{slack-alert-username}}
+          icon_url: {{slack-alert-icon-url}}
+          channel: {{slack-alert-channel}}
           text: "<!subteam^S1U0HSJ9E|grootfsteam>: What the BOSH? You can bump it yourself. http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
 - name: create-grootfs-release
@@ -268,9 +273,9 @@ jobs:
     on_failure:
       put: slack-alert
       params:
-        username: Thanos
-        icon_url: http://www.comicsblend.com/wp-content/uploads/2013/04/thanos.jpg
-        channel: "#grootfs"
+        username: {{slack-alert-username}}
+        icon_url: {{slack-alert-icon-url}}
+        channel: {{slack-alert-channel}}
         text: "<!subteam^S1U0HSJ9E|grootfsteam>: What the BOSH? You can deploy it yourself. http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
 - name: deploy-garden-grootfs
@@ -278,7 +283,7 @@ jobs:
   plan:
   - do:
     - aggregate:
-      - get: bosh-stemcell
+      - get: gamora-bosh-stemcell
       - get: grootfs-ci-secrets
       - get: grootfs-release-develop
       - get: garden-runc-release
@@ -291,18 +296,18 @@ jobs:
       file: grootfs-release-develop/ci/tasks/create-garden-runc-release.yml
     - put: garden-grootfs-deployment
       params:
-        manifest: {{garden-grootfs-manifest}}
+        manifest: {{gamora-garden-grootfs-manifest}}
         releases:
         - bosh-release/garden-runc.tgz
         - grootfs-release-tarball/*.tgz
         stemcells:
-        - bosh-stemcell/*.tgz
+        - gamora-bosh-stemcell/*.tgz
     on_failure:
       put: slack-alert
       params:
-        username: Thanos
-        icon_url: http://www.comicsblend.com/wp-content/uploads/2013/04/thanos.jpg
-        channel: "#grootfs"
+        username: {{slack-alert-username}}
+        icon_url: {{slack-alert-icon-url}}
+        channel: {{slack-alert-channel}}
         text: "<!subteam^S1U0HSJ9E|grootfsteam>: System Failure. Explosion Imminent. http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
 - name: gats
@@ -318,7 +323,7 @@ jobs:
     - task: gats
       file: grootfs-release-develop/ci/tasks/gats.yml
       params:
-        GARDEN_ADDRESS: {{garden-address}}
+        GARDEN_ADDRESS: {{gamora-garden-address}}
 
 - name: bump-grootfs-bench-release
   serial: true
@@ -338,16 +343,16 @@ jobs:
       on_failure:
         put: slack-alert
         params:
-          username: Thanos
-          icon_url: http://www.comicsblend.com/wp-content/uploads/2013/04/thanos.jpg
-          channel: "#grootfs"
+          username: {{slack-alert-username}}
+          icon_url: {{slack-alert-icon-url}}
+          channel: {{slack-alert-channel}}
           text: "<!subteam^S1U0HSJ9E|grootfsteam>: It's not the end of the world, it's just the end of this pipeline. http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
 - name: create-grootfs-bench-release
   serial: true
   plan:
     - aggregate:
-      - get: bosh-stemcell
+      - get: thanos-bosh-stemcell
       - get: grootfs-ci-secrets
       - get: grootfs-bench-release
         trigger: true
@@ -370,9 +375,9 @@ jobs:
       on_failure:
         put: slack-alert
         params:
-          username: Thanos
-          icon_url: http://www.comicsblend.com/wp-content/uploads/2013/04/thanos.jpg
-          channel: "#grootfs"
+          username: {{slack-alert-username}}
+          icon_url: {{slack-alert-icon-url}}
+          channel: {{slack-alert-channel}}
           text: "<!subteam^S1U0HSJ9E|grootfsteam>: You know what, fix it. http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
 - name: deploy-grootfs-bench
@@ -396,23 +401,23 @@ jobs:
         trigger: true
         passed:
         - create-grootfs-bench-release
-      - get: bosh-stemcell
+      - get: thanos-bosh-stemcell
         trigger: true
       - get: grootfs-ci-secrets
     - put: grootfs-bench-deployment
       params:
-        manifest: {{grootfs-bench-manifest}}
+        manifest: {{thanos-grootfs-bench-manifest}}
         releases:
         - grootfs-release-tarball/*.tgz
         - grootfs-bench-release-tarball/*.tgz
         stemcells:
-        - bosh-stemcell/*.tgz
+        - thanos-bosh-stemcell/*.tgz
     on_failure:
       put: slack-alert
       params:
-        username: Thanos
-        icon_url: http://www.comicsblend.com/wp-content/uploads/2013/04/thanos.jpg
-        channel: "#grootfs"
+        username: {{slack-alert-username}}
+        icon_url: {{slack-alert-icon-url}}
+        channel: {{slack-alert-channel}}
         text: "<!subteam^S1U0HSJ9E|grootfsteam>: What the BOSH? You can deploy it yourself. http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
 - name: performance-tests
@@ -438,10 +443,10 @@ jobs:
       privileged: true
       file: grootfs-bench-release/ci/tasks/performance-tests.yml
       params:
-        BOSH_TARGET: {{bosh-target}}
-        BOSH_USER: {{bosh-username}}
-        BOSH_PASSWORD: {{bosh-password}}
-        BOSH_MANIFEST: {{grootfs-bench-manifest}}
+        BOSH_TARGET: {{thanos-bosh-target}}
+        BOSH_USER: {{thanos-bosh-username}}
+        BOSH_PASSWORD: {{thanos-bosh-password}}
+        BOSH_MANIFEST: {{thanos-grootfs-bench-manifest}}
         DATADOG_API_KEY: {{datadog-api-key}}
         DATADOG_APPLICATION_KEY: {{datadog-application-key}}
     - put: grootfs-tracker
@@ -454,9 +459,9 @@ jobs:
     on_failure:
       put: slack-alert
       params:
-        username: Thanos
-        icon_url: http://www.comicsblend.com/wp-content/uploads/2013/04/thanos.jpg
-        channel: "#grootfs"
+        username: {{slack-alert-username}}
+        icon_url: {{slack-alert-icon-url}}
+        channel: {{slack-alert-channel}}
         text: "<!subteam^S1U0HSJ9E|grootfsteam>: You don't need metrics for a thing that doesn't even work! http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
 - name: bump-patch-grootfs-release
@@ -525,9 +530,9 @@ jobs:
     on_failure:
       put: slack-alert
       params:
-        username: Thanos
-        icon_url: http://www.comicsblend.com/wp-content/uploads/2013/04/thanos.jpg
-        channel: "#grootfs"
+        username: {{slack-alert-username}}
+        icon_url: {{slack-alert-icon-url}}
+        channel: {{slack-alert-channel}}
         text: "<!subteam^S1U0HSJ9E|grootfsteam>: Final bosh release went super wrong. Sorry. http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
 - name: ship-grootfs
@@ -557,9 +562,9 @@ jobs:
     on_failure:
       put: slack-alert
       params:
-        username: Thanos
-        icon_url: http://www.comicsblend.com/wp-content/uploads/2013/04/thanos.jpg
-        channel: "#grootfs"
+        username: {{slack-alert-username}}
+        icon_url: {{slack-alert-icon-url}}
+        channel: {{slack-alert-channel}}
         text: "<!subteam^S1U0HSJ9E|grootfsteam>: I don't know how to create github release anyway!  http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
 - name: tag-grootfs-ci-image
@@ -579,9 +584,9 @@ jobs:
     on_failure:
       put: slack-alert
       params:
-        username: Thanos
-        icon_url: http://www.comicsblend.com/wp-content/uploads/2013/04/thanos.jpg
-        channel: "#grootfs"
+        username: {{slack-alert-username}}
+        icon_url: {{slack-alert-icon-url}}
+        channel: {{slack-alert-channel}}
         text: "<!subteam^S1U0HSJ9E|grootfsteam>: I don't know how to create github release anyway!  http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
 
@@ -603,9 +608,9 @@ jobs:
     on_failure:
       put: slack-alert
       params:
-        username: Thanos
-        icon_url: http://www.comicsblend.com/wp-content/uploads/2013/04/thanos.jpg
-        channel: "#grootfs"
+        username: {{slack-alert-username}}
+        icon_url: {{slack-alert-icon-url}}
+        channel: {{slack-alert-channel}}
         text: "<!subteam^S1U0HSJ9E|grootfsteam>: I CAN'T BUMP DEVELOP. http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
 - name: grootfs-bench
@@ -619,9 +624,9 @@ jobs:
     on_failure:
       put: slack-alert
       params:
-        username: Thanos
-        icon_url: http://www.comicsblend.com/wp-content/uploads/2013/04/thanos.jpg
-        channel: "#grootfs"
+        username: {{slack-alert-username}}
+        icon_url: {{slack-alert-icon-url}}
+        channel: {{slack-alert-channel}}
         text: "<!subteam^S1U0HSJ9E|grootfsteam>: I've destroyed your build (groot tests are dead). Come and get me!  http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
 - name: build-ci-image
