@@ -5,6 +5,7 @@ templates:
   drax-setup.erb: bin/drax-setup
   pre-start.erb: bin/pre-start
   grootfs_wrapper.erb: bin/grootfs_wrapper
+  config.yml.erb: config.yml
 
 packages:
   - idmapper
@@ -20,3 +21,6 @@ properties:
     default: info
   grootfs.dropsonde_port:
     description: "Local metron agent's port"
+  grootfs.insecure_docker_registry_list:
+    description: "A list of IP:PORT tuples that we allow pulling docker images from using self-signed certificates."
+    default: []

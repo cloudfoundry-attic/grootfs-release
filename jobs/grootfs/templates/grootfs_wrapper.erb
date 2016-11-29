@@ -2,13 +2,15 @@
 
 PACKAGE_DIR=/var/vcap/packages
 GROOTFS_STORE=/var/vcap/data/grootfs/store
+CONFIG_PATH=/var/vcap/jobs/grootfs/config.yml
 
 export PATH=$PACKAGE_DIR/btrfs-progs/bin:$PACKAGE_DIR/idmapper/bin:$PACKAGE_DIR/grootfs/bin:$PATH
 
 grootfs \
+  --config $CONFIG_PATH \
   --store $GROOTFS_STORE \
   --log-level "<%= p('grootfs.log_level') %>" \
   <% if_p("grootfs.dropsonde_port") do |dropsonde_port| %> \
     --metron-endpoint=127.0.0.1:<%= dropsonde_port %> \
   <% end %> \
-  $@
+  "$@"
