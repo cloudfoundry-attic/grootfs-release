@@ -8,7 +8,7 @@ e2fsprogs/e2fsprogs-1.43.3.tar.gz:
   sha: 927cb79c6399c559a83b4fa528ec8912a82d122f
   size: 7405892
 grootfs-build-tools/autoconf-2.69.tar.gz:
-  object_id: 08fc1827-ac1e-42bc-a3bd-e6c9aff0dbb0
+  object_id: '08fc1827-ac1e-42bc-a3bd-e6c9aff0dbb0'
   sha: 562471cbcb0dd0fa42a76665acf0dbb68479b78a
   size: 1927468
 grootfs-build-tools/automake-1.15.tar.gz:
@@ -39,7 +39,7 @@ zlib/zlib-1.2.8.tar.gz:
   object_id: afee57ee-62a9-4bb1-9926-f588e4995981
   sha: a4d316c404ff54ca545ea71a27af7dbc29817088
   size: 571091
-golang/go1.7.1.linux-amd64.tar.gz:
-  object_id: 14c7b3e7-5518-496d-a7af-ddd085be3332
-  sha: 919ab01305ada0078a9fdf8a12bb56fb0b8a1444
-  size: 81618401
+golang/go1.7.3.linux-amd64.tar.gz:
+  object_id: 201ea472-81dc-408c-9030-28fe1c337693
+  sha: ead40e884ad4d6512bcf7b3c7420dd7fa4a96140
+  size: 82565628

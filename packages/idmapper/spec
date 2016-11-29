@@ -2,7 +2,7 @@
 name: idmapper
 
 dependencies:
-  - golang_1.7
+  - golang
 
 files:
   - code.cloudfoundry.org/idmapper/Makefile
