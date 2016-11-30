@@ -24,3 +24,6 @@ properties:
   grootfs.insecure_docker_registry_list:
     description: "A list of IP:PORT tuples that we allow pulling docker images from using self-signed certificates."
     default: []
+  grootfs.persistent_image_list:
+    description: "List of base images (directories or Docker URLs) which will never be deleted during cleanup."
+    default: []
