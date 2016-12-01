@@ -9,7 +9,7 @@ A [BOSH](http://docs.cloudfoundry.org/bosh/) release for deploying
 
 We assume that this release will be used with the
 [garden-runc-release](https://github.com/cloudfoundry/garden-runc-release).
-Based on that we ship our own `newuidmap` and `newgidmap` that has hardcoded
+Based on that we ship our own `newuidmap` and `newgidmap` that has hard coded
 user mappings inside, ignoring the `/etc/subuid` and `/etc/subgid` files.
 
 This is necessary due to the way garden create non-privileged containers
@@ -22,7 +22,7 @@ The release will never recreate the btrfs volume on an update if the file alread
 even if you change it's size in the manifest. Current flow:
 
 * If there's no volume file: create volume file -> format with btrfs -> mount
-* If theres a volume file: check if it's formated with btrfs
+* If there's a volume file: check if it's formatted with btrfs
   * if yes -> mount
   * if no -> format with btrfs -> mount
 
