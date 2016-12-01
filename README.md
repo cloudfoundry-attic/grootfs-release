@@ -46,7 +46,7 @@ describe the proposed features or changes. We also welcome pull requests.
 * lzo 2.09
 * util-linux 2.28
 * zlib 1.2.8
-* go 1.7.1
+* go 1.7.3
 
 ## License
 
