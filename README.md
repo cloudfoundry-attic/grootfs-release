@@ -48,6 +48,10 @@ what these properties do:
 - `log_level`
 - `store_size`
 
+There should be no need to recreate cells when transitioning to GrootFS, though
+you may wish to do so anyway in order to clear out any cruft left behind by
+Garden-runC's previous image management implementation.
+
 ## Assumptions
 
 ### newuidmap / newgidmap
