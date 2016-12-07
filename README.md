@@ -1,4 +1,4 @@
-# GrootFS-release
+# GrootFS (BOSH release) [![slack.cloudfoundry.org](https://slack.cloudfoundry.org/badge.svg)](https://slack.cloudfoundry.org)
 
 A [BOSH](http://docs.cloudfoundry.org/bosh/) release for deploying
 [GrootFS](https://github.com/cloudfoundry/grootfs).
