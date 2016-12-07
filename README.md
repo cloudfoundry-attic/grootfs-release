@@ -16,12 +16,12 @@ flight to implement them. If you think you want to deploy this in the meantime,
 chat to someone in the #grootfs Slack channel about whether that's really a good
 idea!_
 
-Given an existing Diego / CF deployment, take the following steps to start using
-grootfs-release on your Diego cells:
+Given an existing Diego / CF deployment, take the following steps to add
+grootfs-release to the cells in your Diego deployment:
 
-1. Upload grootfs-release to your BOSH director _(TODO: compatibility with
-   Garden-runC versions?)_
 1. Add grootfs-release to the `releases` section of your deployment manifest
+   (and upload the latest version of grootfs-release to your BOSH director)
+   _TODO: compatibility with Garden-runC versions?_
 1. Add the `grootfs` job to the `templates` section of your cell job
 1. Add the following properties to your cell job
 ```
