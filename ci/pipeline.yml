@@ -684,6 +684,7 @@ jobs:
       build: grootfs-git-repo
 
 - name: deploy-cf
+  serial_groups: [deploy-cf]
   plan:
   - aggregate:
     - get: grootfs-ci-secrets
@@ -696,6 +697,7 @@ jobs:
       - thanos-bosh-stemcell/*.tgz
 
 - name: deploy-diego
+  serial_groups: [deploy-diego]
   plan:
   - aggregate:
     - get: grootfs-release-develop
@@ -717,6 +719,7 @@ jobs:
       - thanos-bosh-stemcell/*.tgz
 
 - name: deploy-datadog-nozzle
+  serial_groups: [deploy-datadog-nozzle]
   plan:
   - aggregate:
     - get: datadog-nozzle-release
@@ -732,6 +735,10 @@ jobs:
       - thanos-bosh-stemcell/*.tgz
 
 - name: CATs
+  serial_groups:
+  - deploy-cf
+  - deploy-diego
+  - deploy-datadog-nozzle
   plan:
   - aggregate:
     - get: grootfs-ci-secrets
