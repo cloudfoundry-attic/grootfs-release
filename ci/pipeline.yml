@@ -742,6 +742,7 @@ jobs:
       trigger: true
       passed: [deploy-diego]
     - get: grootfs-release-develop
+      trigger: true
       passed: [deploy-diego]
   - task: run-cats
     file: grootfs-release-develop/ci/tasks/run-cats.yml
