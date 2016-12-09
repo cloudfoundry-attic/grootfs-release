@@ -1,0 +1,22 @@
+---
+image_resource:
+  type: docker-image
+  source:
+    repository: cfgarden/grootfs-bench-release-ci
+    tag: latest
+
+platform: linux
+
+inputs:
+  - name: grootfs-ci-secrets
+  - name: grootfs-release-develop
+
+params:
+  BOSH_MANIFEST: grootfs-ci-secrets/deployments/thanos/cf_colocated.yml
+  BOSH_TARGET:
+  BOSH_USER:
+  BOSH_PASSWORD:
+
+run:
+  path: grootfs-release-develop/ci/scripts/run-cats.sh
+  user: root

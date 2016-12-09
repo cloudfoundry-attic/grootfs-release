@@ -17,6 +17,12 @@ groups:
   jobs:
   - deploy-garden-grootfs
   - gats
+- name: cf-grootfs
+  jobs:
+  - deploy-cf
+  - deploy-diego
+  - deploy-datadog-nozzle
+  - CATs
 - name: tools
   jobs:
   - build-ci-image
@@ -38,6 +44,44 @@ resources:
     branch: develop
     ignore_paths:
     - ci
+
+- name: cf-deployment
+  type: bosh-deployment
+  source:
+    target: {{thanos-bosh-target}}
+    username: {{thanos-bosh-username}}
+    password: {{thanos-bosh-password}}
+    deployment: grootfs-perf-cf
+    ignore_ssl: true
+
+- name: diego-release
+  type: bosh-io-release
+  source:
+    repository: cloudfoundry/diego-release
+
+- name: diego-deployment
+  type: bosh-deployment
+  source:
+    target: {{thanos-bosh-target}}
+    username: {{thanos-bosh-username}}
+    password: {{thanos-bosh-password}}
+    deployment: grootfs-perf-cf-diego
+    ignore_ssl: true
+
+- name: datadog-nozzle-release
+  type: bosh-io-release
+  source:
+    repository: cloudfoundry-incubator/datadog-firehose-nozzle-release
+
+- name: datadog-nozzle-deployment
+  type: bosh-deployment
+  source:
+    target: {{thanos-bosh-target}}
+    username: {{thanos-bosh-username}}
+    password: {{thanos-bosh-password}}
+    deployment: datadog-firehose-nozzle
+    ignore_ssl: true
+
 
 - name: grootfs-git-repo
   type: git
@@ -638,6 +682,73 @@ jobs:
   - put: grootfs-ci-image
     params:
       build: grootfs-git-repo
+
+- name: deploy-cf
+  plan:
+  - aggregate:
+    - get: grootfs-ci-secrets
+    - get: thanos-bosh-stemcell
+  - put: cf-deployment
+    params:
+      manifest: grootfs-ci-secrets/deployments/thanos/cf_colocated.yml
+      releases: []
+      stemcells:
+      - thanos-bosh-stemcell/*.tgz
+
+- name: deploy-diego
+  plan:
+  - aggregate:
+    - get: grootfs-release-develop
+      trigger: true
+      passed: [create-grootfs-release]
+    - get: garden-runc-release
+      trigger: true
+      passed: [deploy-garden-grootfs]
+    - get: diego-release
+      trigger: true
+    - get: grootfs-ci-secrets
+    - get: thanos-bosh-stemcell
+  - put: diego-deployment
+    params:
+      manifest: grootfs-ci-secrets/deployments/thanos/diego.yml
+      releases:
+      - diego-release/*.tgz
+      stemcells:
+      - thanos-bosh-stemcell/*.tgz
+
+- name: deploy-datadog-nozzle
+  plan:
+  - aggregate:
+    - get: datadog-nozzle-release
+      trigger: true
+    - get: grootfs-ci-secrets
+    - get: thanos-bosh-stemcell
+  - put: datadog-nozzle-deployment
+    params:
+      manifest: grootfs-ci-secrets/deployments/thanos/datadog-firehose-nozzle.yml
+      releases:
+      - datadog-nozzle-release/*.tgz
+      stemcells:
+      - thanos-bosh-stemcell/*.tgz
+
+- name: CATs
+  plan:
+  - aggregate:
+    - get: grootfs-ci-secrets
+    - get: datadog-nozzle-release
+      trigger: true
+      passed: [deploy-datadog-nozzle]
+    - get: diego-release
+      trigger: true
+      passed: [deploy-diego]
+    - get: grootfs-release-develop
+      passed: [deploy-diego]
+  - task: run-cats
+    file: grootfs-release-develop/ci/tasks/run-cats.yml
+    params:
+      BOSH_TARGET: {{thanos-bosh-target}}
+      BOSH_USER: {{thanos-bosh-username}}
+      BOSH_PASSWORD: {{thanos-bosh-password}}
 
 resource_types:
 - name: slack-notification-docker
