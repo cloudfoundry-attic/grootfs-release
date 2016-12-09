@@ -19,9 +19,11 @@ idea!_
 Given an existing Diego / CF deployment, take the following steps to add
 grootfs-release to the cells in your Diego deployment:
 
+1. Select a version of grootfs-release - you can find the compatible version of
+   grootfs-release for your version of garden-runc-release in the [Garden-runC
+   release notes](https://github.com/cloudfoundry/garden-runc-release/releases)
 1. Add grootfs-release to the `releases` section of your deployment manifest
-   (and upload the latest version of grootfs-release to your BOSH director)
-   _TODO: compatibility with Garden-runC versions?_
+   (and upload grootfs-release to your BOSH director)
 1. Add the `grootfs` job to the `templates` section of your cell job
 1. Add the following properties to your cell job
 ```
