@@ -38,7 +38,6 @@ garden:
 
 If you have set any of the following `garden` properties, you should set them on
 `grootfs` to get the same behaviour:
-- `docker_registry_endpoint`
 - `graph_cleanup_threshold_in_mb`
 - `insecure_docker_registry_list`
 - `persistent_image_list`
