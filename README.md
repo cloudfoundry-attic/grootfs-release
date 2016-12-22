@@ -19,13 +19,13 @@ idea!_
 Given an existing Diego / CF deployment, take the following steps to add
 grootfs-release to the cells in your Diego deployment:
 
-1. Select a version of grootfs-release - you can find the compatible version of
+* Select a version of grootfs-release - you can find the compatible version of
    grootfs-release for your version of garden-runc-release in the [Garden-runC
    release notes](https://github.com/cloudfoundry/garden-runc-release/releases)
-1. Add grootfs-release to the `releases` section of your deployment manifest
+* Add grootfs-release to the `releases` section of your deployment manifest
    (and upload grootfs-release to your BOSH director)
-1. Add the `grootfs` job to the `templates` section of your cell job
-1. Add the following properties to your cell job
+* Add the `grootfs` job to the `templates` section of your cell job
+* Add the following properties to your cell job
 ```
 garden:
   image_plugin: "/var/vcap/packages/grootfs/bin/grootfs"
@@ -35,6 +35,12 @@ garden:
   privileged_image_plugin: "/var/vcap/packages/grootfs/bin/grootfs"
   privileged_image_plugin_extra_args: "/var/vcap/jobs/grootfs/config/privileged_grootfs_config.yml"
 ```
+* Set the `diego.rep.preloaded_rootfses` property on your Diego cells to
+  `[cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs.tar]`. Make sure you're
+  using a recent enough version of
+  [cflinuxfs2-rootfs-release](https://github.com/cloudfoundry/cflinuxfs2-rootfs-release)
+  that creates this file. If you are using a custom rootfs, you'll need to start
+  providing that as a tarball, and set this property accordingly.
 
 If you have set any of the following `garden` properties, you should set them on
 `grootfs` to get the same behaviour:
