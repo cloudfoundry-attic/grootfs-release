@@ -4,7 +4,6 @@ templates:
   bin/btrfs-setup.erb: bin/btrfs-setup
   bin/drax-setup.erb: bin/drax-setup
   bin/pre-start.erb: bin/pre-start
-  bin/grootfs_wrapper.erb: bin/grootfs_wrapper
   config/grootfs_config.yml.erb: config/grootfs_config.yml
   config/privileged_grootfs_config.yml.erb: config/privileged_grootfs_config.yml
 

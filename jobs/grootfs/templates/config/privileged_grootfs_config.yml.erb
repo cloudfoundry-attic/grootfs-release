@@ -1,2 +1,11 @@
+store_path: /var/vcap/data/grootfs/store
+btrfs_bin: /var/vcap/packages/btrfs-progs/bin/btrfs
+drax_bin: /var/vcap/packages/grootfs/bin/drax
+newuidmap_bin: /var/vcap/packages/idmapper/bin/newuidmap
+newgidmap_bin: /var/vcap/packages/idmapper/bin/newgidmap
+log_level: <%= p('grootfs.log_level') %>
+<% if_p("grootfs.dropsonde_port") do |dropsonde_port| %>
+metron_endpoint: 127.0.0.1:<%= dropsonde_port %>
+<% end %>
 insecure_registries: <%= p('grootfs.insecure_docker_registry_list') %>
 ignore_base_images: <%= p('grootfs.persistent_image_list') %>
