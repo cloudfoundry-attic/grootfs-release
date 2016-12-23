@@ -13,6 +13,7 @@ inputs:
 
 params:
   LOG_LEVEL: debug
+  EXTERNAL_IMAGE_PLUGIN_PROVIDED: "true"
   GARDEN_ADDRESS:
 
 run:
