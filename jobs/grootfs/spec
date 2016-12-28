@@ -27,3 +27,6 @@ properties:
   grootfs.persistent_image_list:
     description: "List of base images (directories or Docker URLs) which will never be deleted during cleanup."
     default: []
+  grootfs.graph_cleanup_threshold_in_mb:
+    description: "Total size of all filesystem layers downloaded from Docker registries before graph cleanup is activated. -1 disables graph cleanup."
+    default: -1
