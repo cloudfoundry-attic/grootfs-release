@@ -261,6 +261,9 @@ jobs:
       - task: groot-tests
         privileged: true
         file: grootfs-git-repo/ci/tasks/groot-tests.yml
+        params:
+          REGISTRY_USERNAME: {{dockerhub-username}}
+          REGISTRY_PASSWORD: {{dockerhub-password}}
       - task: root-tests
         privileged: true
         file: grootfs-git-repo/ci/tasks/root-tests.yml
