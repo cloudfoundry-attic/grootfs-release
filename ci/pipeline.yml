@@ -278,7 +278,7 @@ jobs:
         text: "<!subteam^S1U0HSJ9E|grootfsteam>: System Failure. Explosion Imminent. http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
 - name: bump-grootfs-release
-  serial: true
+  serial_groups: [grootfs-release-creation]
   plan:
     - do:
       - aggregate:
@@ -301,7 +301,7 @@ jobs:
           text: "<!subteam^S1U0HSJ9E|grootfsteam>: What the BOSH? You can bump it yourself. http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
 - name: create-grootfs-release
-  serial: true
+  serial_groups: [grootfs-release-creation]
   plan:
   - aggregate:
     - get: grootfs-release-version
