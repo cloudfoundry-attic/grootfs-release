@@ -55,11 +55,6 @@ resources:
     deployment: grootfs-perf-cf
     ignore_ssl: true
 
-- name: garden-release
-  type: bosh-io-release
-  source:
-    repository: cloudfoundry/garden-runc-release
-
 - name: diego-release
   type: bosh-io-release
   source:
@@ -742,19 +737,20 @@ jobs:
       passed: [create-grootfs-release]
     - get: grootfs-release-develop
       passed: [create-grootfs-release]
-    - get: garden-release
-      trigger: true
+    - get: garden-runc-release
     - get: diego-release
       trigger: true
     - get: grootfs-ci-secrets
     - get: thanos-bosh-stemcell
+  - task: create-garden-runc-release
+    file: grootfs-release-develop/ci/tasks/create-garden-runc-release.yml
   - put: diego-deployment
     params:
       manifest: grootfs-ci-secrets/deployments/thanos/diego.yml
       releases:
       - diego-release/*.tgz
       - grootfs-release-tarball/*.tgz
-      - garden-release/*.tgz
+      - bosh-release/garden-runc.tgz
       stemcells:
       - thanos-bosh-stemcell/*.tgz
 
@@ -782,9 +778,6 @@ jobs:
   plan:
   - aggregate:
     - get: grootfs-ci-secrets
-    - get: garden-release
-      trigger: true
-      passed: [deploy-diego]
     - get: diego-release
       trigger: true
       passed: [deploy-diego]
