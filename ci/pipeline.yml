@@ -357,13 +357,13 @@ jobs:
         trigger: true
         passed:
         - create-grootfs-release
-    - task: create-garden-runc-release
-      file: grootfs-release-develop/ci/tasks/create-garden-runc-release.yml
+    # - task: create-garden-runc-release
+      # file: grootfs-release-develop/ci/tasks/create-garden-runc-release.yml
     - put: garden-grootfs-deployment
       params:
         manifest: {{gamora-garden-grootfs-manifest}}
         releases:
-        - bosh-release/garden-runc.tgz
+        # - bosh-release/garden-runc.tgz
         - grootfs-release-tarball/*.tgz
         stemcells:
         - gamora-bosh-stemcell/*.tgz
