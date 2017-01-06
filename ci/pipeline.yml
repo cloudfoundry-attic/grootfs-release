@@ -89,8 +89,6 @@ resources:
     uri: {{grootfs-git-repo}}
     branch: master
     private_key: {{gnome-private-key}}
-    ignore_paths:
-    - ci/tasks/
 
 - name: grootfs-release-develop
   type: git
@@ -616,6 +614,7 @@ jobs:
         tag: grootfs-release-version/number
         tag_prefix: v
         repository: grootfs-release-master/src/code.cloudfoundry.org/grootfs
+        only_tag: true
     - put: grootfs-standalone-gh-release
       params:
         name: grootfs-release-version/number
