@@ -18,9 +18,11 @@ main() {
   [ $DEBUG -eq 1 ] && vars_name="lite"
 
   vars_from_lpass="/tmp/$vars_name.yml"
-	trap 'rm "$vars_from_lpass"' EXIT
+  trap 'rm "$vars_from_lpass"' EXIT
 
   lpass show "Shared-Garden/grootfs-concourse-vars-$vars_name" --notes > "$vars_from_lpass"
+  cat $HOME/workspace/grootfs-ci-secrets/vars/gcp.yml >> "$vars_from_lpass"
+
   [ $DEBUG -eq 1 ] && flyrc_target="lite"
 
   fly --target="$flyrc_target" set-pipeline --pipeline=$pipeline_name \
@@ -38,14 +40,14 @@ check_fly_alias_exists() {
 }
 
 sync_and_login() {
-	fly -t $flyrc_target sync
+  fly -t $flyrc_target sync
 
-	set +e
+  set +e
   fly -t $flyrc_target containers > /dev/null 2>&1
   if [[ $? -ne 0 ]]; then
-		fly -t $flyrc_target login
-	fi
-	set -e
+    fly -t $flyrc_target login
+  fi
+  set -e
 }
 
 main
