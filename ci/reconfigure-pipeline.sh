@@ -21,7 +21,7 @@ main() {
   trap 'rm "$vars_from_lpass"' EXIT
 
   lpass show "Shared-Garden/grootfs-concourse-vars-$vars_name" --notes > "$vars_from_lpass"
-  cat $HOME/workspace/grootfs-ci-secrets/vars/gcp.yml >> "$vars_from_lpass"
+  cat $HOME/workspace/grootfs-ci-secrets/vars/$vars_name.yml >> "$vars_from_lpass"
 
   [ $DEBUG -eq 1 ] && flyrc_target="lite"
 
