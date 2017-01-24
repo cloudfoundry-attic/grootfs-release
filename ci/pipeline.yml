@@ -336,8 +336,7 @@ jobs:
       file: grootfs-release-develop/ci/tasks/create-grootfs-release.yml
     - put: grootfs-release-tarball
       params:
-        from: bosh-release/grootfs-([^/]*).tgz
-        to: {{s3-release-tarball-to}}
+        file: bosh-release/grootfs-*.tgz
     on_failure:
       put: slack-alert
       params:
@@ -438,8 +437,7 @@ jobs:
         file: grootfs-bench-release/ci/tasks/create-grootfs-bench-release.yml
       - put: grootfs-bench-release-tarball
         params:
-          from: bosh-release/grootfs-bench-([^/]*).tgz
-          to: releases/
+          file: bosh-release/grootfs-bench-*.tgz
       on_failure:
         put: slack-alert
         params:
@@ -584,8 +582,7 @@ jobs:
           tag_prefix: v
       - put: grootfs-release-tarball
         params:
-          from: final-release/grootfs-([^/]*).tgz
-          to: {{s3-release-tarball-to}}
+          file: final-release/grootfs-*.tgz
       - put: grootfs-gh-release
         params:
           name: grootfs-release-version/number
