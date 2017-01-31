@@ -42,7 +42,8 @@ If you have set any of the following `garden` properties, you should set them on
 `grootfs` to get the same behaviour:
 - `graph_cleanup_threshold_in_mb`
 - `insecure_docker_registry_list`
-- `persistent_image_list`
+- `persistent_image_list` _(change directory paths to tarballs - e.g._
+  `/var/vcap/packages/cflinuxfs2/rootfs.tar`_)_
 
 There is no equivalent to the `garden.docker_registry_endpoint` property. If you
 need this, GrootFS may not be suitable for you yet. Please open an issue and let
