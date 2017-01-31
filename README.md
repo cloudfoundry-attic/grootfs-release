@@ -48,6 +48,10 @@ If you have set any of the following `garden` properties, you should set them on
 - `insecure_docker_registry_list`
 - `persistent_image_list`
 
+There is no equivalent to the `garden.docker_registry_endpoint` property. If you
+need this, GrootFS may not be suitable for you yet. Please open an issue and let
+us know your use case though!
+
 You may also want to set the following optional properties on `grootfs` for
 various reasons. See the [grootfs job spec](jobs/grootfs/spec) for more info on
 what these properties do:
