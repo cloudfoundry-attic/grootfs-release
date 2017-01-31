@@ -32,10 +32,11 @@ garden:
 ```
 * Set the `diego.rep.preloaded_rootfses` property on your Diego cells to
   `[cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs.tar]`. Make sure you're
-  using a recent enough version of
-  [cflinuxfs2-rootfs-release](https://github.com/cloudfoundry/cflinuxfs2-rootfs-release)
-  that creates this file. If you are using a custom rootfs, you'll need to start
-  providing that as a tarball, and set this property accordingly.
+  using version 1.45.0 or later of
+  [cflinuxfs2-rootfs-release](https://github.com/cloudfoundry/cflinuxfs2-rootfs-release),
+  otherwise the rootfs tarball will not be present on disk on the cells. If you
+  are using a custom rootfs, you'll need to start providing that as a tarball,
+  and set this property accordingly.
 
 If you have set any of the following `garden` properties, you should set them on
 `grootfs` to get the same behaviour:
