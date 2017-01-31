@@ -11,11 +11,6 @@ other context.
 
 ## Deploying with Diego / Cloud Foundry
 
-_Disclaimer: not all of the properties mentioned below exist yet, but work is in
-flight to implement them. If you think you want to deploy this in the meantime,
-chat to someone in the #grootfs Slack channel about whether that's really a good
-idea!_
-
 Given an existing Diego / CF deployment, take the following steps to add
 grootfs-release to the cells in your Diego deployment:
 
