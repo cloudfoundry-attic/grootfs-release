@@ -16,17 +16,23 @@ main() {
   [ $DEBUG -eq 1 ] && pipeline_name="grootfs-test"
   vars_name="gcp"
   [ $DEBUG -eq 1 ] && vars_name="lite"
-
-  vars_from_lpass="/tmp/$vars_name.yml"
-  trap 'rm "$vars_from_lpass"' EXIT
-
-  lpass show "Shared-Garden/grootfs-concourse-vars-$vars_name" --notes > "$vars_from_lpass"
-  cat $HOME/workspace/grootfs-ci-secrets/vars/$vars_name.yml >> "$vars_from_lpass"
-
   [ $DEBUG -eq 1 ] && flyrc_target="lite"
 
   fly --target="$flyrc_target" set-pipeline --pipeline=$pipeline_name \
-    --config=ci/pipeline.yml --load-vars-from=$vars_from_lpass
+    --config=ci/pipeline.yml --load-vars-from=$HOME/workspace/grootfs-ci-secrets/vars/$vars_name.yml \
+    --var gnome-private-key="$(lpass show 'Shared-Garden/grootfs-deployments/github-garden-gnome' --notes)" \
+    --var github-access-token="$(lpass show 'Shared-Garden/Garden-Gnome-Github-Account' --field=api-key)" \
+    --var gamora-bosh-username="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/bosh-director' --username)" \
+    --var gamora-bosh-password="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/bosh-director' --password)" \
+    --var thanos-bosh-username="$(lpass show 'Shared-Garden/grootfs-deployments\thanos/bosh-director' --username)" \
+    --var thanos-bosh-password="$(lpass show 'Shared-Garden/grootfs-deployments\thanos/bosh-director' --password)" \
+    --var dockerhub-username="$(lpass show 'Shared-Garden/cf-garden-docker' --username)" \
+    --var dockerhub-password="$(lpass show 'Shared-Garden/cf-garden-docker' --password)" \
+    --var garden-tracker-token="$(lpass show 'Shared-Garden/Garden-Gnome-Tracker-Account' --notes)" \
+    --var aws-access-key-id="$(lpass show 'Shared-Garden/cf-garden-aws-root-account-access-key' --username)" \
+    --var aws-secret-access-key="$(lpass show 'Shared-Garden/cf-garden-aws-root-account-access-key' --password)" \
+    --var datadog-api-key="$(lpass show 'Shared-Garden/grootfs-deployments/datadog-api-keys' --username)" \
+    --var datadog-application-key="$(lpass show 'Shared-Garden/grootfs-deployments/datadog-api-keys' --password)"
 }
 
 check_fly_alias_exists() {
