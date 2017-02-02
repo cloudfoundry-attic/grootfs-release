@@ -10,9 +10,10 @@ platform: linux
 inputs:
   - name: grootfs-ci-secrets
   - name: grootfs-release-develop
+  - name: manifests
 
 params:
-  BOSH_MANIFEST: grootfs-ci-secrets/deployments/thanos/cf_colocated.yml
+  BOSH_MANIFEST: 
   BOSH_TARGET:
   BOSH_USER:
   BOSH_PASSWORD:
