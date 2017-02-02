@@ -363,7 +363,7 @@ jobs:
       file: grootfs-release-develop/ci/tasks/create-garden-runc-release.yml
     - put: garden-grootfs-deployment
       params:
-        manifest: {{gamora-garden-grootfs-manifest}}
+        manifest: grootfs-ci-secrets/deployments/garden-grootfs/gcp.yml
         releases:
         - bosh-release/garden-runc.tgz
         - grootfs-release-tarball/*.tgz
@@ -470,9 +470,14 @@ jobs:
       - get: thanos-bosh-stemcell
         trigger: true
       - get: grootfs-ci-secrets
+    - task: parse-manifests
+      file: grootfs-release-develop/ci/tasks/parse-manifests.yml
+      params:
+        DATADOG_API_KEY: {{datadog-api-key}}
+        DATADOG_APP_KEY: {{datadog-application-key}}
     - put: grootfs-bench-deployment
       params:
-        manifest: {{thanos-grootfs-bench-manifest}}
+        manifest: manifests/grootfs-bench/aws.yml
         releases:
         - grootfs-release-tarball/*.tgz
         - grootfs-bench-release-tarball/*.tgz
@@ -505,6 +510,11 @@ jobs:
       - get: performance-time-trigger
         trigger: true
       - get: grootfs-ci-secrets
+    - task: parse-manifests
+      file: grootfs-release-develop/ci/tasks/parse-manifests.yml
+      params:
+        DATADOG_API_KEY: {{datadog-api-key}}
+        DATADOG_APP_KEY: {{datadog-application-key}}
     - task: benchmark
       privileged: true
       file: grootfs-bench-release/ci/tasks/performance-tests.yml
@@ -512,7 +522,7 @@ jobs:
         BOSH_TARGET: {{thanos-bosh-target}}
         BOSH_USER: {{thanos-bosh-username}}
         BOSH_PASSWORD: {{thanos-bosh-password}}
-        BOSH_MANIFEST: {{thanos-grootfs-bench-manifest}}
+        BOSH_MANIFEST: manifests/grootfs-bench/aws.yml
         DATADOG_API_KEY: {{datadog-api-key}}
         DATADOG_APPLICATION_KEY: {{datadog-application-key}}
     - put: grootfs-tracker
@@ -720,11 +730,20 @@ jobs:
   serial_groups: [deploy-cf]
   plan:
   - aggregate:
+    - get: grootfs-release-develop
     - get: grootfs-ci-secrets
     - get: thanos-bosh-stemcell
+  - task: parse-manifests
+    file: grootfs-release-develop/ci/tasks/parse-manifests.yml
+    params:
+      CF_USERNAME: {{cf-username}}
+      CF_PASSWORD: {{cf-password}}
+      CF_SHARED_SECRET: {{cf-shared-secret}}
+      AWS_ACCESS_KEY_ID: {{cf-aws-access-key-id}}
+      AWS_SECRET_ACCESS_KEY: {{cf-aws-secret-access-key}}
   - put: cf-deployment
     params:
-      manifest: grootfs-ci-secrets/deployments/thanos/cf_colocated.yml
+      manifest: manifests/thanos/cf_colocated.yml
       releases: []
       stemcells:
       - thanos-bosh-stemcell/*.tgz
@@ -744,9 +763,17 @@ jobs:
       trigger: true
     - get: grootfs-ci-secrets
     - get: thanos-bosh-stemcell
+  - task: parse-manifests
+    file: grootfs-release-develop/ci/tasks/parse-manifests.yml
+    params:
+      CF_USERNAME: {{cf-username}}
+      CF_PASSWORD: {{cf-password}}
+      CF_SHARED_SECRET: {{cf-shared-secret}}
+      AWS_ACCESS_KEY_ID: {{cf-aws-access-key-id}}
+      AWS_SECRET_ACCESS_KEY: {{cf-aws-secret-access-key}}
   - put: diego-deployment
     params:
-      manifest: grootfs-ci-secrets/deployments/thanos/diego.yml
+      manifest: manifests/thanos/diego.yml
       releases:
       - diego-release/*.tgz
       - grootfs-release-tarball/*.tgz
@@ -758,13 +785,18 @@ jobs:
   serial_groups: [deploy-datadog-nozzle]
   plan:
   - aggregate:
+    - get: grootfs-release-develop
     - get: datadog-nozzle-release
       trigger: true
     - get: grootfs-ci-secrets
     - get: thanos-bosh-stemcell
+  - task: parse-manifests
+    file: grootfs-release-develop/ci/tasks/parse-manifests.yml
+    params:
+      DATADOG_API_KEY: {{datadog-api-key}}
   - put: datadog-nozzle-deployment
     params:
-      manifest: grootfs-ci-secrets/deployments/thanos/datadog-firehose-nozzle.yml
+      manifest: manifests/thanos/datadog-firehose-nozzle.yml
       releases:
       - datadog-nozzle-release/*.tgz
       stemcells:
@@ -787,12 +819,21 @@ jobs:
     - get: grootfs-release-develop
       trigger: true
       passed: [deploy-diego]
+  - task: parse-manifests
+    file: grootfs-release-develop/ci/tasks/parse-manifests.yml
+    params:
+      CF_USERNAME: {{cf-username}}
+      CF_PASSWORD: {{cf-password}}
+      CF_SHARED_SECRET: {{cf-shared-secret}}
+      AWS_ACCESS_KEY_ID: {{cf-aws-access-key-id}}
+      AWS_SECRET_ACCESS_KEY: {{cf-aws-secret-access-key}}
   - task: run-cats
     file: grootfs-release-develop/ci/tasks/run-cats.yml
     params:
       BOSH_TARGET: {{thanos-bosh-target}}
       BOSH_USER: {{thanos-bosh-username}}
       BOSH_PASSWORD: {{thanos-bosh-password}}
+      BOSH_MANIFEST: manifests/thanos/cf_colocated.yml
 
 resource_types:
 - name: slack-notification-docker
