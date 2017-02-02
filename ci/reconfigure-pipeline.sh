@@ -29,15 +29,13 @@ main() {
     --var dockerhub-username="$(lpass show 'Shared-Garden/cf-garden-docker' --username)" \
     --var dockerhub-password="$(lpass show 'Shared-Garden/cf-garden-docker' --password)" \
     --var garden-tracker-token="$(lpass show 'Shared-Garden/Garden-Gnome-Tracker-Account' --notes)" \
-    --var aws-access-key-id="$(lpass show 'Shared-Garden/cf-garden-aws-root-account-access-key' --username)" \
-    --var aws-secret-access-key="$(lpass show 'Shared-Garden/cf-garden-aws-root-account-access-key' --password)" \
+    --var aws-access-key-id="$(lpass show "Shared-Garden/grootfs-deployments\thanos/aws-keys" --username)" \
+    --var aws-secret-access-key="$(lpass show "Shared-Garden/grootfs-deployments\thanos/aws-keys" --password)" \
     --var datadog-api-key="$(lpass show 'Shared-Garden/grootfs-deployments/datadog-api-keys' --username)" \
     --var datadog-application-key="$(lpass show 'Shared-Garden/grootfs-deployments/datadog-api-keys' --password)" \
     --var cf-username="$(lpass show 'Shared-Garden/Grootfs-Performance-CF' --username)" \
     --var cf-password="$(lpass show 'Shared-Garden/Grootfs-Performance-CF' --password)" \
     --var cf-shared-secret="$(lpass show 'Shared-Garden/Grootfs-Performance-CF' --field=shared-secret)" \
-    --var cf-aws-access-key-id="$(lpass show 'Shared-Garden/Grootfs-Performance-CF' --field=aws-access-key-id)" \
-    --var cf-aws-secret-access-key="$(lpass show 'Shared-Garden/Grootfs-Performance-CF' --field=aws-secret-access-key)" \
     --var github-client-id="$(lpass show 'Shared-Garden/grootfs-deployments/github-garden-gnome' --username)" \
     --var github-client-secret="$(lpass show 'Shared-Garden/grootfs-deployments/github-garden-gnome' --password)"
 }

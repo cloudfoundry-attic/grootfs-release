@@ -739,8 +739,8 @@ jobs:
       CF_USERNAME: {{cf-username}}
       CF_PASSWORD: {{cf-password}}
       CF_SHARED_SECRET: {{cf-shared-secret}}
-      AWS_ACCESS_KEY_ID: {{cf-aws-access-key-id}}
-      AWS_SECRET_ACCESS_KEY: {{cf-aws-secret-access-key}}
+      AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
+      AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
   - put: cf-deployment
     params:
       manifest: manifests/thanos/cf_colocated.yml
@@ -769,8 +769,8 @@ jobs:
       CF_USERNAME: {{cf-username}}
       CF_PASSWORD: {{cf-password}}
       CF_SHARED_SECRET: {{cf-shared-secret}}
-      AWS_ACCESS_KEY_ID: {{cf-aws-access-key-id}}
-      AWS_SECRET_ACCESS_KEY: {{cf-aws-secret-access-key}}
+      AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
+      AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
   - put: diego-deployment
     params:
       manifest: manifests/thanos/diego.yml
@@ -825,8 +825,8 @@ jobs:
       CF_USERNAME: {{cf-username}}
       CF_PASSWORD: {{cf-password}}
       CF_SHARED_SECRET: {{cf-shared-secret}}
-      AWS_ACCESS_KEY_ID: {{cf-aws-access-key-id}}
-      AWS_SECRET_ACCESS_KEY: {{cf-aws-secret-access-key}}
+      AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
+      AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
   - task: run-cats
     file: grootfs-release-develop/ci/tasks/run-cats.yml
     params:
