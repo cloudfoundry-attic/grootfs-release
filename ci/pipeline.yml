@@ -59,10 +59,20 @@ resources:
   source:
     repository: cloudfoundry/garden-runc-release
 
+- name: cf-release
+  type: bosh-io-release
+  source:
+    repository: cloudfoundry/cf-release
+
 - name: diego-release
   type: bosh-io-release
   source:
     repository: cloudfoundry/diego-release
+
+- name: cflinuxfs2-rootfs-release
+  type: bosh-io-release
+  source:
+    repository: cloudfoundry/cflinuxfs2-rootfs-release
 
 - name: diego-deployment
   type: bosh-deployment
@@ -701,6 +711,8 @@ jobs:
   serial_groups: [deploy-cf]
   plan:
   - aggregate:
+    - get: cf-release
+      trigger: true
     - get: grootfs-release-develop
     - get: grootfs-ci-secrets
     - get: thanos-bosh-stemcell
@@ -715,7 +727,8 @@ jobs:
   - put: cf-deployment
     params:
       manifest: manifests/thanos/cf_colocated.yml
-      releases: []
+      releases:
+      - cf-release/*.tgz
       stemcells:
       - thanos-bosh-stemcell/*.tgz
 
@@ -729,6 +742,8 @@ jobs:
     - get: grootfs-release-develop
       passed: [create-grootfs-release]
     - get: garden-release
+      trigger: true
+    - get: cflinuxfs2-rootfs-release
       trigger: true
     - get: diego-release
       trigger: true
@@ -747,6 +762,7 @@ jobs:
       manifest: manifests/thanos/diego.yml
       releases:
       - diego-release/*.tgz
+      - cflinuxfs2-rootfs-release/*.tgz
       - grootfs-release-tarball/*.tgz
       - garden-release/*.tgz
       stemcells:
