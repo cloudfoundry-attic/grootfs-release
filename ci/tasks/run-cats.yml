@@ -13,7 +13,7 @@ inputs:
   - name: manifests
 
 params:
-  BOSH_MANIFEST: 
+  BOSH_MANIFEST:
   BOSH_TARGET:
   BOSH_USER:
   BOSH_PASSWORD:
