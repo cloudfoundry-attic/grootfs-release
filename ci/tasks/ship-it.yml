@@ -17,3 +17,4 @@ outputs:
 
 run:
   path: grootfs-release-develop/ci/scripts/ship-it.sh
+  user: root
