@@ -26,7 +26,6 @@ groups:
 - name: tools
   jobs:
   - build-grootfs-ci-image
-  - build-grootfs-ci-bosh-image
 - name: ship-it
   jobs:
   - bump-major-grootfs-release
@@ -242,26 +241,10 @@ resources:
     paths:
     - Dockerfile
 
-- name: garden-dockerfiles
-  type: git
-  source:
-    uri: git@github.com:cloudfoundry/garden-dockerfiles.git
-    branch: master
-    private_key: {{gnome-private-key}}
-    paths:
-    - grootfs-ci-bosh/*
-
 - name: grootfs-ci-image
   type: docker-image
   source:
     repository: cfgarden/grootfs-ci
-    username: {{dockerhub-username}}
-    password: {{dockerhub-password}}
-
-- name: grootfs-ci-bosh-image
-  type: docker-image
-  source:
-    repository: cfgarden/grootfs-ci-bosh
     username: {{dockerhub-username}}
     password: {{dockerhub-password}}
 
@@ -713,18 +696,6 @@ jobs:
   - put: grootfs-ci-image
     params:
       build: grootfs-git-repo-dockerfile
-
-- name: build-grootfs-ci-bosh-image
-  plan:
-  - aggregate:
-    - get: grootfs-git-repo-dockerfile
-      trigger: true
-      passed: [build-grootfs-ci-image]
-    - get: garden-dockerfiles
-      trigger: true
-  - put: grootfs-ci-bosh-image
-    params:
-      build: garden-dockerfiles/grootfs-ci-bosh
 
 - name: deploy-cf
   serial_groups: [deploy-cf]

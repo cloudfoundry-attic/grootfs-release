@@ -2,7 +2,7 @@
 image_resource:
   type: docker-image
   source:
-    repository: cfgarden/grootfs-ci-bosh
+    repository: cfgarden/grootfs-ci
     tag: latest
 
 platform: linux
