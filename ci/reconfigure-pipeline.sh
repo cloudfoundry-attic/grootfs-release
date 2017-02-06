@@ -10,7 +10,7 @@ fi
 
 main() {
   check_fly_alias_exists
-	sync_and_login
+  sync_and_login
 
   pipeline_name="grootfs"
   [ $DEBUG -eq 1 ] && pipeline_name="grootfs-test"
@@ -18,6 +18,11 @@ main() {
   [ $DEBUG -eq 1 ] && vars_name="lite"
   [ $DEBUG -eq 1 ] && flyrc_target="lite"
 
+  set_pipeline
+  expose_pipeline
+}
+
+set_pipeline() {
   fly --target="$flyrc_target" set-pipeline --pipeline=$pipeline_name \
     --config=ci/pipeline.yml --load-vars-from=$HOME/workspace/grootfs-ci-secrets/vars/$vars_name.yml \
     --var gnome-private-key="$(lpass show 'Shared-Garden/grootfs-deployments/github-garden-gnome' --notes)" \
@@ -38,6 +43,10 @@ main() {
     --var cf-shared-secret="$(lpass show 'Shared-Garden/Grootfs-Performance-CF' --field=shared-secret)" \
     --var github-client-id="$(lpass show 'Shared-Garden/grootfs-deployments/github-garden-gnome' --username)" \
     --var github-client-secret="$(lpass show 'Shared-Garden/grootfs-deployments/github-garden-gnome' --password)"
+}
+
+expose_pipeline() {
+  fly --target="$flyrc_target" expose-pipeline --pipeline="$pipeline_name"
 }
 
 check_fly_alias_exists() {
