@@ -59,11 +59,6 @@ resources:
   source:
     repository: cloudfoundry/garden-runc-release
 
-- name: cf-release
-  type: bosh-io-release
-  source:
-    repository: cloudfoundry/cf-release
-
 - name: diego-release
   type: bosh-io-release
   source:
@@ -711,8 +706,6 @@ jobs:
   serial_groups: [deploy-cf]
   plan:
   - aggregate:
-    - get: cf-release
-      trigger: true
     - get: grootfs-release-develop
     - get: grootfs-ci-secrets
     - get: thanos-bosh-stemcell
@@ -727,8 +720,6 @@ jobs:
   - put: cf-deployment
     params:
       manifest: manifests/thanos/cf_colocated.yml
-      releases:
-      - cf-release/*.tgz
       stemcells:
       - thanos-bosh-stemcell/*.tgz
 
