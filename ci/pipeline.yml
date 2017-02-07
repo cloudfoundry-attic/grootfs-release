@@ -262,15 +262,26 @@ jobs:
       trigger: true
   - do:
     - aggregate:
-      - task: groot-tests
+      - task: unit-tests
         privileged: true
-        file: grootfs-git-repo/ci/tasks/groot-tests.yml
+        file: grootfs-git-repo/ci/tasks/unit-tests.yml
         params:
           REGISTRY_USERNAME: {{dockerhub-username}}
           REGISTRY_PASSWORD: {{dockerhub-password}}
-      - task: root-tests
+      - task: integration-tests-OVERLAY+XFS
         privileged: true
-        file: grootfs-git-repo/ci/tasks/root-tests.yml
+        file: grootfs-git-repo/ci/tasks/integration-tests.yml
+        params:
+          REGISTRY_USERNAME: {{dockerhub-username}}
+          REGISTRY_PASSWORD: {{dockerhub-password}}
+          VOLUME_DRIVER: overlay-xfs
+      - task: integration-tests-BTRFS
+        privileged: true
+        file: grootfs-git-repo/ci/tasks/integration-tests.yml
+        params:
+          REGISTRY_USERNAME: {{dockerhub-username}}
+          REGISTRY_PASSWORD: {{dockerhub-password}}
+          VOLUME_DRIVER: btrfs
       - task: go-vet
         file: grootfs-git-repo/ci/tasks/go-vet.yml
     on_failure:
