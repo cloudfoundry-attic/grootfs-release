@@ -731,6 +731,7 @@ jobs:
   - put: cf-deployment
     params:
       manifest: manifests/thanos/cf_colocated.yml
+      releases: []
       stemcells:
       - thanos-bosh-stemcell/*.tgz
 
