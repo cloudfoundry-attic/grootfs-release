@@ -3,6 +3,7 @@ groups:
 - name: grootfs
   jobs:
   - grootfs
+  - bump-dependencies
   - bump-grootfs-release
   - create-grootfs-release
   - deploy-grootfs-bench
@@ -37,6 +38,15 @@ groups:
   - tag-grootfs-ci-image
 
 resources:
+- name: monday-update
+  type: time
+  source:
+    start: 7:00 AM
+    stop: 8:00 AM
+    location: Europe/London
+    days:
+    - Monday
+
 - name: garden-runc-release
   type: git
   source:
@@ -291,6 +301,59 @@ jobs:
         icon_url: {{slack-alert-icon-url}}
         channel: {{slack-alert-channel}}
         text: "<!subteam^S1U0HSJ9E|grootfsteam>: System Failure. Explosion Imminent. http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+
+- name: bump-dependencies
+  public: true
+  plan:
+  - get: monday-update
+    trigger: true
+  - get: grootfs-git-repo
+    params:
+      submodules: all
+  - task: bump-dependencies
+    file: grootfs-git-repo/ci/tasks/bump-dependencies.yml
+  - do:
+    - aggregate:
+      - task: unit-tests
+        privileged: true
+        input_mapping:
+          grootfs-git-repo: grootfs-git-repo-updated
+        file: grootfs-git-repo/ci/tasks/unit-tests.yml
+        params:
+          REGISTRY_USERNAME: {{dockerhub-username}}
+          REGISTRY_PASSWORD: {{dockerhub-password}}
+      - task: integration-tests-OVERLAY+XFS
+        privileged: true
+        input_mapping:
+          grootfs-git-repo: grootfs-git-repo-updated
+        file: grootfs-git-repo/ci/tasks/integration-tests.yml
+        params:
+          REGISTRY_USERNAME: {{dockerhub-username}}
+          REGISTRY_PASSWORD: {{dockerhub-password}}
+          VOLUME_DRIVER: overlay-xfs
+      - task: integration-tests-BTRFS
+        privileged: true
+        input_mapping:
+          grootfs-git-repo: grootfs-git-repo-updated
+        file: grootfs-git-repo/ci/tasks/integration-tests.yml
+        params:
+          REGISTRY_USERNAME: {{dockerhub-username}}
+          REGISTRY_PASSWORD: {{dockerhub-password}}
+          VOLUME_DRIVER: btrfs
+      - task: go-vet
+        file: grootfs-git-repo/ci/tasks/go-vet.yml
+        input_mapping:
+          grootfs-git-repo: grootfs-git-repo-updated
+    on_failure:
+      put: slack-alert
+      params:
+        username: {{slack-alert-username}}
+        icon_url: {{slack-alert-icon-url}}
+        channel: {{slack-alert-channel}}
+        text: "<!subteam^S1U0HSJ9E|grootfsteam>: Bump dependencies failed. http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+  - put: grootfs-git-repo
+    params:
+      repository: grootfs-git-repo-updated
 
 - name: bump-grootfs-release
   serial_groups: [grootfs-release-creation]
