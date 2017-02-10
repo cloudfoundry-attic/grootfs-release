@@ -1,5 +1,23 @@
 ---
 groups:
+- name: all
+  jobs:
+  - grootfs
+  - bump-dependencies
+  - bump-grootfs-release
+  - create-grootfs-release
+  - deploy-grootfs-bench
+  - performance-tests
+  - grootfs-bench
+  - bump-grootfs-bench-release
+  - create-grootfs-bench-release
+  - deploy-grootfs-bench
+  - deploy-garden-grootfs
+  - gats
+  - deploy-cf
+  - deploy-diego
+  - deploy-datadog-nozzle
+  - CATs
 - name: grootfs
   jobs:
   - grootfs
