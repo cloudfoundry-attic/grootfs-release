@@ -3,7 +3,7 @@ name: xfs-progs
 
 dependencies:
 - grootfs-build-tools
-- btrfs-support-libs
+- grootfs-build-libs
 
 files:
 - xfs-progs/*

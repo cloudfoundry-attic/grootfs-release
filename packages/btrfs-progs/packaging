@@ -2,7 +2,7 @@
 set -e
 
 export PACKAGES=/var/vcap/packages
-export DEPENDENCIES=$PACKAGES/btrfs-support-libs
+export DEPENDENCIES=$PACKAGES/grootfs-build-libs
 export PATH=$PACKAGES/grootfs-build-tools/bin:$DEPENDENCIES/bin:$PATH
 export ACLOCAL_MACROS=$PACKAGES/grootfs-build-tools
 
