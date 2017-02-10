@@ -1,0 +1,21 @@
+# abort script on any command that exits with a non zero value
+set -e
+
+export PACKAGES=/var/vcap/packages
+export DEPENDENCIES=$PACKAGES/btrfs-support-libs
+export PATH=$PACKAGES/grootfs-build-tools/bin:$DEPENDENCIES/bin:$PATH
+export ACLOCAL_MACROS=$PACKAGES/grootfs-build-tools
+
+tar xvzf xfs-progs/xfsprogs-4.3.0.tar.gz
+(
+  cd xfsprogs-4.3.0
+
+  export PKG_CONFIG_PATH=${DEPENDENCIES}/lib/pkgconfig
+  export LDFLAGS="-L${DEPENDENCIES}/lib"
+  export CFLAGS="-I${DEPENDENCIES}/include"
+  export AL_OPTS="-I${ACLOCAL_MACROS}"
+
+  ./configure --prefix=$BOSH_INSTALL_TARGET
+  make
+  make install prefix=$BOSH_INSTALL_TARGET
+)

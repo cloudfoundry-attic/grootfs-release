@@ -1,6 +1,4 @@
 #!/bin/bash
 
 BASE_PATH=$(dirname $0)
-
-${BASE_PATH}/btrfs-setup
-${BASE_PATH}/drax-setup
+${BASE_PATH}/<%= p("grootfs.driver") %>-setup

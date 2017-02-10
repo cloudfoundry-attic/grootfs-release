@@ -2,7 +2,8 @@
 name: grootfs
 templates:
   bin/btrfs-setup.erb: bin/btrfs-setup
-  bin/drax-setup.erb: bin/drax-setup
+  bin/overlay-xfs-setup.erb: bin/overlay-xfs-setup
+  bin/utils.erb: bin/utils
   bin/pre-start.erb: bin/pre-start
   config/grootfs_config.yml.erb: config/grootfs_config.yml
   config/privileged_grootfs_config.yml.erb: config/privileged_grootfs_config.yml
@@ -10,12 +11,16 @@ templates:
 packages:
   - idmapper
   - btrfs-progs
+  - xfs-progs
   - grootfs
 
 properties:
   grootfs.store_size_bytes:
     description: "The size of the grootfs store. Changes to this value do not update the store on existing hosts. To resize the store, the job host must be recreated."
     default: 10737418240
+  grootfs.driver:
+    description: "Filesystem driver to use"
+    default: btrfs
   grootfs.log_level:
     description: "Log level for grootfs - can be debug, info, error or fatal"
     default: info

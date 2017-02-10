@@ -3,6 +3,8 @@
 set -x
 
 function main() {
+  source /var/vcap/jobs/grootfs/bin/utils
+
   export PATH=/var/vcap/packages/btrfs-progs/bin:$PATH
   local store_path=/var/vcap/data/grootfs/store
   local volume_file=/var/vcap/data/grootfs/volume
@@ -19,17 +21,6 @@ function main() {
   enable_btrfs_quotas $store_path
 }
 
-function create_volume_file() {
-  local volume_file=$1
-
-  # Do no recreate the volume file if it already exists
-  if [ ! -f "$volume_file" ]
-  then
-    echo "creating btrfs volume..."
-    truncate -s <%= p('grootfs.store_size_bytes') %> $volume_file
-  fi
-}
-
 function format_volume_file() {
   local volume_file=$1
 
@@ -41,44 +32,6 @@ function format_volume_file() {
   fi
 }
 
-function create_loop_devices() {
-  echo "creating loop devices..."
-  for i in {0..255}
-  do
-    mknod -m 0660 /dev/loop${i} b 7 $i || true
-  done
-}
-
-# copied from https://github.com/concourse/concourse/blob/master/jobs/baggageclaim/templates/baggageclaim_ctl.erb#L54
-# break out of bosh-lite device limitations
-function permit_device_control() {
-  local devices_mount_info=$(cat /proc/self/cgroup | grep devices)
-
-  if [ -z "$devices_mount_info" ]; then
-    # cgroups not set up; must not be in a container
-    return
-  fi
-
-  local devices_subsytems=$(echo $devices_mount_info | cut -d: -f2)
-  local devices_subdir=$(echo $devices_mount_info | cut -d: -f3)
-
-  if [ "$devices_subdir" = "/" ]; then
-    # we're in the root devices cgroup; must not be in a container
-    return
-  fi
-
-  if [ ! -e /tmp/devices-cgroup ]; then
-    # mount our container's devices subsystem somewhere
-    mkdir /tmp/devices-cgroup
-    mount -t cgroup -o $devices_subsytems none /tmp/devices-cgroup
-  fi
-
-  # permit our cgroup to do everything with all devices
-  echo a > /tmp/devices-cgroup${devices_subdir}/devices.allow || true
-
-  umount /tmp/devices-cgroup || true
-}
-
 function mount_btrfs_volume() {
   local volume_file=$1
   local store_path=$2
@@ -87,8 +40,7 @@ function mount_btrfs_volume() {
   umount $store_path || true
   mount -o user_subvol_rm_allowed $volume_file $store_path
 
-  maximus_uid=$(/var/vcap/packages/idmapper/bin/maximus)
-  chown $maximus_uid:$maximus_uid $store_path
+  setup_unprivileged_store $store_path
 }
 
 function enable_btrfs_quotas() {
