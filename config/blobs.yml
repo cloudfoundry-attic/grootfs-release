@@ -39,11 +39,11 @@ zlib/zlib-1.2.8.tar.gz:
   object_id: afee57ee-62a9-4bb1-9926-f588e4995981
   sha: a4d316c404ff54ca545ea71a27af7dbc29817088
   size: 571091
-golang/go1.7.3.linux-amd64.tar.gz:
-  object_id: 201ea472-81dc-408c-9030-28fe1c337693
-  sha: ead40e884ad4d6512bcf7b3c7420dd7fa4a96140
-  size: 82565628
 xfs-progs/xfsprogs-4.3.0.tar.gz:
   object_id: 11341f41-e6a2-4668-aa08-3da77826ae0d
   sha: e813c8f37f9617440080098be94eb0040d35086e
   size: 1485997
+golang/go1.7.5.linux-amd64.tar.gz:
+  object_id: 396b65bc-b587-4ad3-8919-cc6dc54337c8
+  sha: 7c6902ce8cd3b9963082d748c50df074e4896796
+  size: 84176916
