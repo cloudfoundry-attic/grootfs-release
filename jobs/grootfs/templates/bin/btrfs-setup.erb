@@ -19,6 +19,12 @@ function main() {
 
   mount_btrfs_volume $volume_file $store_path
   enable_btrfs_quotas $store_path
+  drax_setup
+}
+
+function drax_setup() {
+  echo "setting up drax..."
+  chmod u+s /var/vcap/packages/grootfs/bin/drax
 }
 
 function format_volume_file() {
