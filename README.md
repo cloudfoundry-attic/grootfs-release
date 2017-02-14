@@ -55,10 +55,20 @@ what these properties do:
 - `dropsonde_port`
 - `log_level`
 - `store_size`
+- `driver`
 
 There should be no need to recreate cells when transitioning to GrootFS, though
 you may wish to do so anyway in order to clear out any cruft left behind by
 Garden-runC's previous image management implementation.
+
+### Drivers
+
+It's possible to chose a filesystem driver to use by providing the `grootfs.driver`
+property in the manifest. The default driver is `btrfs`, and the other possible
+value for this property is `overlay-xfs`.
+
+At this moment it's not supported to change the `driver` of a running instance. The
+vm must be recreated.
 
 ## Assumptions
 
@@ -75,17 +85,25 @@ BOSH.
 
 ### volume creation
 
-The release will never recreate the btrfs volume on an update if the file
+Depending on the `driver` property, the release will create a btrfs or xfs volumes.
+The release will never recreate this volume on an update if the file
 already exists, even if you change it's size in the manifest. Current flow:
 
-* If there's no volume file: create volume file -> format with btrfs -> mount
-* If there's a volume file: check if it's formatted with btrfs
+* If there's no volume file: create volume file -> format with btrfs/xfs -> mount
+* If there's a volume file: check if it's formatted with btrfs/xfs
   * if yes -> mount
-  * if no -> format with btrfs -> mount
+  * if no -> format with btrfs/xfs -> mount
 
-The btrfs mount point will always owned by user ~4294967294 (or the max uid
-possible) because that's the user that garden will be calling grootfs for
-non-privileged containers.
+When using the btrfs driver, only one btrfs volume will be created with `store_size` bytes,
+and internally it will be split into two subfolders (privileged and unprivileged)
+for the privileged and unprivileged stores.
+
+When using the xfs driver two volumes will be created, one for privileged and one
+for unprivileged containers. Each one of them with `store_size` bytes.
+
+Even though garden will be calling grootfs as root, the unprivileged store
+will be owned by the user ~4294967294 (or the max uid possible), in order to
+allow the running user of the container to have access to it's filesystem.
 
 ## Contributing
 
@@ -104,7 +122,8 @@ describe the proposed features or changes. We also welcome pull requests.
 * lzo 2.09
 * util-linux 2.28
 * zlib 1.2.8
-* go 1.7.3
+* go 1.7.5
+* xfsprogs 4.3.0
 
 ## License
 
