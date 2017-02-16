@@ -8,7 +8,7 @@ if [ -z "$VERSION" ]; then
   exit 1
 fi
 
-cp grootfs-ci-secrets/config/private.yml grootfs-release-develop/config/private.yml
+echo "$PRIVATE_YML" > grootfs-release-develop/config/private.yml
 
 cd grootfs-release-develop
 

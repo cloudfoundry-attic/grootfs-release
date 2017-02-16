@@ -15,6 +15,9 @@ outputs:
   - name: final-release
   - name: release
 
+params:
+  PRIVATE_YML:
+
 run:
   path: grootfs-release-develop/ci/scripts/ship-it.sh
   user: root

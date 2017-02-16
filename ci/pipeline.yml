@@ -687,6 +687,8 @@ jobs:
           bump: final
     - task: ship-it
       file: grootfs-release-develop/ci/tasks/ship-it.yml
+      params:
+        PRIVATE_YML: {{grootfs-release-private-yaml}}
     - aggregate:
       - put: grootfs-release-master
         params:
