@@ -20,7 +20,7 @@ properties:
     default: 10737418240
   grootfs.driver:
     description: "Filesystem driver to use"
-    default: btrfs
+    default: overlay-xfs
   grootfs.log_level:
     description: "Log level for grootfs - can be debug, info, error or fatal"
     default: info
