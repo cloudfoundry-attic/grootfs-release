@@ -24,11 +24,11 @@ grootfs-release to the cells in your Diego deployment:
 ```
 garden:
   image_plugin: "/var/vcap/packages/grootfs/bin/grootfs"
-  image_plugin_extra_args: "/var/vcap/jobs/grootfs/config/grootfs_config.yml"
+  image_plugin_extra_args: ["--config=/var/vcap/jobs/grootfs/config/grootfs_config.yml"]
 
   # if you have capi.nsync.diego_privileged_containers and capi.stager.diego_privileged_containers set to true
   privileged_image_plugin: "/var/vcap/packages/grootfs/bin/grootfs"
-  privileged_image_plugin_extra_args: "/var/vcap/jobs/grootfs/config/privileged_grootfs_config.yml"
+  privileged_image_plugin_extra_args: ["--config=/var/vcap/jobs/grootfs/config/privileged_grootfs_config.yml"]
 ```
 * Set the `diego.rep.preloaded_rootfses` property on your Diego cells to
   `[cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs.tar]`. Make sure you're
