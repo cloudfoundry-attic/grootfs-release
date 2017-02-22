@@ -459,10 +459,15 @@ jobs:
         passed: [deploy-garden-grootfs]
         trigger: true
       - get: garden-runc-release
-    - task: gats
-      file: grootfs-release-develop/ci/tasks/gats.yml
-      params:
-        GARDEN_ADDRESS: {{gamora-garden-address}}
+    - aggregate:
+      - task: gats-btrfs
+        file: grootfs-release-develop/ci/tasks/gats.yml
+        params:
+          GARDEN_ADDRESS: {{gamora-btrfs-garden-address}}
+      - task: gats-overlay-xfs
+        file: grootfs-release-develop/ci/tasks/gats.yml
+        params:
+          GARDEN_ADDRESS: {{gamora-overlay-xfs-garden-address}}
 
 - name: bump-grootfs-bench-release
   serial: true
