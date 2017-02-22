@@ -426,19 +426,17 @@ jobs:
       - get: gamora-bosh-stemcell
       - get: grootfs-ci-secrets
       - get: grootfs-release-develop
-      - get: garden-runc-release
+      - get: garden-release
         trigger: true
       - get: grootfs-release-tarball
         trigger: true
         passed:
         - create-grootfs-release
-    - task: create-garden-runc-release
-      file: grootfs-release-develop/ci/tasks/create-garden-runc-release.yml
     - put: garden-grootfs-deployment
       params:
         manifest: grootfs-ci-secrets/deployments/garden-grootfs/gcp.yml
         releases:
-        - bosh-release/garden-runc.tgz
+        - garden-release/*.tgz
         - grootfs-release-tarball/*.tgz
         stemcells:
         - gamora-bosh-stemcell/*.tgz
@@ -457,9 +455,10 @@ jobs:
       - get: grootfs-release-develop
         trigger: true
         passed: [deploy-garden-grootfs]
-      - get: garden-runc-release
-        trigger: true
+      - get: garden-release
         passed: [deploy-garden-grootfs]
+        trigger: true
+      - get: garden-runc-release
     - task: gats
       file: grootfs-release-develop/ci/tasks/gats.yml
       params:
