@@ -47,3 +47,7 @@ golang/go1.7.5.linux-amd64.tar.gz:
   object_id: 396b65bc-b587-4ad3-8919-cc6dc54337c8
   sha: 7c6902ce8cd3b9963082d748c50df074e4896796
   size: 84176916
+golang/go1.8.linux-amd64.tar.gz:
+  object_id: 0137f1b4-4e59-47b9-b845-ce02942d73f7
+  sha: a93fe8fc245e3554f956bc823f30ef4eb23c2068
+  size: 89803580
