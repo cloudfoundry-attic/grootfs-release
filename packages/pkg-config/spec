@@ -1,0 +1,8 @@
+---
+name: pkg-config
+
+dependencies: []
+
+files:
+- grootfs-build-tools/pkg-config-0.29.tar.gz
+

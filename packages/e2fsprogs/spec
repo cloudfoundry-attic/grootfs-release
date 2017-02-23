@@ -1,16 +1,13 @@
 ---
-name: btrfs-progs
+name: e2fsprogs
 
 dependencies:
 - autoconf
 - automake
-- e2fsprogs
 - gettext
 - libtool
-- lzo
 - pkg-config
 - util-linux
-- zlib
 
 files:
-- btrfs-progs/btrfs-progs-4.4.1.tar.gz
+- e2fsprogs/e2fsprogs-1.43.3.tar.gz

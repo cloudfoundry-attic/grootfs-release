@@ -1,0 +1,12 @@
+---
+name: lzo
+
+dependencies:
+- autoconf
+- automake
+- gettext
+- libtool
+- pkg-config
+
+files:
+- lzo/lzo-2.09.tar.gz

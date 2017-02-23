@@ -1,0 +1,12 @@
+---
+name: util-linux
+
+dependencies:
+- autoconf
+- automake
+- gettext
+- libtool
+- pkg-config
+
+files:
+- util-linux/util-linux-2.28.tar.gz

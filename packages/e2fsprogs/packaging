@@ -1,0 +1,23 @@
+# abort script on any command that exits with a non zero value
+set -e
+
+export PREFIX=/var/vcap/packages
+export PATH=${PREFIX}/e2fsprogs/bin:/var/vcap/packages/util-linux/bin:$PATH
+
+tar xvzf e2fsprogs/e2fsprogs-1.43.3.tar.gz
+(
+  cd e2fsprogs-1.43.3
+
+  export PKG_CONFIG_PATH=${BOSH_INSTALL_TARGET}/lib/pkgconfig
+  export LDFLAGS="-L${PREFIX}/util-linux/lib"
+  export CFLAGS="-I${PREFIX}/util-linux/include"
+
+  ./configure --prefix=$BOSH_INSTALL_TARGET \
+              --disable-elf-shlibs \
+              --disable-libuuid \
+              --disable-libblkid
+  make
+  make install prefix=$BOSH_INSTALL_TARGET
+  make install-libs prefix=$BOSH_INSTALL_TARGET
+)
+

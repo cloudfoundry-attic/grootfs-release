@@ -2,8 +2,15 @@
 name: xfs-progs
 
 dependencies:
-- grootfs-build-tools
-- grootfs-build-libs
+- autoconf
+- automake
+- e2fsprogs
+- gettext
+- libtool
+- lzo
+- pkg-config
+- util-linux
+- zlib
 
 files:
-- xfs-progs/*
+- xfs-progs/xfsprogs-4.3.0.tar.gz

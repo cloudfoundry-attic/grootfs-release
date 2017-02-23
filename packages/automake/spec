@@ -1,0 +1,8 @@
+---
+name: automake
+
+dependencies:
+- autoconf
+
+files:
+- grootfs-build-tools/automake-1.15.tar.gz

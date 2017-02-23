@@ -2,21 +2,44 @@
 set -e
 
 export PACKAGES=/var/vcap/packages
-export DEPENDENCIES=$PACKAGES/grootfs-build-libs
-export PATH=$PACKAGES/grootfs-build-tools/bin:$DEPENDENCIES/bin:$PATH
-export ACLOCAL_MACROS=$PACKAGES/grootfs-build-tools
+
+addBuildTool(){
+  export PATH=$PACKAGES/$1/bin:$PATH
+  export AL_OPTS="${AL_OPTS} -I${PACKAGES}/$1"
+}
+
+addLib(){
+  export PATH=$PACKAGES/$1/bin:$PATH
+  export PKG_CONFIG_PATH="${PACKAGES}/$1/lib/pkgconfig:${PKG_CONFIG_PATH}"
+  export LDFLAGS="${LDFLAGS} -L${PACKAGES}/$1/lib"
+  export CFLAGS="${CFLAGS} -I${PACKAGES}/$1/include"
+}
+
+setDeps(){
+  addBuildTool autoconf
+  addBuildTool automake
+  addBuildTool gettext
+  addBuildTool libtool
+  addBuildTool pkg-config
+
+  addLib zlib
+  addLib util-linux
+  addLib lzo
+  addLib e2fsprogs
+
+  export CFLAGS="${CFLAGS} -L${PACKAGES}/lzo/lib"
+  export AL_OPTS="-I${PACKAGES}/pkg-config/share/aclocal ${AL_OPTS}"
+}
 
 tar xvzf btrfs-progs/btrfs-progs-4.4.1.tar.gz
 (
   cd btrfs-progs-4.4.1
 
-  export PKG_CONFIG_PATH=${DEPENDENCIES}/lib/pkgconfig
-  export LDFLAGS="-L${DEPENDENCIES}/lib"
-  export CFLAGS="-I${DEPENDENCIES}/include"
-  export AL_OPTS="-I${ACLOCAL_MACROS}"
+  setDeps
 
   ./autogen.sh
   ./configure --prefix=$BOSH_INSTALL_TARGET --disable-documentation
+
   make static
   make install-static prefix=$BOSH_INSTALL_TARGET
 )

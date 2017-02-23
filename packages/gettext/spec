@@ -1,0 +1,7 @@
+---
+name: gettext
+
+dependencies: []
+
+files:
+- grootfs-build-tools/gettext-0.19.8.1.tar.gz

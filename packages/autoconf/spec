@@ -1,0 +1,7 @@
+---
+name: autoconf
+
+dependencies: []
+
+files:
+- grootfs-build-tools/autoconf-2.69.tar.gz
