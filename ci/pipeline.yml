@@ -242,6 +242,13 @@ resources:
   source:
     url: {{slack-alert-url}}
 
+- name: grootfs-tracker
+  type: tracker
+  source:
+    tracker_url: https://www.pivotaltracker.com
+    project_id: "1661239"
+    token: {{garden-tracker-token}}
+
 - name: grootfs-standalone-gh-release
   type: github-release
   source:
@@ -625,6 +632,13 @@ jobs:
         ERRAND_NAME: grootfs-bench-remote-btrfs
         DATADOG_API_KEY: {{datadog-api-key}}
         DATADOG_APPLICATION_KEY: {{datadog-application-key}}
+    - put: grootfs-tracker
+      params:
+        repos:
+        - grootfs-release-develop/src/code.cloudfoundry.org/grootfs
+        - grootfs-release-develop
+        - grootfs-bench-release/src/code.cloudfoundry.org/grootfs-bench
+        - grootfs-bench-release
     on_failure:
       put: slack-alert
       params:
