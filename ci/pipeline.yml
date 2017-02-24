@@ -243,7 +243,7 @@ resources:
     url: {{slack-alert-url}}
 
 - name: grootfs-tracker
-  type: tracker
+  type: tracker-fixed
   source:
     tracker_url: https://www.pivotaltracker.com
     project_id: "1661239"
@@ -940,3 +940,7 @@ resource_types:
   type: docker-image
   source:
     repository: cfcommunity/slack-notification-resource
+- name: tracker-fixed
+  type: docker-image
+  source:
+    repository: concourse/tracker-resource
