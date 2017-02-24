@@ -1,4 +1,5 @@
 ---
+name: grootfs
 blobstore:
   provider: s3
   options:
