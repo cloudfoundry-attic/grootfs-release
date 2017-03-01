@@ -296,19 +296,32 @@ jobs:
         params:
           REGISTRY_USERNAME: {{dockerhub-username}}
           REGISTRY_PASSWORD: {{dockerhub-password}}
-      - task: integration-tests-OVERLAY+XFS
+      - task: integration-tests-OVERLAY+XFS (ROOT)
         privileged: true
         file: grootfs-git-repo/ci/tasks/integration-tests.yml
         params:
           REGISTRY_USERNAME: {{dockerhub-username}}
           REGISTRY_PASSWORD: {{dockerhub-password}}
+          GROOTFS_TEST_UID: 0
+          GROOTFS_TEST_GID: 0
           VOLUME_DRIVER: overlay-xfs
-      - task: integration-tests-BTRFS
+      - task: integration-tests-BTRFS (ROOT)
         privileged: true
         file: grootfs-git-repo/ci/tasks/integration-tests.yml
         params:
           REGISTRY_USERNAME: {{dockerhub-username}}
           REGISTRY_PASSWORD: {{dockerhub-password}}
+          VOLUME_DRIVER: btrfs
+          GROOTFS_TEST_UID: 0
+          GROOTFS_TEST_GID: 0
+      - task: integration-tests-BTRFS (GROOT)
+        privileged: true
+        file: grootfs-git-repo/ci/tasks/integration-tests.yml
+        params:
+          REGISTRY_USERNAME: {{dockerhub-username}}
+          REGISTRY_PASSWORD: {{dockerhub-password}}
+          GROOTFS_TEST_UID: 1000
+          GROOTFS_TEST_GID: 1000
           VOLUME_DRIVER: btrfs
       - task: go-vet
         file: grootfs-git-repo/ci/tasks/go-vet.yml
