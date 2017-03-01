@@ -1,0 +1,127 @@
+---
+packages:
+- name: autoconf
+  version: 1410f47490037e393efdcc29193400e029a27087
+  fingerprint: 1410f47490037e393efdcc29193400e029a27087
+  sha1: f5dc6374d85dd2252bf043df74fd3402c167e4db
+  dependencies: []
+- name: automake
+  version: 91cf4eba6057fdf82fe7b9914b738883570c0e1d
+  fingerprint: 91cf4eba6057fdf82fe7b9914b738883570c0e1d
+  sha1: d430308fe0f454709eb31b5a27db55cdb9a0b66d
+  dependencies:
+  - autoconf
+- name: btrfs-progs
+  version: 5d94d2ee5501dfe8fce5b50d9d7ef98698a0b8ee
+  fingerprint: 5d94d2ee5501dfe8fce5b50d9d7ef98698a0b8ee
+  sha1: a1847f40f6009ed8dbc7c8cc22e7822b3d313232
+  dependencies:
+  - autoconf
+  - automake
+  - e2fsprogs
+  - gettext
+  - libtool
+  - lzo
+  - pkg-config
+  - util-linux
+  - zlib
+- name: e2fsprogs
+  version: 406e6c2cb4efbfacf3550714af85b3801f432e9f
+  fingerprint: 406e6c2cb4efbfacf3550714af85b3801f432e9f
+  sha1: b4d299a3807858a494fdd2d2b21dd3f1f2a40f33
+  dependencies:
+  - autoconf
+  - automake
+  - gettext
+  - libtool
+  - pkg-config
+  - util-linux
+- name: gettext
+  version: bf13d726e183455937ff19166bceafbab7350499
+  fingerprint: bf13d726e183455937ff19166bceafbab7350499
+  sha1: 3df4e36f3b6aa268978f9a6f276793d89f6dd7cd
+  dependencies: []
+- name: golang
+  version: 619a6913796e05505fb620fc29f74b8c7245a151
+  fingerprint: 619a6913796e05505fb620fc29f74b8c7245a151
+  sha1: 09a2e8d6efb282e6e223be398e881d38a87aab35
+  dependencies: []
+- name: grootfs
+  version: d35d1830e1e546d8c1cc0290c36191c54dabe266
+  fingerprint: d35d1830e1e546d8c1cc0290c36191c54dabe266
+  sha1: c6157524bd0f2892509b7a07c146f0e315342dd9
+  dependencies:
+  - golang
+- name: idmapper
+  version: 44b02ffe1ae257a5c4c94e0b12638de2289b5a06
+  fingerprint: 44b02ffe1ae257a5c4c94e0b12638de2289b5a06
+  sha1: 90350c6c2d86311f6af393d4efebc00ee2c55266
+  dependencies:
+  - golang
+- name: libtool
+  version: ec4c85b226b45c2f6b6139e2cf4f0b63418ceb95
+  fingerprint: ec4c85b226b45c2f6b6139e2cf4f0b63418ceb95
+  sha1: 80829769a8e19b99ee8e0ab7e3afba0cc5605ca6
+  dependencies: []
+- name: lzo
+  version: b1ccc1651611c42d30e8f7f4e09e6ccd5b955957
+  fingerprint: b1ccc1651611c42d30e8f7f4e09e6ccd5b955957
+  sha1: ce24baa9bee44ce54f202807093dd731f8d9d123
+  dependencies:
+  - autoconf
+  - automake
+  - gettext
+  - libtool
+  - pkg-config
+- name: pkg-config
+  version: 7cf5f963c1091de5d1594f0b1e699ff285907707
+  fingerprint: 7cf5f963c1091de5d1594f0b1e699ff285907707
+  sha1: 5570110f9e479f79cff02659771d25969513de01
+  dependencies: []
+- name: util-linux
+  version: 1a41cbda5666e6e0b1eb4768c24d8f3309baac8a
+  fingerprint: 1a41cbda5666e6e0b1eb4768c24d8f3309baac8a
+  sha1: 72b8b9441d7e0cb8b0cfd4f5358d0852adf0a2cb
+  dependencies:
+  - autoconf
+  - automake
+  - gettext
+  - libtool
+  - pkg-config
+- name: xfs-progs
+  version: ebbb5b2811c3c38006f9b7f1007897f291c068a0
+  fingerprint: ebbb5b2811c3c38006f9b7f1007897f291c068a0
+  sha1: ff9bc827457c3a991ef78beaae29469b260ea682
+  dependencies:
+  - autoconf
+  - automake
+  - e2fsprogs
+  - gettext
+  - libtool
+  - lzo
+  - pkg-config
+  - util-linux
+  - zlib
+- name: zlib
+  version: a441f6c1fe1ed0ff2a953a7fd072b0223e0459b3
+  fingerprint: a441f6c1fe1ed0ff2a953a7fd072b0223e0459b3
+  sha1: d9224eb856a80deed027a3780c0401965fdb5c16
+  dependencies:
+  - autoconf
+  - automake
+  - gettext
+  - libtool
+  - pkg-config
+jobs:
+- name: grootfs
+  version: accfde62d49b37ffcfa1e3d285279343d7a1eaff
+  fingerprint: accfde62d49b37ffcfa1e3d285279343d7a1eaff
+  sha1: e2b239beac6304586049b55b1eb0435e5c8c73fe
+license:
+  version: 6e436622f4e9c433dde883c48af70de040d247dd
+  fingerprint: 6e436622f4e9c433dde883c48af70de040d247dd
+  sha1: 868d5d249195b728a181a89bd1944bb62911fe8a
+commit_hash: 0c6b86de
+uncommitted_changes: true
+name: grootfs
+version: 0.14.0
