@@ -15,7 +15,6 @@ groups:
   - deploy-garden-grootfs
   - gats
   - deploy-cf
-  - deploy-diego
   - deploy-datadog-nozzle
   - CATs
 - name: grootfs
@@ -39,7 +38,6 @@ groups:
 - name: cf-grootfs
   jobs:
   - deploy-cf
-  - deploy-diego
   - deploy-datadog-nozzle
   - CATs
 - name: tools
@@ -73,13 +71,19 @@ resources:
     ignore_paths:
     - ci
 
+- name: git-cf-deployment
+  type: git
+  source:
+    uri: https://github.com/cloudfoundry/cf-deployment
+    branch: master
+
 - name: cf-deployment
   type: bosh-deployment
   source:
-    target: {{thanos-bosh-target}}
-    username: {{thanos-bosh-username}}
-    password: {{thanos-bosh-password}}
-    deployment: grootfs-perf-cf
+    target: {{gamora-bosh-target}}
+    username: {{gamora-bosh-username}}
+    password: {{gamora-bosh-password}}
+    deployment: cf
     ignore_ssl: true
 
 - name: garden-release
@@ -97,15 +101,6 @@ resources:
   source:
     repository: cloudfoundry/cflinuxfs2-rootfs-release
 
-- name: diego-deployment
-  type: bosh-deployment
-  source:
-    target: {{thanos-bosh-target}}
-    username: {{thanos-bosh-username}}
-    password: {{thanos-bosh-password}}
-    deployment: grootfs-perf-cf-diego
-    ignore_ssl: true
-
 - name: datadog-nozzle-release
   type: bosh-io-release
   source:
@@ -114,9 +109,9 @@ resources:
 - name: datadog-nozzle-deployment
   type: bosh-deployment
   source:
-    target: {{thanos-bosh-target}}
-    username: {{thanos-bosh-username}}
-    password: {{thanos-bosh-password}}
+    target: {{gamora-bosh-target}}
+    username: {{gamora-bosh-username}}
+    password: {{gamora-bosh-password}}
     deployment: datadog-firehose-nozzle
     ignore_ssl: true
 
@@ -840,59 +835,36 @@ jobs:
   serial_groups: [deploy-cf]
   plan:
   - aggregate:
-    - get: grootfs-release-develop
-    - get: grootfs-ci-secrets
-    - get: thanos-bosh-stemcell
-  - task: parse-manifests
-    file: grootfs-release-develop/ci/tasks/parse-manifests.yml
-    params:
-      CF_USERNAME: {{cf-username}}
-      CF_PASSWORD: {{cf-password}}
-      CF_SHARED_SECRET: {{cf-shared-secret}}
-      AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
-      AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
-  - put: cf-deployment
-    params:
-      manifest: manifests/thanos/cf_colocated.yml
-      releases: []
-      stemcells:
-      - thanos-bosh-stemcell/*.tgz
-
-- name: deploy-diego
-  serial_groups: [deploy-diego]
-  plan:
-  - aggregate:
     - get: grootfs-release-tarball
+    - get: git-cf-deployment
       trigger: true
-      passed: [create-grootfs-release]
     - get: grootfs-release-develop
       passed: [create-grootfs-release]
+      trigger: true
+    - get: grootfs-ci-secrets
+    - get: gamora-bosh-stemcell
     - get: garden-release
       trigger: true
     - get: cflinuxfs2-rootfs-release
       trigger: true
     - get: diego-release
       trigger: true
-    - get: grootfs-ci-secrets
-    - get: thanos-bosh-stemcell
-  - task: parse-manifests
-    file: grootfs-release-develop/ci/tasks/parse-manifests.yml
+  - task: generate-cf-manifest
+    file: grootfs-release-develop/ci/tasks/generate-cf-manifest.yml
     params:
-      CF_USERNAME: {{cf-username}}
       CF_PASSWORD: {{cf-password}}
-      CF_SHARED_SECRET: {{cf-shared-secret}}
-      AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
-      AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
-  - put: diego-deployment
+      CF_SECRETS: {{cf-secrets}}
+      CF_UAA_CERTS: {{cf-uaa-certs}}
+  - put: cf-deployment
     params:
-      manifest: manifests/thanos/diego.yml
+      manifest: manifests/cf.yml
       releases:
       - diego-release/*.tgz
       - cflinuxfs2-rootfs-release/*.tgz
       - grootfs-release-tarball/*.tgz
       - garden-release/*.tgz
       stemcells:
-      - thanos-bosh-stemcell/*.tgz
+      - gamora-bosh-stemcell/*.tgz
 
 - name: deploy-datadog-nozzle
   serial_groups: [deploy-datadog-nozzle]
@@ -902,7 +874,7 @@ jobs:
     - get: datadog-nozzle-release
       trigger: true
     - get: grootfs-ci-secrets
-    - get: thanos-bosh-stemcell
+    - get: gamora-bosh-stemcell
   - task: parse-manifests
     file: grootfs-release-develop/ci/tasks/parse-manifests.yml
     params:
@@ -913,40 +885,40 @@ jobs:
       releases:
       - datadog-nozzle-release/*.tgz
       stemcells:
-      - thanos-bosh-stemcell/*.tgz
+      - gamora-bosh-stemcell/*.tgz
 
 - name: CATs
   serial_groups:
   - deploy-cf
-  - deploy-diego
   - deploy-datadog-nozzle
   plan:
   - aggregate:
+    - get: git-cf-deployment
+      trigger: true
+      passed: [deploy-cf]
     - get: grootfs-ci-secrets
     - get: garden-release
       trigger: true
-      passed: [deploy-diego]
+      passed: [deploy-cf]
     - get: diego-release
       trigger: true
-      passed: [deploy-diego]
+      passed: [deploy-cf]
     - get: grootfs-release-develop
       trigger: true
-      passed: [deploy-diego]
-  - task: parse-manifests
-    file: grootfs-release-develop/ci/tasks/parse-manifests.yml
+      passed: [deploy-cf]
+  - task: generate-cf-manifest
+    file: grootfs-release-develop/ci/tasks/generate-cf-manifest.yml
     params:
-      CF_USERNAME: {{cf-username}}
       CF_PASSWORD: {{cf-password}}
-      CF_SHARED_SECRET: {{cf-shared-secret}}
-      AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
-      AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
+      CF_SECRETS: {{cf-secrets}}
+      CF_UAA_CERTS: {{cf-uaa-certs}}
   - task: run-cats
     file: grootfs-release-develop/ci/tasks/run-cats.yml
     params:
-      BOSH_TARGET: {{thanos-bosh-target}}
-      BOSH_USER: {{thanos-bosh-username}}
-      BOSH_PASSWORD: {{thanos-bosh-password}}
-      BOSH_MANIFEST: manifests/thanos/cf_colocated.yml
+      BOSH_TARGET: {{gamora-bosh-target}}
+      BOSH_USER: {{gamora-bosh-username}}
+      BOSH_PASSWORD: {{gamora-bosh-password}}
+      BOSH_MANIFEST: manifests/cf.yml
 
 resource_types:
 - name: slack-notification-docker

@@ -40,7 +40,8 @@ set_pipeline() {
     --var datadog-application-key="$(lpass show 'Shared-Garden/grootfs-deployments/datadog-api-keys' --password)" \
     --var cf-username="$(lpass show 'Shared-Garden/Grootfs-Performance-CF' --username)" \
     --var cf-password="$(lpass show 'Shared-Garden/Grootfs-Performance-CF' --password)" \
-    --var cf-shared-secret="$(lpass show 'Shared-Garden/Grootfs-Performance-CF' --field=shared-secret)" \
+    --var cf-secrets="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/cf-secrets' --notes)" \
+    --var cf-uaa-certs="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/cf-uaa-certs' --notes)" \
     --var github-client-id="$(lpass show 'Shared-Garden/grootfs-deployments/github-garden-gnome' --username)" \
     --var github-client-secret="$(lpass show 'Shared-Garden/grootfs-deployments/github-garden-gnome' --password)" \
     --var grootfs-release-private-yaml="$(lpass show 'Shared-Garden/grootfs-release-private.yml' --note)"
