@@ -29,6 +29,7 @@ function main() {
   mount_xfs_volume $privileged_volume_file $privileged_store_path
 
   setup_unprivileged_store $unprivileged_store_path
+  chmod 700 $privileged_store_path
 }
 
 function format_volume_file() {
