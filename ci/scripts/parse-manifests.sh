@@ -1,11 +1,10 @@
 #!/bin/bash
 
 SOURCE_MANIFESTS_PATH=grootfs-ci-secrets/deployments
-MANIFESTS="gamora/concourse.yml grootfs-bench/aws.yml thanos/datadog-firehose-nozzle.yml"
+MANIFESTS="gamora/concourse.yml grootfs-bench/aws.yml gamora/datadog-firehose-nozzle.yml"
 
 mkdir -p manifests/gamora
 mkdir -p manifests/grootfs-bench
-mkdir -p manifests/thanos
 
 for manifest in $MANIFESTS
 do

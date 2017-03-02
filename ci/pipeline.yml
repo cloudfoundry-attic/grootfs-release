@@ -893,7 +893,7 @@ jobs:
       DATADOG_API_KEY: {{datadog-api-key}}
   - put: datadog-nozzle-deployment
     params:
-      manifest: manifests/thanos/datadog-firehose-nozzle.yml
+      manifest: manifests/gamora/datadog-firehose-nozzle.yml
       releases:
       - datadog-nozzle-release/*.tgz
       stemcells:
