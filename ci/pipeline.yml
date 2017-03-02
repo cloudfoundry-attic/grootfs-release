@@ -54,6 +54,18 @@ groups:
   - tag-grootfs-ci-image
 
 resources:
+- name: cats-concourse-task
+  type: git
+  source:
+    branch: master
+    uri: https://github.com/cloudfoundry/cats-concourse-task.git
+
+- name: cf-acceptance-tests
+  type: git
+  source:
+    branch: master
+    uri: https://github.com/cloudfoundry/cf-acceptance-tests.git
+
 - name: monday-update
   type: time
   source:
@@ -893,32 +905,17 @@ jobs:
   - deploy-datadog-nozzle
   plan:
   - aggregate:
-    - get: git-cf-deployment
-      trigger: true
-      passed: [deploy-cf]
-    - get: grootfs-ci-secrets
-    - get: garden-release
-      trigger: true
-      passed: [deploy-cf]
-    - get: diego-release
-      trigger: true
-      passed: [deploy-cf]
+    - get: cats-concourse-task
     - get: grootfs-release-develop
       trigger: true
       passed: [deploy-cf]
-  - task: generate-cf-manifest
-    file: grootfs-release-develop/ci/tasks/generate-cf-manifest.yml
+    - get: cf-acceptance-tests
+  - task: generate-cats-config-json
+    file: grootfs-release-develop/ci/tasks/generate-cats-config-json.yml
     params:
       CF_PASSWORD: {{cf-password}}
-      CF_SECRETS: {{cf-secrets}}
-      CF_UAA_CERTS: {{cf-uaa-certs}}
   - task: run-cats
-    file: grootfs-release-develop/ci/tasks/run-cats.yml
-    params:
-      BOSH_TARGET: {{gamora-bosh-target}}
-      BOSH_USER: {{gamora-bosh-username}}
-      BOSH_PASSWORD: {{gamora-bosh-password}}
-      BOSH_MANIFEST: manifests/cf.yml
+    file: cats-concourse-task/task.yml
 
 resource_types:
 - name: slack-notification-docker

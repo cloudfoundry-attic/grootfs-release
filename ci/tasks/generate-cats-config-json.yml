@@ -8,16 +8,14 @@ image_resource:
 platform: linux
 
 inputs:
-  - name: grootfs-ci-secrets
   - name: grootfs-release-develop
-  - name: manifests
 
 params:
-  BOSH_MANIFEST:
-  BOSH_TARGET:
-  BOSH_USER:
-  BOSH_PASSWORD:
+  CF_PASSWORD:
+
+outputs:
+  - name: integeation-config
 
 run:
-  path: grootfs-release-develop/ci/scripts/run-cats.sh
+  path: grootfs-release-develop/ci/scripts/generate-cats-config-json.sh
   user: root

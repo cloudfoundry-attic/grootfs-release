@@ -11,7 +11,6 @@ bosh2 int \
   --vars-file ./secrets.yml \
   --vars-file ./uaa-certs.yml \
   --vars-store ./regenerate-secrets.yml \
-  --ops-file grootfs-ci-secrets/deployments/cf-operations/cats-errand.yml \
   --ops-file git-cf-deployment/operations/gcp.yml \
   --ops-file grootfs-release-develop/manifests/operations/grootfs.yml \
   --ops-file grootfs-ci-secrets/deployments/cf-operations/cf-resize.yml \
