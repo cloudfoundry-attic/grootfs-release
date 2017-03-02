@@ -14,7 +14,7 @@ params:
   CF_PASSWORD:
 
 outputs:
-  - name: integeation-config
+  - name: integration-config
 
 run:
   path: grootfs-release-develop/ci/scripts/generate-cats-config-json.sh
