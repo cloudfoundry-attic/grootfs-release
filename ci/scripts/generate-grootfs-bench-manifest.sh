@@ -2,17 +2,16 @@
 
 set -e
 
-if [[ "$DATADOG_API_KEY" == "" ]]
-then
-  echo "ERROR: DATADOG_API_KEY param must be defined"
-  exit 1
-fi
+ensure(){
+  if [[ "${!1}" == "" ]]
+  then
+    echo "ERROR: ${1} param must be defined"
+    exit 1
+  fi
+}
 
-if [[ "$DATADOG_APP_KEY" == "" ]]
-then
-  echo "ERROR: DATADOG_APP_KEY param must be defined"
-  exit 1
-fi
+ensure DATADOG_API_KEY
+ensure DATADOG_APP_KEY
 
 bosh2 int \
   --var=datadog_api_key=${DATADOG_API_KEY} \

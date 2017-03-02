@@ -2,6 +2,19 @@
 
 set -e
 
+ensure(){
+  if [[ "${!1}" == "" ]]
+  then
+    echo "ERROR: ${1} param must be defined"
+    exit 1
+  fi
+}
+
+ensure CF_SECRETS
+ensure CF_UAA_CERTS
+ensure CF_SYSTEM_DOMAIN
+ensure CF_PASSWORD
+
 echo "$CF_SECRETS" > secrets.yml
 echo "$CF_UAA_CERTS" > uaa-certs.yml
 

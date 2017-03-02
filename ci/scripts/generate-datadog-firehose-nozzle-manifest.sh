@@ -2,17 +2,16 @@
 
 set -e
 
-if [[ "$DATADOG_API_KEY" == "" ]]
-then
-  echo "ERROR: DATADOG_API_KEY param must be defined"
-  exit 1
-fi
+ensure(){
+  if [[ "${!1}" == "" ]]
+  then
+    echo "ERROR: ${1} param must be defined"
+    exit 1
+  fi
+}
 
-if [[ "$CF_SECRETS" == "" ]]
-then
-  echo "ERROR: CF_SECRETS param must be defined"
-  exit 1
-fi
+ensure DATADOG_API_KEY
+ensure CF_SECRETS
 
 echo "$CF_SECRETS" > secrets.yml
 

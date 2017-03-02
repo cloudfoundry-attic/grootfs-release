@@ -2,6 +2,16 @@
 
 set -e -x
 
+ensure(){
+  if [[ "${!1}" == "" ]]
+  then
+    echo "ERROR: ${1} param must be defined"
+    exit 1
+  fi
+}
+
+ensure PRIVATE_YML
+
 VERSION=$(cat ./grootfs-release-version/number)
 if [ -z "$VERSION" ]; then
   echo "missing version number"

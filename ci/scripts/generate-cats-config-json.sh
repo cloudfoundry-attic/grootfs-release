@@ -1,6 +1,16 @@
 #!/bin/bash
 set -e
 
+ensure(){
+  if [[ "${!1}" == "" ]]
+  then
+    echo "ERROR: ${1} param must be defined"
+    exit 1
+  fi
+}
+
+ensure CF_PASSWORD
+
 cat > integration-config/integration_config.json <<EOF
 {
   "api": "api.grootfs-performance.cf-app.com",
