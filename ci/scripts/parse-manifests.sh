@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SOURCE_MANIFESTS_PATH=grootfs-ci-secrets/deployments
-MANIFESTS="gamora/concourse.yml grootfs-bench/aws.yml gamora/datadog-firehose-nozzle.yml"
+MANIFESTS="gamora/concourse.yml grootfs-bench/aws.yml"
 
 mkdir -p manifests/gamora
 mkdir -p manifests/grootfs-bench
