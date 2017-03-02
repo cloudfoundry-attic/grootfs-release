@@ -1,10 +1,9 @@
 #!/bin/bash
 
 SOURCE_MANIFESTS_PATH=grootfs-ci-secrets/deployments
-MANIFESTS="gamora/concourse.yml grootfs-bench/aws.yml"
+MANIFESTS="gamora/concourse.yml"
 
 mkdir -p manifests/gamora
-mkdir -p manifests/grootfs-bench
 
 for manifest in $MANIFESTS
 do

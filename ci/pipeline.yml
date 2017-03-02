@@ -609,8 +609,8 @@ jobs:
       - get: performance-time-trigger
         trigger: true
       - get: grootfs-ci-secrets
-    - task: parse-manifests
-      file: grootfs-release-develop/ci/tasks/parse-manifests.yml
+    - task: generate-manifest
+      file: grootfs-release-develop/ci/tasks/generate-grootfs-bench-manifest.yml
       params:
         DATADOG_API_KEY: {{datadog-api-key}}
         DATADOG_APP_KEY: {{datadog-application-key}}
@@ -621,7 +621,7 @@ jobs:
         BOSH_TARGET: {{gamora-bosh-target}}
         BOSH_USER: {{gamora-bosh-username}}
         BOSH_PASSWORD: {{gamora-bosh-password}}
-        BOSH_MANIFEST: manifests/grootfs-bench/aws.yml
+        BOSH_MANIFEST: manifests/grootfs-bench.yml
         ERRAND_NAME: grootfs-bench-local-btrfs
         DATADOG_API_KEY: {{datadog-api-key}}
         DATADOG_APPLICATION_KEY: {{datadog-application-key}}
@@ -632,7 +632,7 @@ jobs:
         BOSH_TARGET: {{gamora-bosh-target}}
         BOSH_USER: {{gamora-bosh-username}}
         BOSH_PASSWORD: {{gamora-bosh-password}}
-        BOSH_MANIFEST: manifests/grootfs-bench/aws.yml
+        BOSH_MANIFEST: manifests/grootfs-bench.yml
         ERRAND_NAME: grootfs-bench-local-overlay-xfs
         DATADOG_API_KEY: {{datadog-api-key}}
         DATADOG_APPLICATION_KEY: {{datadog-application-key}}
@@ -643,7 +643,7 @@ jobs:
         BOSH_TARGET: {{gamora-bosh-target}}
         BOSH_USER: {{gamora-bosh-username}}
         BOSH_PASSWORD: {{gamora-bosh-password}}
-        BOSH_MANIFEST: manifests/grootfs-bench/aws.yml
+        BOSH_MANIFEST: manifests/grootfs-bench.yml
         ERRAND_NAME: grootfs-bench-remote-btrfs
         DATADOG_API_KEY: {{datadog-api-key}}
         DATADOG_APPLICATION_KEY: {{datadog-application-key}}
