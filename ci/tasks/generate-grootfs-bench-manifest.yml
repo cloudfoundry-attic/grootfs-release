@@ -1,0 +1,22 @@
+---
+image_resource:
+  type: docker-image
+  source:
+    repository: cfgarden/grootfs-ci
+
+platform: linux
+
+inputs:
+  - name: grootfs-ci-secrets
+  - name: grootfs-release-develop
+
+outputs:
+  - name: manifests
+
+params:
+  DATADOG_API_KEY:
+  DATADOG_APP_KEY:
+
+run:
+  path: grootfs-release-develop/ci/scripts/generate-grootfs-bench-manifest.sh
+  user: root

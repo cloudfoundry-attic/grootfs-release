@@ -219,9 +219,9 @@ resources:
 - name: grootfs-bench-deployment
   type: bosh-deployment
   source:
-    target: {{thanos-bosh-target}}
-    username: {{thanos-bosh-username}}
-    password: {{thanos-bosh-password}}
+    target: {{gamora-bosh-target}}
+    username: {{gamora-bosh-username}}
+    password: {{gamora-bosh-password}}
     deployment: grootfs-bench
     ignore_ssl: true
 
@@ -233,11 +233,6 @@ resources:
     password: {{gamora-bosh-password}}
     deployment: garden-grootfs
     ignore_ssl: true
-
-- name: thanos-bosh-stemcell
-  type: bosh-io-stemcell
-  source:
-    name: {{thanos-bosh-stemcell-name}}
 
 - name: gamora-bosh-stemcell
   type: bosh-io-stemcell
@@ -523,7 +518,7 @@ jobs:
   serial: true
   plan:
     - aggregate:
-      - get: thanos-bosh-stemcell
+      - get: gamora-bosh-stemcell
       - get: grootfs-ci-secrets
       - get: grootfs-bench-release
         trigger: true
@@ -571,22 +566,22 @@ jobs:
         trigger: true
         passed:
         - create-grootfs-bench-release
-      - get: thanos-bosh-stemcell
+      - get: gamora-bosh-stemcell
         trigger: true
       - get: grootfs-ci-secrets
-    - task: parse-manifests
-      file: grootfs-release-develop/ci/tasks/parse-manifests.yml
+    - task: generate-manifest
+      file: grootfs-release-develop/ci/tasks/generate-grootfs-bench-manifest.yml
       params:
         DATADOG_API_KEY: {{datadog-api-key}}
         DATADOG_APP_KEY: {{datadog-application-key}}
     - put: grootfs-bench-deployment
       params:
-        manifest: manifests/grootfs-bench/aws.yml
+        manifest: manifests/grootfs-bench.yml
         releases:
         - grootfs-release-tarball/*.tgz
         - grootfs-bench-release-tarball/*.tgz
         stemcells:
-        - thanos-bosh-stemcell/*.tgz
+        - gamora-bosh-stemcell/*.tgz
     on_failure:
       put: slack-alert
       params:
@@ -623,9 +618,9 @@ jobs:
       privileged: true
       file: grootfs-bench-release/ci/tasks/performance-tests.yml
       params:
-        BOSH_TARGET: {{thanos-bosh-target}}
-        BOSH_USER: {{thanos-bosh-username}}
-        BOSH_PASSWORD: {{thanos-bosh-password}}
+        BOSH_TARGET: {{gamora-bosh-target}}
+        BOSH_USER: {{gamora-bosh-username}}
+        BOSH_PASSWORD: {{gamora-bosh-password}}
         BOSH_MANIFEST: manifests/grootfs-bench/aws.yml
         ERRAND_NAME: grootfs-bench-local-btrfs
         DATADOG_API_KEY: {{datadog-api-key}}
@@ -634,9 +629,9 @@ jobs:
       privileged: true
       file: grootfs-bench-release/ci/tasks/performance-tests.yml
       params:
-        BOSH_TARGET: {{thanos-bosh-target}}
-        BOSH_USER: {{thanos-bosh-username}}
-        BOSH_PASSWORD: {{thanos-bosh-password}}
+        BOSH_TARGET: {{gamora-bosh-target}}
+        BOSH_USER: {{gamora-bosh-username}}
+        BOSH_PASSWORD: {{gamora-bosh-password}}
         BOSH_MANIFEST: manifests/grootfs-bench/aws.yml
         ERRAND_NAME: grootfs-bench-local-overlay-xfs
         DATADOG_API_KEY: {{datadog-api-key}}
@@ -645,9 +640,9 @@ jobs:
       privileged: true
       file: grootfs-bench-release/ci/tasks/performance-tests.yml
       params:
-        BOSH_TARGET: {{thanos-bosh-target}}
-        BOSH_USER: {{thanos-bosh-username}}
-        BOSH_PASSWORD: {{thanos-bosh-password}}
+        BOSH_TARGET: {{gamora-bosh-target}}
+        BOSH_USER: {{gamora-bosh-username}}
+        BOSH_PASSWORD: {{gamora-bosh-password}}
         BOSH_MANIFEST: manifests/grootfs-bench/aws.yml
         ERRAND_NAME: grootfs-bench-remote-btrfs
         DATADOG_API_KEY: {{datadog-api-key}}
