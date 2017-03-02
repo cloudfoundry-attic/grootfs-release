@@ -16,4 +16,5 @@ bosh2 int \
   --ops-file grootfs-release-develop/manifests/operations/grootfs.yml \
   --ops-file grootfs-ci-secrets/deployments/cf-operations/cf-resize.yml \
   --ops-file grootfs-ci-secrets/deployments/cf-operations/use-latest-releases.yml \
+  --ops-file grootfs-ci-secrets/deployments/cf-operations/datadog-firehose-nozzle.yml \
   git-cf-deployment/cf-deployment.yml > manifests/cf.yml
