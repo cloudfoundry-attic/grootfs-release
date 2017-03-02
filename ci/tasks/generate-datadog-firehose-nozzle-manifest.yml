@@ -1,0 +1,23 @@
+---
+image_resource:
+  type: docker-image
+  source:
+    repository: cfgarden/grootfs-ci
+
+platform: linux
+
+inputs:
+  - name: grootfs-ci-secrets
+  - name: grootfs-release-develop
+  - name: git-cf-deployment
+
+outputs:
+  - name: manifests
+
+params:
+  DATADOG_API_KEY:
+  CF_SECRETS:
+
+run:
+  path: grootfs-release-develop/ci/scripts/generate-datadog-firehose-nozzle-manifest.sh
+  user: root

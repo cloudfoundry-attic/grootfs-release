@@ -887,13 +887,14 @@ jobs:
       trigger: true
     - get: grootfs-ci-secrets
     - get: gamora-bosh-stemcell
-  - task: parse-manifests
-    file: grootfs-release-develop/ci/tasks/parse-manifests.yml
+  - task: generate-manifest
+    file: grootfs-release-develop/ci/tasks/generate-datadog-firehose-nozzle-manifest.yml
     params:
       DATADOG_API_KEY: {{datadog-api-key}}
+      CF_SECRETS: {{cf-secrets}}
   - put: datadog-nozzle-deployment
     params:
-      manifest: manifests/gamora/datadog-firehose-nozzle.yml
+      manifest: manifests/datadog-firehose-nozzle.yml
       releases:
       - datadog-nozzle-release/*.tgz
       stemcells:
