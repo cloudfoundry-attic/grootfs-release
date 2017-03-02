@@ -214,7 +214,7 @@ resources:
 - name: performance-time-trigger
   type: time
   source:
-    interval: 30m
+    interval: 60m
 
 - name: grootfs-bench-deployment
   type: bosh-deployment
