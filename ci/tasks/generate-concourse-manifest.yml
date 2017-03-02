@@ -14,8 +14,10 @@ outputs:
   - name: manifests
 
 params:
-  DATADOG_API_KEY:
-  DATADOG_APP_KEY:
+  CONCOURSE_USERNAME:
+  CONCOURSE_PASSWORD:
+  GITHUB_CLIENT_ID:
+  GITHUB_CLIENT_SECRET:
 
 run:
   path: grootfs-release-develop/ci/scripts/generate-concourse-manifest.sh
