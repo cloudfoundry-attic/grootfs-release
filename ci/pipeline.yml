@@ -614,50 +614,51 @@ jobs:
       params:
         DATADOG_API_KEY: {{datadog-api-key}}
         DATADOG_APP_KEY: {{datadog-application-key}}
-    - task: benchmark-LOCAL-BTRFS
-      privileged: true
-      file: grootfs-bench-release/ci/tasks/performance-tests.yml
-      params:
-        BOSH_TARGET: {{gamora-bosh-target}}
-        BOSH_USER: {{gamora-bosh-username}}
-        BOSH_PASSWORD: {{gamora-bosh-password}}
-        BOSH_MANIFEST: manifests/grootfs-bench.yml
-        ERRAND_NAME: grootfs-bench-local-btrfs
-        DATADOG_API_KEY: {{datadog-api-key}}
-        DATADOG_APPLICATION_KEY: {{datadog-application-key}}
-    - task: benchmark-LOCAL-OVERLAY-XFS
-      privileged: true
-      file: grootfs-bench-release/ci/tasks/performance-tests.yml
-      params:
-        BOSH_TARGET: {{gamora-bosh-target}}
-        BOSH_USER: {{gamora-bosh-username}}
-        BOSH_PASSWORD: {{gamora-bosh-password}}
-        BOSH_MANIFEST: manifests/grootfs-bench.yml
-        ERRAND_NAME: grootfs-bench-local-overlay-xfs
-        DATADOG_API_KEY: {{datadog-api-key}}
-        DATADOG_APPLICATION_KEY: {{datadog-application-key}}
-    - task: benchmark-REMOTE-BTRFS
-      privileged: true
-      file: grootfs-bench-release/ci/tasks/performance-tests.yml
-      params:
-        BOSH_TARGET: {{gamora-bosh-target}}
-        BOSH_USER: {{gamora-bosh-username}}
-        BOSH_PASSWORD: {{gamora-bosh-password}}
-        BOSH_MANIFEST: manifests/grootfs-bench.yml
-        ERRAND_NAME: grootfs-bench-remote-btrfs
-        DATADOG_API_KEY: {{datadog-api-key}}
-        DATADOG_APPLICATION_KEY: {{datadog-application-key}}
-    - task: benchmark-REMOTE-OVERLAY-XFS
-      privileged: true
-      file: grootfs-bench-release/ci/tasks/performance-tests.yml
-      params:
-        BOSH_TARGET: {{gamora-bosh-target}}
-        BOSH_USER: {{gamora-bosh-username}}
-        BOSH_PASSWORD: {{gamora-bosh-password}}
-        BOSH_MANIFEST: manifests/grootfs-bench.yml
-        ERRAND_NAME: grootfs-bench-remote-overlay-xfs
-        DATADOG_API_KEY: {{datadog-api-key}}
-        DATADOG_APPLICATION_KEY: {{datadog-application-key}}
+    - aggregate:
+      - task: benchmark-LOCAL-BTRFS
+        privileged: true
+        file: grootfs-bench-release/ci/tasks/performance-tests.yml
+        params:
+          BOSH_TARGET: {{gamora-bosh-target}}
+          BOSH_USER: {{gamora-bosh-username}}
+          BOSH_PASSWORD: {{gamora-bosh-password}}
+          BOSH_MANIFEST: manifests/grootfs-bench.yml
+          ERRAND_NAME: grootfs-bench-local-btrfs
+          DATADOG_API_KEY: {{datadog-api-key}}
+          DATADOG_APPLICATION_KEY: {{datadog-application-key}}
+      - task: benchmark-LOCAL-OVERLAY-XFS
+        privileged: true
+        file: grootfs-bench-release/ci/tasks/performance-tests.yml
+        params:
+          BOSH_TARGET: {{gamora-bosh-target}}
+          BOSH_USER: {{gamora-bosh-username}}
+          BOSH_PASSWORD: {{gamora-bosh-password}}
+          BOSH_MANIFEST: manifests/grootfs-bench.yml
+          ERRAND_NAME: grootfs-bench-local-overlay-xfs
+          DATADOG_API_KEY: {{datadog-api-key}}
+          DATADOG_APPLICATION_KEY: {{datadog-application-key}}
+      - task: benchmark-REMOTE-BTRFS
+        privileged: true
+        file: grootfs-bench-release/ci/tasks/performance-tests.yml
+        params:
+          BOSH_TARGET: {{gamora-bosh-target}}
+          BOSH_USER: {{gamora-bosh-username}}
+          BOSH_PASSWORD: {{gamora-bosh-password}}
+          BOSH_MANIFEST: manifests/grootfs-bench.yml
+          ERRAND_NAME: grootfs-bench-remote-btrfs
+          DATADOG_API_KEY: {{datadog-api-key}}
+          DATADOG_APPLICATION_KEY: {{datadog-application-key}}
+      - task: benchmark-REMOTE-OVERLAY-XFS
+        privileged: true
+        file: grootfs-bench-release/ci/tasks/performance-tests.yml
+        params:
+          BOSH_TARGET: {{gamora-bosh-target}}
+          BOSH_USER: {{gamora-bosh-username}}
+          BOSH_PASSWORD: {{gamora-bosh-password}}
+          BOSH_MANIFEST: manifests/grootfs-bench.yml
+          ERRAND_NAME: grootfs-bench-remote-overlay-xfs
+          DATADOG_API_KEY: {{datadog-api-key}}
+          DATADOG_APPLICATION_KEY: {{datadog-application-key}}
     - put: grootfs-tracker
       params:
         repos:
