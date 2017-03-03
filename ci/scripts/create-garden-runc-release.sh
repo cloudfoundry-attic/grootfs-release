@@ -2,11 +2,7 @@
 # vim: set ft=sh
 
 set -e -x
+BUILD_FOLDER=$PWD
 
 cd garden-runc-release
-
-bosh -n create release --with-tarball --timestamp-version
-
-mkdir -p ../bosh-release
-mv dev_releases/garden-runc/*.tgz ../bosh-release/garden-runc.tgz
-
+bosh2 -n create-release --tarball ${BUILD_FOLDER}/bosh-release/garden-runc.tgz --timestamp-version
