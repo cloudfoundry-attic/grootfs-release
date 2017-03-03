@@ -619,9 +619,10 @@ jobs:
       file: grootfs-bench-release/ci/tasks/performance-tests.yml
       params:
         BOSH_TARGET: {{gamora-bosh-target}}
-        BOSH_USER: {{gamora-bosh-username}}
-        BOSH_PASSWORD: {{gamora-bosh-password}}
-        BOSH_MANIFEST: manifests/grootfs-bench.yml
+        BOSH_CLIENT: {{gamora-bosh-username}}
+        BOSH_CLIENT_SECRET: {{gamora-bosh-password}}
+        BOSH_DEPLOYMENT: grootfs-bench
+        BOSH_CERTIFICATES: {{gamora-bosh-certificates}}
         ERRAND_NAME: grootfs-bench-local-btrfs
         DATADOG_API_KEY: {{datadog-api-key}}
         DATADOG_APPLICATION_KEY: {{datadog-application-key}}
@@ -630,9 +631,10 @@ jobs:
       file: grootfs-bench-release/ci/tasks/performance-tests.yml
       params:
         BOSH_TARGET: {{gamora-bosh-target}}
-        BOSH_USER: {{gamora-bosh-username}}
-        BOSH_PASSWORD: {{gamora-bosh-password}}
-        BOSH_MANIFEST: manifests/grootfs-bench.yml
+        BOSH_CLIENT: {{gamora-bosh-username}}
+        BOSH_CLIENT_SECRET: {{gamora-bosh-password}}
+        BOSH_DEPLOYMENT: grootfs-bench
+        BOSH_CERTIFICATES: {{gamora-bosh-certificates}}
         ERRAND_NAME: grootfs-bench-local-overlay-xfs
         DATADOG_API_KEY: {{datadog-api-key}}
         DATADOG_APPLICATION_KEY: {{datadog-application-key}}
@@ -641,9 +643,10 @@ jobs:
       file: grootfs-bench-release/ci/tasks/performance-tests.yml
       params:
         BOSH_TARGET: {{gamora-bosh-target}}
-        BOSH_USER: {{gamora-bosh-username}}
-        BOSH_PASSWORD: {{gamora-bosh-password}}
-        BOSH_MANIFEST: manifests/grootfs-bench.yml
+        BOSH_CLIENT: {{gamora-bosh-username}}
+        BOSH_CLIENT_SECRET: {{gamora-bosh-password}}
+        BOSH_DEPLOYMENT: grootfs-bench
+        BOSH_CERTIFICATES: {{gamora-bosh-certificates}}
         ERRAND_NAME: grootfs-bench-remote-btrfs
         DATADOG_API_KEY: {{datadog-api-key}}
         DATADOG_APPLICATION_KEY: {{datadog-application-key}}
@@ -652,9 +655,10 @@ jobs:
       file: grootfs-bench-release/ci/tasks/performance-tests.yml
       params:
         BOSH_TARGET: {{gamora-bosh-target}}
-        BOSH_USER: {{gamora-bosh-username}}
-        BOSH_PASSWORD: {{gamora-bosh-password}}
-        BOSH_MANIFEST: manifests/grootfs-bench.yml
+        BOSH_CLIENT: {{gamora-bosh-username}}
+        BOSH_CLIENT_SECRET: {{gamora-bosh-password}}
+        BOSH_DEPLOYMENT: grootfs-bench
+        BOSH_CERTIFICATES: {{gamora-bosh-certificates}}
         ERRAND_NAME: grootfs-bench-remote-overlay-xfs
         DATADOG_API_KEY: {{datadog-api-key}}
         DATADOG_APPLICATION_KEY: {{datadog-application-key}}

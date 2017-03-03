@@ -29,6 +29,7 @@ set_pipeline() {
     --var github-access-token="$(lpass show 'Shared-Garden/Garden-Gnome-Github-Account' --field=api-key)" \
     --var gamora-bosh-username="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/bosh-director' --username)" \
     --var gamora-bosh-password="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/bosh-director' --password)" \
+    --var gamora-bosh-certificates="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/certificates' --notes)" \
     --var dockerhub-username="$(lpass show 'Shared-Garden/cf-garden-docker' --username)" \
     --var dockerhub-password="$(lpass show 'Shared-Garden/cf-garden-docker' --password)" \
     --var garden-tracker-token="$(lpass show 'Shared-Garden/Garden-Gnome-Tracker-Account' --notes)" \
