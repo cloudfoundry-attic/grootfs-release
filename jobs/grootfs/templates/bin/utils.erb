@@ -3,11 +3,17 @@
 function create_volume_file() {
   local volume_file=$1
 
+  <% if p('grootfs.store_size_bytes') <= 0 %>
+  volume_size="$(( $(df --output=size  /var/vcap/data | sed 1d) * 1024 ))"
+  <% else %>
+  volume_size="<%= p('grootfs.store_size_bytes') %>"
+  <% end %>
+
   # Do no recreate the volume file if it already exists
   if [ ! -f "$volume_file" ]
   then
     echo "creating volume..."
-    truncate -s <%= p('grootfs.store_size_bytes') %> $volume_file
+    truncate -s $volume_size  $volume_file
   fi
 }
 
@@ -56,4 +62,3 @@ function setup_unprivileged_store() {
   chown $maximus_uid:$maximus_uid $store_path
   chmod 700 $store_path
 }
-

@@ -19,7 +19,6 @@ jobs:
       - name: grootfs
     properties:
       grootfs:
-        store_size_bytes: 524288000
         driver: overlay-xfs
 
 networks:
