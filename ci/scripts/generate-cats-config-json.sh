@@ -17,6 +17,7 @@ cat > integration-config/integration_config.json <<EOF
   "apps_domain": "grootfs-performance.cf-app.com",
   "admin_user": "admin",
   "admin_password": "$CF_PASSWORD",
+  "backend": "diego",
   "skip_ssl_validation": true,
   "use_http": true,
   "include_apps": true,
