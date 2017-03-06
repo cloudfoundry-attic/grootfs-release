@@ -19,4 +19,6 @@ create:
 
 clean:
   ignore_base_images: <%= p('grootfs.persistent_image_list') %>
+  <% if p("grootfs.graph_cleanup_threshold_in_mb") >= 0 %>
   threshold_bytes: <%= p("grootfs.graph_cleanup_threshold_in_mb") * 1048576 %>
+  <% end %>
