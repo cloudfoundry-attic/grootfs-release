@@ -1,4 +1,4 @@
-store_path: /var/vcap/data/grootfs/store/unprivileged
+store: /var/vcap/data/grootfs/store/unprivileged
 driver: <%= p('grootfs.driver') %>
 btrfs_bin: /var/vcap/packages/btrfs-progs/bin/btrfs
 drax_bin: /var/vcap/packages/grootfs/bin/drax
@@ -8,17 +8,21 @@ log_level: <%= p('grootfs.log_level') %>
 <% if_p("grootfs.dropsonde_port") do |dropsonde_port| %>
 metron_endpoint: 127.0.0.1:<%= dropsonde_port %>
 <% end %>
-insecure_registries: <%= p('grootfs.insecure_docker_registry_list') %>
-ignore_base_images: <%= p('grootfs.persistent_image_list') %>
-<% if p("grootfs.graph_cleanup_threshold_in_mb") >= 0 %>
-clean_on_create: true
-clean_threshold_bytes: <%= p("grootfs.graph_cleanup_threshold_in_mb") * 1048576 %>
-<% else %>
-clean_on_create: false
-<% end %>
-uid_mappings:
-- "0:4294967294:1"
-- "1:1:4294967293"
-gid_mappings:
-- "0:4294967294:1"
-- "1:1:4294967293"
+
+create:
+  <% if p("grootfs.graph_cleanup_threshold_in_mb") >= 0 %>
+  with_clean: true
+  <% else %>
+  with_clean: false
+  <% end %>
+  insecure_registries: <%= p('grootfs.insecure_docker_registry_list') %>
+  uid_mappings:
+  - "0:4294967294:1"
+  - "1:1:4294967293"
+  gid_mappings:
+  - "0:4294967294:1"
+  - "1:1:4294967293"
+
+clean:
+  ignore_base_images: <%= p('grootfs.persistent_image_list') %>
+  threshold_bytes: <%= p("grootfs.graph_cleanup_threshold_in_mb") * 1048576 %>
