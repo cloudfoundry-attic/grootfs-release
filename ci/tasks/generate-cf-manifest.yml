@@ -17,6 +17,11 @@ outputs:
 params:
   CF_PASSWORD:
   CF_SYSTEM_DOMAIN: grootfs-performance.cf-app.com
+  CF_ETCD_CERTS:
+  CF_CC_CERTS:
+  CF_CONSUL_CERTS:
+  CF_DIEGO_CERTS:
+  CF_LOGGREGATOR_CERTS:
 
 run:
   path: grootfs-release-develop/ci/scripts/generate-cf-manifest.sh

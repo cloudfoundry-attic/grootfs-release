@@ -14,15 +14,30 @@ ensure CF_SECRETS
 ensure CF_UAA_CERTS
 ensure CF_SYSTEM_DOMAIN
 ensure CF_PASSWORD
+ensure CF_ETCD_CERTS
+ensure CF_CC_CERTS
+ensure CF_CONSUL_CERTS
+ensure CF_DIEGO_CERTS
+ensure CF_LOGGREGATOR_CERTS
 
 echo "$CF_SECRETS" > secrets.yml
 echo "$CF_UAA_CERTS" > uaa-certs.yml
+echo "$CF_ETCD_CERTS" > etcd-certs.yml
+echo "$CF_CC_CERTS" > cc-certs.yml
+echo "$CF_CONSUL_CERTS" > consul-certs.yml
+echo "$CF_DIEGO_CERTS" > diego-certs.yml
+echo "$CF_LOGGREGATOR_CERTS" > loggregator-certs.yml
 
 bosh2 int \
   --var=system_domain=${CF_SYSTEM_DOMAIN} \
   --var=uaa_scim_users_admin_password="${CF_PASSWORD}"\
   --vars-file ./secrets.yml \
   --vars-file ./uaa-certs.yml \
+  --vars-file ./etcd-certs.yml \
+  --vars-file ./cc-certs.yml \
+  --vars-file ./consul-certs.yml \
+  --vars-file ./diego-certs.yml \
+  --vars-file ./loggregator-certs.yml \
   --vars-store ./regenerate-secrets.yml \
   --ops-file git-cf-deployment/operations/gcp.yml \
   --ops-file grootfs-release-develop/manifests/operations/grootfs.yml \

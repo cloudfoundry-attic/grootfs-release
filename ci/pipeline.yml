@@ -877,6 +877,11 @@ jobs:
       CF_PASSWORD: {{cf-password}}
       CF_SECRETS: {{cf-secrets}}
       CF_UAA_CERTS: {{cf-uaa-certs}}
+      CF_ETCD_CERTS: {{cf-etcd-certs}}
+      CF_CC_CERTS: {{cf-cc-certs}}
+      CF_CONSUL_CERTS: {{cf-consul-certs}}
+      CF_DIEGO_CERTS: {{cf-diego-certs}}
+      CF_LOGGREGATOR_CERTS: {{cf-loggregator-certs}}
   - put: cf-deployment
     params:
       manifest: manifests/cf.yml
