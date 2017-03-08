@@ -19,7 +19,6 @@ addLib(){
 setDeps(){
   addBuildTool autoconf
   addBuildTool automake
-  addBuildTool gettext
   addBuildTool libtool
   addBuildTool pkg-config
 

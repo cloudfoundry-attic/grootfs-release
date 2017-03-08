@@ -4,7 +4,6 @@ name: lzo
 dependencies:
 - autoconf
 - automake
-- gettext
 - libtool
 - pkg-config
 

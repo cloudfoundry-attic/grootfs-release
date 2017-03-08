@@ -5,7 +5,6 @@ dependencies:
 - autoconf
 - automake
 - e2fsprogs
-- gettext
 - libtool
 - lzo
 - pkg-config
