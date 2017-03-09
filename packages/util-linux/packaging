@@ -9,7 +9,6 @@ addBuildTool(){
 }
 
 setDeps() {
-  addBuildTool gettext
   addBuildTool libtool
   addBuildTool automake
   addBuildTool pkg-config
@@ -22,7 +21,6 @@ tar xvzf util-linux/util-linux-2.28.tar.gz
   cd util-linux-2.28
 
   setDeps
-  ./autogen.sh
   ./configure --prefix=$BOSH_INSTALL_TARGET
   make
   make install prefix=$BOSH_INSTALL_TARGET

@@ -15,10 +15,6 @@ grootfs-build-tools/automake-1.15.tar.gz:
   object_id: 6d029c1d-efdd-423f-b5f3-5a6ba5249bfe
   sha: b5a840c7ec4321e78fdc9472e476263fa6614ca1
   size: 2244206
-grootfs-build-tools/gettext-0.19.8.1.tar.gz:
-  object_id: 8081d7eb-71b9-4250-8628-c062e1d1a999
-  sha: b5d24ba2958c91fc5cc0058165837c99a0f58784
-  size: 19704011
 grootfs-build-tools/libtool-2.4.6.tar.gz:
   object_id: c2e8836b-3539-495f-8acb-29c808bb1b1b
   sha: 25b6931265230a06f0fc2146df64c04e5ae6ec33

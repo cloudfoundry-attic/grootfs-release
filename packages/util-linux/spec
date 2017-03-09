@@ -4,7 +4,6 @@ name: util-linux
 dependencies:
 - autoconf
 - automake
-- gettext
 - libtool
 - pkg-config
 
