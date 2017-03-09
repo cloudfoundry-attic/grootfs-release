@@ -4,7 +4,6 @@ name: btrfs-progs
 dependencies:
 - autoconf
 - automake
-- e2fsprogs
 - libtool
 - lzo
 - pkg-config

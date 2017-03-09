@@ -3,10 +3,6 @@ btrfs-progs/btrfs-progs-4.4.1.tar.gz:
   object_id: 475919b3-ae01-4725-adfd-2cac7a6fef3f
   sha: 97ae1f8a921e2089b2982267dbda7c254e423e45
   size: 1362098
-e2fsprogs/e2fsprogs-1.43.3.tar.gz:
-  object_id: 0aa5e81d-7381-445e-b94f-878080dfadc3
-  sha: 927cb79c6399c559a83b4fa528ec8912a82d122f
-  size: 7405892
 grootfs-build-tools/autoconf-2.69.tar.gz:
   object_id: '08fc1827-ac1e-42bc-a3bd-e6c9aff0dbb0'
   sha: 562471cbcb0dd0fa42a76665acf0dbb68479b78a

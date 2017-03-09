@@ -25,7 +25,6 @@ setDeps(){
   addLib zlib
   addLib util-linux
   addLib lzo
-  addLib e2fsprogs
 
   export CFLAGS="${CFLAGS} -L${PACKAGES}/lzo/lib"
   export AL_OPTS="-I${PACKAGES}/pkg-config/share/aclocal ${AL_OPTS}"
