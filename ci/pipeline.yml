@@ -907,6 +907,7 @@ jobs:
     params:
       DATADOG_API_KEY: {{datadog-api-key}}
       CF_SECRETS: {{cf-secrets}}
+      CF_UAA_CERTS: {{cf-uaa-certs}}
   - put: datadog-nozzle-deployment
     params:
       manifest: manifests/datadog-firehose-nozzle.yml

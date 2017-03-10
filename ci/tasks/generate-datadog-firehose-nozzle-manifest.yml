@@ -16,6 +16,7 @@ outputs:
 params:
   DATADOG_API_KEY:
   CF_SECRETS:
+  CF_UAA_CERTS:
   CF_SYSTEM_DOMAIN: grootfs-performance.cf-app.com
 
 run:
