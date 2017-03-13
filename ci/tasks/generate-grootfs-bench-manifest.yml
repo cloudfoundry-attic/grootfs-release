@@ -16,6 +16,7 @@ outputs:
 params:
   DATADOG_API_KEY:
   DATADOG_APP_KEY:
+  DRIVER:
 
 run:
   path: grootfs-release-develop/ci/scripts/generate-grootfs-bench-manifest.sh

@@ -7,7 +7,8 @@ groups:
   - bump-grootfs-release
   - create-grootfs-release
   - deploy-grootfs-bench
-  - performance-tests
+  - btrfs-performance-tests
+  - xfs-performance-tests
   - grootfs-bench
   - bump-grootfs-bench-release
   - create-grootfs-bench-release
@@ -24,7 +25,8 @@ groups:
   - bump-grootfs-release
   - create-grootfs-release
   - deploy-grootfs-bench
-  - performance-tests
+  - btrfs-performance-tests
+  - xfs-performance-tests
 - name: grootfs-bench
   jobs:
   - grootfs-bench
@@ -216,13 +218,22 @@ resources:
   source:
     interval: 60m
 
-- name: grootfs-bench-deployment
+- name: grootfs-bench-btrfs-deployment
   type: bosh-deployment
   source:
     target: {{gamora-bosh-target}}
     username: {{gamora-bosh-username}}
     password: {{gamora-bosh-password}}
-    deployment: grootfs-bench
+    deployment: grootfs-bench-btrfs
+    ignore_ssl: true
+
+- name: grootfs-bench-xfs-deployment
+  type: bosh-deployment
+  source:
+    target: {{gamora-bosh-target}}
+    username: {{gamora-bosh-username}}
+    password: {{gamora-bosh-password}}
+    deployment: grootfs-bench-xfs
     ignore_ssl: true
 
 - name: garden-grootfs-deployment
@@ -547,7 +558,8 @@ jobs:
 
 - name: deploy-grootfs-bench
   serial_groups:
-  - bosh-deployment
+  - deploy-bench-btrfs
+  - deploy-bench-xfs
   plan:
   - do:
     - aggregate:
@@ -569,14 +581,29 @@ jobs:
       - get: gamora-bosh-stemcell
         trigger: true
       - get: grootfs-ci-secrets
-    - task: generate-manifest
+    - task: generate-btrfs-manifest
       file: grootfs-release-develop/ci/tasks/generate-grootfs-bench-manifest.yml
       params:
         DATADOG_API_KEY: {{datadog-api-key}}
         DATADOG_APP_KEY: {{datadog-application-key}}
-    - put: grootfs-bench-deployment
+        DRIVER: btrfs
+    - put: grootfs-bench-btrfs-deployment
       params:
-        manifest: manifests/grootfs-bench.yml
+        manifest: manifests/grootfs-bench-btrfs.yml
+        releases:
+        - grootfs-release-tarball/*.tgz
+        - grootfs-bench-release-tarball/*.tgz
+        stemcells:
+        - gamora-bosh-stemcell/*.tgz
+    - task: generate-xfs-manifest
+      file: grootfs-release-develop/ci/tasks/generate-grootfs-bench-manifest.yml
+      params:
+        DATADOG_API_KEY: {{datadog-api-key}}
+        DATADOG_APP_KEY: {{datadog-application-key}}
+        DRIVER: xfs
+    - put: grootfs-bench-xfs-deployment
+      params:
+        manifest: manifests/grootfs-bench-xfs.yml
         releases:
         - grootfs-release-tarball/*.tgz
         - grootfs-bench-release-tarball/*.tgz
@@ -590,9 +617,9 @@ jobs:
         channel: {{slack-alert-channel}}
         text: "<!subteam^S1U0HSJ9E|grootfsteam>: What the BOSH? You can deploy it yourself. http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
-- name: performance-tests
+- name: btrfs-performance-tests
   serial_groups:
-  - bosh-deployment
+  - deploy-bench-btrfs
   plan:
   public: true
   plan:
@@ -609,11 +636,6 @@ jobs:
       - get: performance-time-trigger
         trigger: true
       - get: grootfs-ci-secrets
-    - task: generate-manifest
-      file: grootfs-release-develop/ci/tasks/generate-grootfs-bench-manifest.yml
-      params:
-        DATADOG_API_KEY: {{datadog-api-key}}
-        DATADOG_APP_KEY: {{datadog-application-key}}
     - task: benchmark-LOCAL-BTRFS
       privileged: true
       file: grootfs-bench-release/ci/tasks/performance-tests.yml
@@ -621,21 +643,9 @@ jobs:
         BOSH_TARGET: {{gamora-bosh-target}}
         BOSH_CLIENT: {{gamora-bosh-username}}
         BOSH_CLIENT_SECRET: {{gamora-bosh-password}}
-        BOSH_DEPLOYMENT: grootfs-bench
+        BOSH_DEPLOYMENT: grootfs-bench-btrfs
         BOSH_CERTIFICATES: {{gamora-bosh-certificates}}
         ERRAND_NAME: grootfs-bench-local-btrfs
-        DATADOG_API_KEY: {{datadog-api-key}}
-        DATADOG_APPLICATION_KEY: {{datadog-application-key}}
-    - task: benchmark-LOCAL-OVERLAY-XFS
-      privileged: true
-      file: grootfs-bench-release/ci/tasks/performance-tests.yml
-      params:
-        BOSH_TARGET: {{gamora-bosh-target}}
-        BOSH_CLIENT: {{gamora-bosh-username}}
-        BOSH_CLIENT_SECRET: {{gamora-bosh-password}}
-        BOSH_DEPLOYMENT: grootfs-bench
-        BOSH_CERTIFICATES: {{gamora-bosh-certificates}}
-        ERRAND_NAME: grootfs-bench-local-overlay-xfs
         DATADOG_API_KEY: {{datadog-api-key}}
         DATADOG_APPLICATION_KEY: {{datadog-application-key}}
     - task: benchmark-REMOTE-BTRFS
@@ -645,9 +655,55 @@ jobs:
         BOSH_TARGET: {{gamora-bosh-target}}
         BOSH_CLIENT: {{gamora-bosh-username}}
         BOSH_CLIENT_SECRET: {{gamora-bosh-password}}
-        BOSH_DEPLOYMENT: grootfs-bench
+        BOSH_DEPLOYMENT: grootfs-bench-btrfs
         BOSH_CERTIFICATES: {{gamora-bosh-certificates}}
         ERRAND_NAME: grootfs-bench-remote-btrfs
+        DATADOG_API_KEY: {{datadog-api-key}}
+        DATADOG_APPLICATION_KEY: {{datadog-application-key}}
+    - put: grootfs-tracker
+      params:
+        repos:
+        - grootfs-release-develop/src/code.cloudfoundry.org/grootfs
+        - grootfs-release-develop
+        - grootfs-bench-release/src/code.cloudfoundry.org/grootfs-bench
+        - grootfs-bench-release
+    on_failure:
+      put: slack-alert
+      params:
+        username: {{slack-alert-username}}
+        icon_url: {{slack-alert-icon-url}}
+        channel: {{slack-alert-channel}}
+        text: "<!subteam^S1U0HSJ9E|grootfsteam>: You don't need metrics for a thing that doesn't even work! http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+
+- name: xfs-performance-tests
+  serial_groups:
+  - deploy-bench-xfs
+  plan:
+  public: true
+  plan:
+  - do:
+    - aggregate:
+      - get: grootfs-release-develop
+        trigger: true
+        passed:
+        - deploy-grootfs-bench
+      - get: grootfs-bench-release
+        trigger: true
+        passed:
+        - deploy-grootfs-bench
+      - get: performance-time-trigger
+        trigger: true
+      - get: grootfs-ci-secrets
+    - task: benchmark-LOCAL-OVERLAY-XFS
+      privileged: true
+      file: grootfs-bench-release/ci/tasks/performance-tests.yml
+      params:
+        BOSH_TARGET: {{gamora-bosh-target}}
+        BOSH_CLIENT: {{gamora-bosh-username}}
+        BOSH_CLIENT_SECRET: {{gamora-bosh-password}}
+        BOSH_DEPLOYMENT: grootfs-bench-xfs
+        BOSH_CERTIFICATES: {{gamora-bosh-certificates}}
+        ERRAND_NAME: grootfs-bench-local-overlay-xfs
         DATADOG_API_KEY: {{datadog-api-key}}
         DATADOG_APPLICATION_KEY: {{datadog-application-key}}
     - task: benchmark-REMOTE-OVERLAY-XFS
@@ -657,7 +713,7 @@ jobs:
         BOSH_TARGET: {{gamora-bosh-target}}
         BOSH_CLIENT: {{gamora-bosh-username}}
         BOSH_CLIENT_SECRET: {{gamora-bosh-password}}
-        BOSH_DEPLOYMENT: grootfs-bench
+        BOSH_DEPLOYMENT: grootfs-bench-xfs
         BOSH_CERTIFICATES: {{gamora-bosh-certificates}}
         ERRAND_NAME: grootfs-bench-remote-overlay-xfs
         DATADOG_API_KEY: {{datadog-api-key}}
