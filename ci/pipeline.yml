@@ -551,7 +551,6 @@ jobs:
   serial: true
   plan:
     - aggregate:
-      - get: gamora-bosh-stemcell
       - get: grootfs-ci-secrets
       - get: grootfs-bench-release
         trigger: true
