@@ -3,6 +3,7 @@ groups:
 - name: all
   jobs:
   - grootfs
+  - deliver
   - bump-dependencies
   - bump-grootfs-release
   - create-grootfs-release
@@ -27,6 +28,7 @@ groups:
   - deploy-grootfs-bench
   - btrfs-performance-tests
   - xfs-performance-tests
+  - deliver
 - name: grootfs-bench
   jobs:
   - grootfs-bench
@@ -37,11 +39,13 @@ groups:
   jobs:
   - deploy-garden-grootfs
   - gats
+  - deliver
 - name: cf-grootfs
   jobs:
   - deploy-cf
   - deploy-datadog-nozzle
   - CATs
+  - deliver
 - name: tools
   jobs:
   - build-grootfs-ci-image
@@ -688,13 +692,6 @@ jobs:
           ERRAND_NAME: grootfs-bench-remote-btrfs
           DATADOG_API_KEY: {{datadog-api-key}}
           DATADOG_APPLICATION_KEY: {{datadog-application-key}}
-    - put: grootfs-tracker
-      params:
-        repos:
-        - grootfs-release-develop/src/code.cloudfoundry.org/grootfs
-        - grootfs-release-develop
-        - grootfs-bench-release/src/code.cloudfoundry.org/grootfs-bench
-        - grootfs-bench-release
     on_failure:
       put: slack-alert
       params:
@@ -747,13 +744,6 @@ jobs:
           ERRAND_NAME: grootfs-bench-remote-overlay-xfs
           DATADOG_API_KEY: {{datadog-api-key}}
           DATADOG_APPLICATION_KEY: {{datadog-application-key}}
-    - put: grootfs-tracker
-      params:
-        repos:
-        - grootfs-release-develop/src/code.cloudfoundry.org/grootfs
-        - grootfs-release-develop
-        - grootfs-bench-release/src/code.cloudfoundry.org/grootfs-bench
-        - grootfs-bench-release
     on_failure:
       put: slack-alert
       params:
@@ -1018,6 +1008,28 @@ jobs:
       CF_PASSWORD: {{cf-password}}
   - task: run-cats
     file: cats-concourse-task/task.yml
+
+- name: deliver
+  plan:
+  - get: grootfs-bench-release
+    trigger: true
+    passed:
+    - btrfs-performance-tests
+    - xfs-performance-tests
+  - get: grootfs-release-develop
+    trigger: true
+    passed:
+    - CATs
+    - gats
+    - btrfs-performance-tests
+    - xfs-performance-tests
+  - put: grootfs-tracker
+    params:
+      repos:
+      - grootfs-release-develop/src/code.cloudfoundry.org/grootfs
+      - grootfs-release-develop
+      - grootfs-bench-release/src/code.cloudfoundry.org/grootfs-bench
+      - grootfs-bench-release
 
 resource_types:
 - name: slack-notification-docker
