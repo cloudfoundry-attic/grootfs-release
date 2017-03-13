@@ -79,7 +79,7 @@ resources:
   type: git
   source:
     uri: https://github.com/cloudfoundry/garden-runc-release
-    branch: develop
+    branch: master
     ignore_paths:
     - ci
 
