@@ -22,4 +22,4 @@ bosh2 int \
   --var=system_domain=${CF_SYSTEM_DOMAIN} \
   --vars-file ./secrets.yml \
   --vars-file ./uaa.yml \
-  grootfs-ci-secrets/deployments/gamora/datadog-firehose-nozzle.yml > manifests/datadog-firehose-nozzle.yml
+  grootfs-ci-secrets/deployments/firehose-nozzles/datadog-firehose-nozzle.yml > manifests/datadog-firehose-nozzle.yml

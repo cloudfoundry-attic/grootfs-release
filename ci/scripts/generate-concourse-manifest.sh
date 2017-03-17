@@ -20,4 +20,4 @@ bosh2 int \
   --var=concourse_password=${CONCOURSE_PASSWORD} \
   --var=github_client_id=${GITHUB_CLIENT_ID} \
   --var=github_client_secret=${GITHUB_CLIENT_SECRET} \
-  grootfs-ci-secrets/deployments/gamora/concourse.yml > manifests/concourse.yml
+  grootfs-ci-secrets/deployments/concourse/concourse.yml > manifests/concourse.yml
