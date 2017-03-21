@@ -966,6 +966,11 @@ jobs:
       - garden-release/*.tgz
       stemcells:
       - gamora-bosh-stemcell/*.tgz
+  - task: enable-docker-feature-flag
+    file: grootfs-release-develop/ci/tasks/enable-docker-feature-flag.yml
+    params:
+      CF_USERNAME: admin
+      CF_PASSWORD: {{cf-password}}
 
 - name: deploy-datadog-nozzle
   serial_groups: [deploy-datadog-nozzle]
