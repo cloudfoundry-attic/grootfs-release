@@ -10,7 +10,6 @@
     release: grootfs
     properties:
       grootfs:
-        store_size_bytes: 929496729600
         dropsonde_port: 3457
         log_level: debug
         driver: overlay-xfs
