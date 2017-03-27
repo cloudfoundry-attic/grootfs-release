@@ -40,6 +40,7 @@ bosh2 int \
   --vars-file ./loggregator-certs.yml \
   --vars-store ./regenerate-secrets.yml \
   --ops-file git-cf-deployment/operations/gcp.yml \
+  --ops-file git-cf-deployment/operations/scale-to-one-az.yml \
   --ops-file grootfs-release-develop/manifests/operations/grootfs.yml \
   --ops-file grootfs-ci-secrets/deployments/cf-operations/cf-resize.yml \
   --ops-file grootfs-ci-secrets/deployments/cf-operations/use-latest-releases.yml \
