@@ -66,11 +66,11 @@ resources:
     branch: master
     uri: https://github.com/cloudfoundry/cats-concourse-task.git
 
-- name: cf-release
+- name: cf-acceptance-tests
   type: git
   source:
     branch: master
-    uri: https://github.com/cloudfoundry/cf-release.git
+    uri: https://github.com/cloudfoundry/cf-acceptance-tests.git
 
 - name: monday-update
   type: time
@@ -1004,7 +1004,7 @@ jobs:
   - deploy-datadog-nozzle
   plan:
   - aggregate:
-    - get: cf-release
+    - get: cf-acceptance-tests
     - get: cats-concourse-task
     - get: grootfs-release-develop
       trigger: true
@@ -1013,8 +1013,6 @@ jobs:
     file: grootfs-release-develop/ci/tasks/generate-cats-config-json.yml
     params:
       CF_PASSWORD: {{cf-password}}
-  - task: cats-from-cf-release
-    file: cats-concourse-task/cats-from-cf-release/task.yml
   - task: run-cats
     file: cats-concourse-task/task.yml
 
