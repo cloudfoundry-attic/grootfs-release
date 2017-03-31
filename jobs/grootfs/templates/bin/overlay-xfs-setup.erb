@@ -30,6 +30,8 @@ function main() {
 
   setup_unprivileged_store $unprivileged_store_path
   chmod 700 $privileged_store_path
+
+  tardis_setup
 }
 
 function format_volume_file() {
@@ -51,6 +53,11 @@ function mount_xfs_volume() {
   umount $store_path || true
   mount -t xfs -o pquota $volume_file $store_path
 
+}
+
+function tardis_setup() {
+  echo "setting up tardis..."
+  chmod u+s /var/vcap/packages/grootfs/bin/tardis
 }
 
 main
