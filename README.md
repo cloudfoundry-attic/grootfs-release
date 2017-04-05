@@ -82,6 +82,8 @@ what these properties do:
 - `log_level`
 - `store_size`
 - `driver`
+- `json_output`
+- `skip_mount`
 
 There should be no need to recreate cells when transitioning to GrootFS, though
 you may wish to do so anyway in order to clear out any cruft left behind by

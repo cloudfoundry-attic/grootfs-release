@@ -11,11 +11,9 @@ metron_endpoint: 127.0.0.1:<%= dropsonde_port %>
 <% end %>
 
 create:
-  <% if p("grootfs.graph_cleanup_threshold_in_mb") >= 0 %>
-  with_clean: true
-  <% else %>
-  with_clean: false
-  <% end %>
+  with_clean: <%= p("grootfs.graph_cleanup_threshold_in_mb") >= 0 %>
+  json: <%= p("grootfs.json_output") || p("grootfs.skip_mount") %>
+  without_mount: <%= p("grootfs.skip_mount") %>
   insecure_registries: <%= p('grootfs.insecure_docker_registry_list') %>
 
 clean:
