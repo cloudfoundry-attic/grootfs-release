@@ -1,0 +1,19 @@
+---
+image_resource:
+  type: docker-image
+  source:
+    repository: cfgarden/grootfs-ci
+
+platform: linux
+
+inputs:
+  - name: grootfs-release-develop
+
+params:
+  CONTAINER_NAME:
+  BASE_IMAGE:
+  GARDEN_ENDPOINT:
+
+run:
+  path: grootfs-release-develop/ci/scripts/create-garden-container
+  user: root
