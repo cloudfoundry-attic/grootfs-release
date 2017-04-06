@@ -1,0 +1,21 @@
+---
+image_resource:
+  type: docker-image
+  source:
+    repository: cfgarden/grootfs-ci
+
+platform: linux
+
+inputs:
+  - name: grootfs-release-develop
+
+params:
+  BOSH_CLIENT:
+  BOSH_CLIENT_SECRET:
+  BOSH_ENVIRONMENT:
+  BOSH_CERTIFICATES:
+  BOSH_DEPLOYMENT:
+
+run:
+  path: grootfs-release-develop/ci/scripts/delete-deployment.sh
+  user: root
