@@ -34,6 +34,7 @@ cat > integration-config/integration_config.json <<EOF
   "include_sso": false,
   "include_tasks": false,
   "include_v3": false,
-  "include_zipkin": false
+  "include_zipkin": false,
+  "default_timeout": 60
 }
 EOF
