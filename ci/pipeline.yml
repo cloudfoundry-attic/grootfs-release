@@ -15,10 +15,12 @@ groups:
   - create-grootfs-bench-release
   - deploy-grootfs-bench
   - deploy-garden-grootfs
-  - gats
+  - GATs
   - deploy-cf
   - deploy-datadog-nozzle
   - CATs
+  - deploy-stable-release
+  - test-upgrade
 - name: grootfs
   jobs:
   - grootfs
@@ -29,18 +31,23 @@ groups:
   - btrfs-performance-tests
   - xfs-performance-tests
   - deliver
-- name: grootfs-bench
+- name: bench-release
   jobs:
   - grootfs-bench
   - bump-grootfs-bench-release
   - create-grootfs-bench-release
   - deploy-grootfs-bench
-- name: grootfs-garden
+- name: upgrade
+  jobs:
+  - deploy-stable-release
+  - test-upgrade
+  - deliver
+- name: garden
   jobs:
   - deploy-garden-grootfs
-  - gats
+  - GATs
   - deliver
-- name: cf-grootfs
+- name: cf
   jobs:
   - deploy-cf
   - deploy-datadog-nozzle
@@ -80,6 +87,11 @@ resources:
     location: Europe/London
     days:
     - Monday
+
+- name: grootfs-release-latest
+  type: bosh-io-release
+  source:
+    repository: cloudfoundry/grootfs-release
 
 - name: garden-runc-release
   type: git
@@ -265,6 +277,15 @@ resources:
     username: {{gamora-bosh-username}}
     password: {{gamora-bosh-password}}
     deployment: garden-grootfs
+    ignore_ssl: true
+
+- name: garden-grootfs-deployment-rolling-upgrade
+  type: bosh-deployment
+  source:
+    target: {{gamora-bosh-target}}
+    username: {{gamora-bosh-username}}
+    password: {{gamora-bosh-password}}
+    deployment: garden-grootfs-rolling-upgrade
     ignore_ssl: true
 
 - name: gamora-bosh-stemcell
@@ -476,6 +497,98 @@ jobs:
         channel: {{slack-alert-channel}}
         text: "<!subteam^S1U0HSJ9E|grootfsteam>: What the BOSH? You can deploy it yourself. http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
+- name: deploy-stable-release
+  serial_groups: [grootfs-garden-rolling-upgrade-deployment]
+  plan:
+  - do:
+    - aggregate:
+      - get: gamora-bosh-stemcell
+      - get: grootfs-ci-secrets
+      - get: grootfs-release-develop
+      - get: garden-release
+        trigger: true
+      - get: grootfs-release-latest
+        trigger: true
+      - get: grootfs-release-tarball
+        trigger: true
+        passed:
+        - create-grootfs-release
+      - get: garden-runc-release
+    - task: delete-garden-grootfs-rolling-upgrade-deployment
+      file: grootfs-release-develop/ci/tasks/delete-deployment.yml
+      params:
+        BOSH_ENVIRONMENT: {{gamora-bosh-target}}
+        BOSH_CERTIFICATES: {{gamora-bosh-certificates}}
+        BOSH_CLIENT: {{gamora-bosh-username}}
+        BOSH_CLIENT_SECRET: {{gamora-bosh-password}}
+        BOSH_DEPLOYMENT: garden-grootfs-rolling-upgrade
+    - put: garden-grootfs-deployment-rolling-upgrade
+      params:
+        manifest: grootfs-ci-secrets/deployments/garden-grootfs/gcp-rolling-upgrade.yml
+        releases:
+        - garden-release/*.tgz
+        - grootfs-release-latest/*.tgz
+        stemcells:
+        - gamora-bosh-stemcell/*.tgz
+    - aggregate:
+      - task: gats-btrfs
+        file: grootfs-release-develop/ci/tasks/gats.yml
+        params:
+          GARDEN_ADDRESS: 10.0.1.18
+      - task: gats-overlay-xfs
+        file: grootfs-release-develop/ci/tasks/gats.yml
+        params:
+          GARDEN_ADDRESS: 10.0.1.19
+    on_failure:
+      put: slack-alert
+      params:
+        username: {{slack-alert-username}}
+        icon_url: {{slack-alert-icon-url}}
+        channel: {{slack-alert-channel}}
+        text: "<!subteam^S1U0HSJ9E|grootfsteam>: System Failure. Explosion Imminent. http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+
+- name: test-upgrade
+  serial_groups: [grootfs-garden-rolling-upgrade-deployment]
+  plan:
+  - do:
+    - aggregate:
+      - get: gamora-bosh-stemcell
+      - get: grootfs-ci-secrets
+      - get: grootfs-release-develop
+      - get: garden-release
+        trigger: true
+      - get: grootfs-release-tarball
+        trigger: true
+        passed:
+        - deploy-stable-release
+      - get: garden-runc-release
+        passed:
+        - deploy-stable-release
+    - put: garden-grootfs-deployment-rolling-upgrade
+      params:
+        manifest: grootfs-ci-secrets/deployments/garden-grootfs/gcp-rolling-upgrade.yml
+        releases:
+        - garden-release/*.tgz
+        - grootfs-release-tarball/*.tgz
+        stemcells:
+        - gamora-bosh-stemcell/*.tgz
+    - aggregate:
+      - task: gats-btrfs
+        file: grootfs-release-develop/ci/tasks/gats.yml
+        params:
+          GARDEN_ADDRESS: 10.0.1.18
+      - task: gats-overlay-xfs
+        file: grootfs-release-develop/ci/tasks/gats.yml
+        params:
+          GARDEN_ADDRESS: 10.0.1.19
+    on_failure:
+      put: slack-alert
+      params:
+        username: {{slack-alert-username}}
+        icon_url: {{slack-alert-icon-url}}
+        channel: {{slack-alert-channel}}
+        text: "<!subteam^S1U0HSJ9E|grootfsteam>: System Failure. Explosion Imminent. http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+
 - name: deploy-garden-grootfs
   serial_groups: [grootfs-garden-deployment]
   plan:
@@ -506,7 +619,7 @@ jobs:
         channel: {{slack-alert-channel}}
         text: "<!subteam^S1U0HSJ9E|grootfsteam>: System Failure. Explosion Imminent. http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
-- name: gats
+- name: GATs
   serial_groups: [grootfs-garden-deployment]
   plan:
     - aggregate:
@@ -1027,9 +1140,10 @@ jobs:
     trigger: true
     passed:
     - CATs
-    - gats
+    - GATs
     - btrfs-performance-tests
     - xfs-performance-tests
+    - test-upgrade
   - put: grootfs-tracker
     params:
       repos:
