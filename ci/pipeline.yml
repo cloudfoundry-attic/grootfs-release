@@ -364,6 +364,15 @@ jobs:
           GROOTFS_TEST_UID: 0
           GROOTFS_TEST_GID: 0
           VOLUME_DRIVER: overlay-xfs
+      - task: integration-tests-OVERLAY+XFS (GROOT)
+        privileged: true
+        file: grootfs-git-repo/ci/tasks/integration-tests.yml
+        params:
+          REGISTRY_USERNAME: {{dockerhub-username}}
+          REGISTRY_PASSWORD: {{dockerhub-password}}
+          GROOTFS_TEST_UID: 1000
+          GROOTFS_TEST_GID: 1000
+          VOLUME_DRIVER: overlay-xfs
       - task: integration-tests-BTRFS (ROOT)
         privileged: true
         file: grootfs-git-repo/ci/tasks/integration-tests.yml
