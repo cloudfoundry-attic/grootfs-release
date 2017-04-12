@@ -464,6 +464,8 @@ jobs:
           trigger: true
           passed:
           - grootfs
+          params:
+            submodules: none
       - task: bump-grootfs-release
         file: grootfs-release-develop/ci/tasks/bump-grootfs-release.yml
       - put: grootfs-release-develop
@@ -489,6 +491,8 @@ jobs:
     - get: grootfs-git-repo
       passed:
       - bump-grootfs-release
+      params:
+        submodules: none
   - put: grootfs-release-version
     params:
       file: grootfs-release-version/number
@@ -514,6 +518,8 @@ jobs:
       - get: gamora-bosh-stemcell
       - get: grootfs-ci-secrets
       - get: grootfs-release-develop
+        params:
+          submodules: none
       - get: garden-release
         trigger: true
       - get: grootfs-release-latest
@@ -564,6 +570,8 @@ jobs:
       - get: gamora-bosh-stemcell
       - get: grootfs-ci-secrets
       - get: grootfs-release-develop
+        params:
+          submodules: none
       - get: garden-release
         trigger: true
       - get: grootfs-release-tarball
@@ -606,6 +614,8 @@ jobs:
       - get: gamora-bosh-stemcell
       - get: grootfs-ci-secrets
       - get: grootfs-release-develop
+        params:
+          submodules: none
       - get: garden-release
         trigger: true
       - get: grootfs-release-tarball
@@ -635,6 +645,8 @@ jobs:
       - get: grootfs-release-develop
         trigger: true
         passed: [deploy-garden-grootfs]
+        params:
+          submodules: none
       - get: garden-release
         passed: [deploy-garden-grootfs]
         trigger: true
@@ -713,6 +725,8 @@ jobs:
         trigger: true
         passed:
         - create-grootfs-release
+        params:
+          submodules: none
       - get: grootfs-release-tarball
         trigger: true
         passed:
@@ -784,6 +798,8 @@ jobs:
         trigger: true
         passed:
         - deploy-grootfs-bench
+        params:
+          submodules: none
       - get: grootfs-bench-release
         trigger: true
         passed:
@@ -836,6 +852,8 @@ jobs:
         trigger: true
         passed:
         - deploy-grootfs-bench
+        params:
+          submodules: none
       - get: grootfs-bench-release
         trigger: true
         passed:
@@ -1062,6 +1080,8 @@ jobs:
     - get: grootfs-release-develop
       passed: [create-grootfs-release]
       trigger: true
+      params:
+        submodules: none
     - get: grootfs-ci-secrets
     - get: gamora-bosh-stemcell
     - get: garden-release
