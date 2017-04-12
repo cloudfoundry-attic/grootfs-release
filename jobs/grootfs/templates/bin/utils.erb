@@ -60,5 +60,5 @@ function setup_unprivileged_store() {
 
   maximus_uid=$(/var/vcap/packages/idmapper/bin/maximus)
   chown $maximus_uid:$maximus_uid $store_path
-  chmod 700 $store_path
+  chmod 0700 $store_path
 }

@@ -6,19 +6,32 @@ function main() {
   source /var/vcap/jobs/grootfs/bin/utils
 
   export PATH=/var/vcap/packages/btrfs-progs/bin:$PATH
-  local store_path=/var/vcap/data/grootfs/store
-  local volume_file=/var/vcap/data/grootfs/volume
+  local privileged_store_path=/var/vcap/data/grootfs/store/privileged
+  local privileged_volume_file=/var/vcap/data/grootfs/volume_privileged
+  local unprivileged_store_path=/var/vcap/data/grootfs/store/unprivileged
+  local unprivileged_volume_file=/var/vcap/data/grootfs/volume_unprivileged
 
-  mkdir -p "$store_path"
+  mkdir -p "$privileged_store_path"
+  mkdir -p "$unprivileged_store_path"
 
-  create_volume_file $volume_file
-  format_volume_file $volume_file
+  create_volume_file $privileged_volume_file
+  create_volume_file $unprivileged_volume_file
+
+  format_volume_file $privileged_volume_file
+  format_volume_file $unprivileged_volume_file
 
   create_loop_devices
   permit_device_control
 
-  mount_btrfs_volume $volume_file $store_path
-  enable_btrfs_quotas $store_path
+  mount_btrfs_volume $privileged_volume_file $privileged_store_path
+  enable_btrfs_quotas $privileged_store_path
+
+  mount_btrfs_volume $unprivileged_volume_file $unprivileged_store_path
+  enable_btrfs_quotas $unprivileged_store_path
+
+  setup_unprivileged_store $unprivileged_store_path
+  chmod 0700 $privileged_store_path
+
   drax_setup
 }
 
@@ -45,8 +58,6 @@ function mount_btrfs_volume() {
   echo "mounting the btrfs volume..."
   umount $store_path || true
   mount -o user_subvol_rm_allowed $volume_file $store_path
-
-  setup_unprivileged_store $store_path
 }
 
 function enable_btrfs_quotas() {
