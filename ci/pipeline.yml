@@ -126,10 +126,10 @@ resources:
   source:
     repository: cloudfoundry/diego-release
 
-- name: cflinuxfs2-rootfs-release
+- name: cflinuxfs2-release
   type: bosh-io-release
   source:
-    repository: cloudfoundry/cflinuxfs2-rootfs-release
+    repository: cloudfoundry/cflinuxfs2-release
 
 - name: datadog-nozzle-release
   type: bosh-io-release
@@ -1086,7 +1086,7 @@ jobs:
     - get: gamora-bosh-stemcell
     - get: garden-release
       trigger: true
-    - get: cflinuxfs2-rootfs-release
+    - get: cflinuxfs2-release
       trigger: true
     - get: diego-release
       trigger: true
@@ -1106,7 +1106,7 @@ jobs:
       manifest: manifests/cf.yml
       releases:
       - diego-release/*.tgz
-      - cflinuxfs2-rootfs-release/*.tgz
+      - cflinuxfs2-release/*.tgz
       - grootfs-release-tarball/*.tgz
       - garden-release/*.tgz
       stemcells:
