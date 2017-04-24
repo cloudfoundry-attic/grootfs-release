@@ -10,7 +10,6 @@
     release: grootfs
     properties:
       grootfs:
-        dropsonde_port: 3457
         log_level: debug
         driver: overlay-xfs
 
