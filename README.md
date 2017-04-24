@@ -80,7 +80,7 @@ various reasons. See the [grootfs job spec](jobs/grootfs/spec) for more info on
 what these properties do:
 - `dropsonde_port`
 - `log_level`
-- `store_size`
+- `store_size_bytes`
 - `driver`
 - `json_output`
 - `skip_mount`
