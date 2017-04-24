@@ -26,6 +26,7 @@ properties:
     default: info
   grootfs.dropsonde_port:
     description: "Local metron agent's port"
+    default: 3457
   grootfs.insecure_docker_registry_list:
     description: "A list of IP:PORT tuples that we allow pulling docker images from using self-signed certificates."
     default: []
