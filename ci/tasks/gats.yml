@@ -9,6 +9,7 @@ platform: linux
 
 inputs:
   - name: garden-runc-release-1.5.0
+    path: garden-runc-release
   - name: grootfs-release-develop
 
 params:
