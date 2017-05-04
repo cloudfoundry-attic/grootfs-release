@@ -8,7 +8,7 @@ image_resource:
 platform: linux
 
 inputs:
-  - name: garden-runc-release
+  - name: garden-runc-release-1.5.0
   - name: grootfs-release-develop
 
 params:
