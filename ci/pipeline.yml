@@ -1076,6 +1076,7 @@ jobs:
   - aggregate:
     - get: grootfs-release-tarball
     - get: grootfs-bench-release-tarball
+      trigger: true
     - get: git-cf-deployment
       trigger: true
     - get: grootfs-release-develop
