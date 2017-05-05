@@ -904,6 +904,14 @@ jobs:
   - put: grootfs-release-version
     resource: grootfs-release-version
     params: { file: grootfs-release-version/number }
+  - get: grootfs-next-final-version
+    resource: grootfs-release-version
+    params: { bump: patch }
+  - task: bump-binary-version
+    file: grootfs-git-repo/ci/tasks/bump-version.yml
+  - put: grootfs-git-repo
+    params:
+      repository: bumped-grootfs-repo
 
 - name: bump-major-grootfs-release
   serial: true
@@ -913,6 +921,15 @@ jobs:
   - put: grootfs-release-version
     resource: grootfs-release-version
     params: { file: grootfs-release-version/number }
+  - get: grootfs-git-repo
+  - get: grootfs-next-final-version
+    resource: grootfs-release-version
+    params: { bump: major }
+  - task: bump-binary-version
+    file: grootfs-git-repo/ci/tasks/bump-version.yml
+  - put: grootfs-git-repo
+    params:
+      repository: bumped-grootfs-repo
 
 - name: bump-minor-grootfs-release
   serial: true
@@ -922,6 +939,15 @@ jobs:
   - put: grootfs-release-version
     resource: grootfs-release-version
     params: { file: grootfs-release-version/number }
+  - get: grootfs-git-repo
+  - get: grootfs-next-final-version
+    resource: grootfs-release-version
+    params: { bump: minor }
+  - task: bump-binary-version
+    file: grootfs-git-repo/ci/tasks/bump-version.yml
+  - put: grootfs-git-repo
+    params:
+      repository: bumped-grootfs-repo
 
 - name: ship-bosh-release
   serial: true
@@ -936,6 +962,8 @@ jobs:
       - get: grootfs-release-version
         params:
           bump: final
+    - task: check-version
+      file: grootfs-release-develop/src/code.cloudfoundry.org/grootfs/ci/tasks/check-version.yml
     - task: ship-it
       file: grootfs-release-develop/ci/tasks/ship-it.yml
       params:
