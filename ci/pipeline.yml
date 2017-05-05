@@ -991,6 +991,7 @@ jobs:
         globs:
         - build-grootfs/grootfs-*
         - build-grootfs/drax-*
+        - build-grootfs/tardis-*
     on_failure:
       put: slack-alert
       params:
