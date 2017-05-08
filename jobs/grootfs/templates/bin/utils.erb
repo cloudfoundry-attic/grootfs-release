@@ -68,15 +68,34 @@ delete_store() {
   local store_path=$2
   local volume_file=$3
 
-  if [ -d "$store_path" ] || [ -f "$volume_file ]; then
+  if [ -d "$store_path" ] || [ -f "$volume_file" ]; then
     # Allow grootfs delete-store and umount to fail, because we could
     # have an malformed store.
     grootfs --config $config_path delete-store || true
-    umount --force $store_path || true
+    try_umount $store_path || true
 
     # Ensure that the store is deleted, or fail
     rm -rf $store_path
 
     rm -rf $volume_file
   fi
+}
+
+try_umount() {
+  local mount_point=$1
+
+  if ! mountpoint $mount_point
+  then
+    return
+  fi
+
+  local n=0
+   until [ $n -ge 5 ]
+   do
+      umount $mount_point && return
+      n=$[$n+1]
+      sleep 2
+   done
+
+   echo "Failed to unmount $mount_point"
 }
