@@ -19,7 +19,7 @@ main() {
     delete_store $privileged_config $privileged_store_path $privileged_volume_file
   fi
 
-  if [ -d "$unprivileged_volume_file" ]; then
+  if [ -d "$unprivileged_store_path" ]; then
     delete_store $unprivileged_config $unprivileged_store_path $unprivileged_volume_file
   fi
 
