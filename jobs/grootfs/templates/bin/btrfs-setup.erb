@@ -13,13 +13,8 @@ main() {
   local unprivileged_volume_file=/var/vcap/data/grootfs/volume_unprivileged
   local unprivileged_config=/var/vcap/jobs/grootfs/config/grootfs_config.yml
 
-  if [ -d "$privileged_store_path" ]; then
-    delete_store $privileged_config $privileged_store_path $privileged_volume_file
-  fi
-
-  if [ -d "$unprivileged_store_path" ]; then
-    delete_store $unprivileged_config $unprivileged_store_path $unprivileged_volume_file
-  fi
+  delete_store $privileged_config $privileged_store_path $privileged_volume_file
+  delete_store $unprivileged_config $unprivileged_store_path $unprivileged_volume_file
 
   mkdir -p "$privileged_store_path"
   mkdir -p "$unprivileged_store_path"
