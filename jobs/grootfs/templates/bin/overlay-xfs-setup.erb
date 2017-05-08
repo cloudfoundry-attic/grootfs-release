@@ -18,42 +18,51 @@ main() {
   delete_store $privileged_config $privileged_store_path $privileged_volume_file
   delete_store $unprivileged_config $unprivileged_store_path $unprivileged_volume_file
 
+  create_loop_devices
+  permit_device_control
+
   mkdir -p "$privileged_store_path"
   mkdir -p "$unprivileged_store_path"
 
   create_volume_file $privileged_volume_file
   create_volume_file $unprivileged_volume_file
 
-  format_volume_file $privileged_volume_file
-  format_volume_file $unprivileged_volume_file
+  privileged_log_device=$(losetup -f)
+  format_volume_file $privileged_volume_file $privileged_log_device
+  unprivileged_log_device=$(losetup -f)
+  format_volume_file $unprivileged_volume_file $unprivileged_log_device
 
-  create_loop_devices
-  permit_device_control
+  mount_xfs_volume $privileged_volume_file $privileged_store_path $privileged_log_device
+  mount_xfs_volume $unprivileged_volume_file $unprivileged_store_path $unprivileged_log_device
 
-  mount_xfs_volume $unprivileged_volume_file $unprivileged_store_path
-  mount_xfs_volume $privileged_volume_file $privileged_store_path
-
-  setup_unprivileged_store $unprivileged_store_path
   chmod 0700 $privileged_store_path
+  setup_unprivileged_store $unprivileged_store_path
 
   tardis_setup
 }
 
 format_volume_file() {
   local volume_file=$1
+  local log_device=$2
+  local log_volume_file=${volume_file}_log
+
+  echo "formatting log volume..."
+  losetup -d $(losetup -a | grep $log_volume_file | cut -d ":" -f1)
+  dd if=/dev/zero of=$log_volume_file bs=1M count=64
+  losetup $log_device $log_volume_file
 
   echo "formatting volume..."
-  mkfs.xfs -f $volume_file
+  mkfs.xfs -f -l size=64m,logdev=$log_device $volume_file
 }
 
 mount_xfs_volume() {
   local volume_file=$1
   local store_path=$2
+  local log_device=$3
 
   echo "mounting volume..."
   umount $store_path || true
-  mount -t xfs -o pquota,noatime,nobarrier $volume_file $store_path
-
+  mount -t xfs -o pquota,noatime,nobarrier,logdev=$log_device $volume_file $store_path
 }
 
 tardis_setup() {
