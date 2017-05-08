@@ -63,7 +63,7 @@ mount_btrfs_volume() {
 
   echo "mounting the btrfs volume..."
   umount $store_path || true
-  mount -o user_subvol_rm_allowed $volume_file $store_path
+  mount -o user_subvol_rm_allowed,noatime $volume_file $store_path
 }
 
 enable_btrfs_quotas() {

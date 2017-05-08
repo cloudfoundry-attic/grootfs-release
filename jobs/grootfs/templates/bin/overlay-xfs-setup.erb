@@ -57,7 +57,7 @@ mount_xfs_volume() {
 
   echo "mounting volume..."
   umount $store_path || true
-  mount -t xfs -o pquota $volume_file $store_path
+  mount -t xfs -o pquota,noatime $volume_file $store_path
 
 }
 
