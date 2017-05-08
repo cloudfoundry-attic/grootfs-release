@@ -15,31 +15,37 @@ main() {
   local unprivileged_volume_file=/var/vcap/data/grootfs/volume_unprivileged
   local unprivileged_config=/var/vcap/jobs/grootfs/config/grootfs_config.yml
 
-  delete_store $privileged_config $privileged_store_path $privileged_volume_file
-  delete_store $unprivileged_config $unprivileged_store_path $unprivileged_volume_file
-
   create_loop_devices
   permit_device_control
 
-  mkdir -p "$privileged_store_path"
-  mkdir -p "$unprivileged_store_path"
-
-  create_volume_file $privileged_volume_file
-  create_volume_file $unprivileged_volume_file
-
-  privileged_log_device=$(losetup -f)
-  format_volume_file $privileged_volume_file $privileged_log_device
-  unprivileged_log_device=$(losetup -f)
-  format_volume_file $unprivileged_volume_file $unprivileged_log_device
-
-  mount_xfs_volume $privileged_volume_file $privileged_store_path $privileged_log_device
-  mount_xfs_volume $unprivileged_volume_file $unprivileged_store_path $unprivileged_log_device
+  create_store $privileged_store_path $privileged_volume_file $privileged_config
+  create_store $unprivileged_store_path $unprivileged_volume_file $unprivileged_config
 
   chmod 0700 $privileged_store_path
   setup_unprivileged_store $unprivileged_store_path
 
   tardis_setup
 }
+
+create_store() {
+  local store_path=$1
+  local volume_file=$2
+  local config_path=$3
+
+  echo "Creating ${store_path} store"
+
+  delete_store $config_path $store_path $volume_file
+
+  mkdir -p "$store_path"
+
+  create_volume_file $volume_file
+
+  log_device=$(losetup -f)
+  format_volume_file $volume_file $log_device
+
+  mount_xfs_volume $volume_file $store_path $log_device
+}
+
 
 format_volume_file() {
   local volume_file=$1
