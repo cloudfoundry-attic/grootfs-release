@@ -2,14 +2,24 @@
 
 set -x
 
-function main() {
+main() {
   source /var/vcap/jobs/grootfs/bin/utils
 
   export PATH=/var/vcap/packages/btrfs-progs/bin:$PATH
   local privileged_store_path=/var/vcap/data/grootfs/store/privileged
   local privileged_volume_file=/var/vcap/data/grootfs/volume_privileged
+  local privileged_config=/var/vcap/jobs/grootfs/config/privileged_grootfs_config.yml
   local unprivileged_store_path=/var/vcap/data/grootfs/store/unprivileged
   local unprivileged_volume_file=/var/vcap/data/grootfs/volume_unprivileged
+  local unprivileged_config=/var/vcap/jobs/grootfs/config/grootfs_config.yml
+
+  if [ -d "$privileged_store_path" ]; then
+    delete_store $privileged_config $privileged_store_path
+  fi
+
+  if [ -d "$unprivileged_volume_file" ]; then
+    delete_store $unprivileged_config $unprivileged_store_path
+  fi
 
   mkdir -p "$privileged_store_path"
   mkdir -p "$unprivileged_store_path"
@@ -35,23 +45,19 @@ function main() {
   drax_setup
 }
 
-function drax_setup() {
+drax_setup() {
   echo "setting up drax..."
   chmod u+s /var/vcap/packages/grootfs/bin/drax
 }
 
-function format_volume_file() {
+format_volume_file() {
   local volume_file=$1
 
-  # Verify if volume is already a btrfs file and if it is, skip
-  if [ -z "$(file $volume_file | grep "BTRFS Filesystem")" ]
-  then
-    echo "fomatting btrfs volume..."
-    mkfs.btrfs $volume_file
-  fi
+  echo "formatting btrfs volume..."
+  mkfs.btrfs -f $volume_file
 }
 
-function mount_btrfs_volume() {
+mount_btrfs_volume() {
   local volume_file=$1
   local store_path=$2
 
@@ -60,7 +66,7 @@ function mount_btrfs_volume() {
   mount -o user_subvol_rm_allowed $volume_file $store_path
 }
 
-function enable_btrfs_quotas() {
+enable_btrfs_quotas() {
   local store_path=$1
   btrfs quota enable $store_path
 }

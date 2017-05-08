@@ -4,14 +4,24 @@ set -x
 
 BASE_PATH=$(dirname $0)
 
-function main() {
+main() {
   source /var/vcap/jobs/grootfs/bin/utils
 
-  export PATH=/var/vcap/packages/xfs-progs/sbin:$PATH
+  export PATH=/var/vcap/packages/grootfs/bin:/var/vcap/packages/xfs-progs/sbin:$PATH
   local privileged_store_path=/var/vcap/data/grootfs/store/privileged
   local privileged_volume_file=/var/vcap/data/grootfs/volume_privileged
+  local privileged_config=/var/vcap/jobs/grootfs/config/privileged_grootfs_config.yml
   local unprivileged_store_path=/var/vcap/data/grootfs/store/unprivileged
   local unprivileged_volume_file=/var/vcap/data/grootfs/volume_unprivileged
+  local unprivileged_config=/var/vcap/jobs/grootfs/config/grootfs_config.yml
+
+  if [ -d "$privileged_store_path" ]; then
+    delete_store $privileged_config $privileged_store_path
+  fi
+
+  if [ -d "$unprivileged_volume_file" ]; then
+    delete_store $unprivileged_config $unprivileged_store_path
+  fi
 
   mkdir -p "$privileged_store_path"
   mkdir -p "$unprivileged_store_path"
@@ -34,18 +44,14 @@ function main() {
   tardis_setup
 }
 
-function format_volume_file() {
+format_volume_file() {
   local volume_file=$1
 
-  # Verify if volume is already a XFS file and if it is, skip
-  if [ -z "$(file $volume_file | grep "XFS Filesystem")" ]
-  then
-    echo "fomatting volume..."
-    mkfs.xfs $volume_file
-  fi
+  echo "formatting volume..."
+  mkfs.xfs -f $volume_file
 }
 
-function mount_xfs_volume() {
+mount_xfs_volume() {
   local volume_file=$1
   local store_path=$2
 
@@ -55,7 +61,7 @@ function mount_xfs_volume() {
 
 }
 
-function tardis_setup() {
+tardis_setup() {
   echo "setting up tardis..."
   chmod u+s /var/vcap/packages/grootfs/bin/tardis
 }

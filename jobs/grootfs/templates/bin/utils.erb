@@ -1,6 +1,6 @@
 #!/bin/bash
 
-function create_volume_file() {
+create_volume_file() {
   local volume_file=$1
 
   <% if p('grootfs.store_size_bytes') <= 0 %>
@@ -17,7 +17,7 @@ function create_volume_file() {
   fi
 }
 
-function create_loop_devices() {
+create_loop_devices() {
   echo "creating loop devices..."
   for i in {0..255}
   do
@@ -27,7 +27,7 @@ function create_loop_devices() {
 
 # copied from https://github.com/concourse/concourse/blob/master/jobs/baggageclaim/templates/baggageclaim_ctl.erb#L54
 # break out of bosh-lite device limitations
-function permit_device_control() {
+permit_device_control() {
   local devices_mount_info=$(cat /proc/self/cgroup | grep devices)
 
   if [ -z "$devices_mount_info" ]; then
@@ -55,10 +55,23 @@ function permit_device_control() {
   umount /tmp/devices-cgroup || true
 }
 
-function setup_unprivileged_store() {
+setup_unprivileged_store() {
   local store_path=$1
 
   maximus_uid=$(/var/vcap/packages/idmapper/bin/maximus)
   chown $maximus_uid:$maximus_uid $store_path
   chmod 0700 $store_path
+}
+
+delete_store() {
+  local config_path=$1
+  local store_path=$2
+
+  # Allow grootfs delete-store and umount to fail, because we could
+  # have an malformed store.
+  grootfs --config $config_path delete-store || true
+  umount --force $store_path || true
+
+  # Ensure that the store is deleted, or fail
+  rm -rf $store_path
 }
