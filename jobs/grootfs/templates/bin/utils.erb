@@ -66,6 +66,7 @@ setup_unprivileged_store() {
 delete_store() {
   local config_path=$1
   local store_path=$2
+  local volume_file=$3
 
   # Allow grootfs delete-store and umount to fail, because we could
   # have an malformed store.
@@ -74,4 +75,6 @@ delete_store() {
 
   # Ensure that the store is deleted, or fail
   rm -rf $store_path
+
+  rm -rf $volume_file
 }
