@@ -20,6 +20,8 @@ jobs:
     properties:
       grootfs:
         driver: overlay-xfs
+        use_external_logdevice: true
+        external_logdevice_size_in_mb: 128
 
 networks:
   - name: grootfs

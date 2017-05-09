@@ -39,3 +39,10 @@ properties:
   grootfs.skip_mount:
     description: "Do not mount image root filesystem automatically, just return the mount information."
     default: false
+
+  grootfs.use_external_logdevice:
+    description: "EXPERIMENTAL: Enable external logdevice. Only usable with overlay-xfs driver"
+    default: false
+  grootfs.external_logdevice_size_in_mb:
+    description: "EXPERIMENTAL: Size of external logdevice. Only usable if using external logdevice"
+    default: 64
