@@ -70,7 +70,8 @@ mount_xfs_volume() {
 
   echo "mounting volume..."
   umount $store_path || true
-  mount -t xfs -o pquota,noatime,nobarrier<% if p("grootfs.use_external_logdevice") %>,logdev=$log_device<% end %> $volume_file $store_path
+  <% mount_options = ["pquota"] + Array(p("grootfs.extra_mount_options")) %>
+  mount -t xfs -o <%= mount_options.join(",") %><% if p("grootfs.use_external_logdevice") %>,logdev=$log_device<% end %> $volume_file $store_path
 }
 
 tardis_setup() {
