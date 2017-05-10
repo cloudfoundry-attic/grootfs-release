@@ -1,0 +1,5 @@
+check process grootfs-debug
+  with pidfile /var/vcap/sys/run/grootfs-debug/grootfs-debug.pid
+  start program = "/var/vcap/jobs/grootfs-debug/bin/debug_ctl start"
+  stop program = "/var/vcap/jobs/grootfs-debug/bin/debug_ctl stop"
+  group vcap

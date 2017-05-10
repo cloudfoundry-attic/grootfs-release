@@ -1,0 +1,19 @@
+---
+name: grootfs-debug
+
+templates:
+  debug_ctl.erb: bin/debug_ctl
+
+packages:
+  - trace-cmd
+
+properties:
+  grootfs-debug.trace_buffer_size:
+    description: "kernel buffersize (in kilobytes per CPU)"
+    default: 20080
+  grootfs-debug.event_glob:
+    description: "event to trace"
+    default: xfs\*
+  grootfs-debug.interval:
+    description: "time in seconds beforze (in kilobytes per CPU)s a process in D state is considered stale"
+    default: 150
