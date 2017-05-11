@@ -17,3 +17,6 @@ properties:
   grootfs-debug.interval:
     description: "time in seconds beforze (in kilobytes per CPU)s a process in D state is considered stale"
     default: 150
+  grootfs-debug.max_log_files:
+    description: "number of trace logs to keep. when number is met trace reporting will stop"
+    default: 10
