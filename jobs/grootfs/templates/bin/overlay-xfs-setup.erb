@@ -34,8 +34,6 @@ create_store() {
 
   echo "Creating ${store_path} store"
 
-  delete_store $config_path $store_path $volume_file
-
   mkdir -p "$store_path"
 
   create_volume_file $volume_file
