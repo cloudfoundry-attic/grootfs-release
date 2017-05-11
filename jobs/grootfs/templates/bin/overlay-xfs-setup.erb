@@ -40,38 +40,27 @@ create_store() {
 
   create_volume_file $volume_file
 
-  log_device=$(losetup -f)
-  format_volume_file $volume_file $log_device
+  format_volume_file $volume_file
 
-  mount_xfs_volume $volume_file $store_path $log_device
+  mount_xfs_volume $volume_file $store_path
 }
 
 
 format_volume_file() {
   local volume_file=$1
-  local log_device=$2
-  local log_volume_file=${volume_file}_log
-
-  losetup -d $(losetup -a | grep $log_volume_file | cut -d ":" -f1)
-  <% if p("grootfs.use_external_logdevice") %>
-  echo "formatting log volume..."
-  dd if=/dev/zero of=$log_volume_file bs=1M count=<%= p("grootfs.external_logdevice_size_in_mb") %>
-  losetup $log_device $log_volume_file
-  <% end %>
 
   echo "formatting volume..."
-  mkfs.xfs -f <% if p("grootfs.use_external_logdevice") %>-l size=<%= p("grootfs.external_logdevice_size_in_mb") %>m,logdev=$log_device<% end %> $volume_file
+  mkfs.xfs -f $volume_file
 }
 
 mount_xfs_volume() {
   local volume_file=$1
   local store_path=$2
-  local log_device=$3
 
   echo "mounting volume..."
   umount $store_path || true
   <% mount_options = ["pquota"] + Array(p("grootfs.extra_mount_options")) %>
-  mount -t xfs -o <%= mount_options.join(",") %><% if p("grootfs.use_external_logdevice") %>,logdev=$log_device<% end %> $volume_file $store_path
+  mount -t xfs -o <%= mount_options.join(",") %> $volume_file $store_path
 }
 
 tardis_setup() {
