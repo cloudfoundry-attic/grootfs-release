@@ -39,14 +39,24 @@ create_store() {
 
   create_volume_file $volume_file
 
-  format_volume_file $volume_file
+  log_device=$(losetup -f)
+  format_volume_file $volume_file $log_device
 
-  mount_xfs_volume $volume_file $store_path
+  mount_xfs_volume $volume_file $store_path $log_device
 }
 
 
 format_volume_file() {
   local volume_file=$1
+  local log_device=$2
+  local log_volume_file=${volume_file}_log
+
+  losetup -d $(losetup -a | grep $log_volume_file | cut -d ":" -f1)
+  <% if p("grootfs.use_external_logdevice") %>
+  echo "formatting log volume..."
+  dd if=/dev/zero of=$log_volume_file bs=1M count=<%= p("grootfs.external_logdevice_size_in_mb") %>
+  losetup $log_device $log_volume_file
+  <% end %>
 
   if [ -z "$(file $volume_file | grep -i "XFS filesystem")" ]
   then
@@ -58,6 +68,7 @@ format_volume_file() {
 mount_xfs_volume() {
   local volume_file=$1
   local store_path=$2
+  local log_device=$3
 
   echo "mounting volume..."
   <% mount_options = ["pquota"] + Array(p("grootfs.extra_mount_options")) %>
