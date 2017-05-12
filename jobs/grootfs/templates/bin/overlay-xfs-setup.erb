@@ -47,8 +47,11 @@ create_store() {
 format_volume_file() {
   local volume_file=$1
 
-  echo "formatting volume..."
-  mkfs.xfs -f $volume_file
+  if [ -z "$(file $volume_file | grep "XFS Filesystem")" ]
+  then
+    echo "formatting volume..."
+    mkfs.xfs -f $volume_file
+  fi
 }
 
 mount_xfs_volume() {
