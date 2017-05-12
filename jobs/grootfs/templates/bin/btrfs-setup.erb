@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -x
+set -e
 
 main() {
   source /var/vcap/jobs/grootfs/bin/utils
@@ -48,7 +49,7 @@ drax_setup() {
 
 format_volume_file() {
   local volume_file=$1
-  if [ -z "$(file $volume_file | grep "BTRFS Filesystem")" ]
+  if [ -z "$(file $volume_file | grep -i "BTRFS Filesystem")" ]
   then
     echo "formatting btrfs volume..."
     mkfs.btrfs -f $volume_file
@@ -60,8 +61,8 @@ mount_btrfs_volume() {
   local store_path=$2
 
   echo "mounting the btrfs volume..."
-  umount $store_path || true
-  mount -o user_subvol_rm_allowed,noatime $volume_file $store_path
+  <% mount_options = ["user_subvol_rm_allowed"] + Array(p("grootfs.extra_mount_options")) %>
+  mount -o remount,<%= mount_options.join(",") %> $volume_file $store_path || mount -o <%= mount_options.join(",") %> $volume_file $store_path
 }
 
 enable_btrfs_quotas() {

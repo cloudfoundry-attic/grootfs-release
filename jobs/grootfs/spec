@@ -48,5 +48,4 @@ properties:
     default: 64
   grootfs.extra_mount_options:
     description: "EXPERIMENTAL: Extra mount options to use when mounting the store volume"
-    default: []
-    example: ["noatime", "nobarrier"]
+    default: ["noatime", "nobarrier"]

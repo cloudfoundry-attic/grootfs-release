@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -x
+set -e
 
 BASE_PATH=$(dirname $0)
 
@@ -47,7 +48,7 @@ create_store() {
 format_volume_file() {
   local volume_file=$1
 
-  if [ -z "$(file $volume_file | grep "XFS Filesystem")" ]
+  if [ -z "$(file $volume_file | grep -i "XFS filesystem")" ]
   then
     echo "formatting volume..."
     mkfs.xfs -f $volume_file
@@ -59,9 +60,8 @@ mount_xfs_volume() {
   local store_path=$2
 
   echo "mounting volume..."
-  umount $store_path || true
   <% mount_options = ["pquota"] + Array(p("grootfs.extra_mount_options")) %>
-  mount -t xfs -o <%= mount_options.join(",") %> $volume_file $store_path
+  mount -t xfs -o remount,<%= mount_options.join(",") %> $volume_file $store_path || mount -t xfs -o <%= mount_options.join(",") %> $volume_file $store_path
 }
 
 tardis_setup() {
