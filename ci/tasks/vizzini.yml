@@ -1,0 +1,23 @@
+---
+image_resource:
+  type: docker-image
+  source:
+    repository: cfgarden/grootfs-ci
+    tag: latest
+
+platform: linux
+
+inputs:
+  - name: vizzini-test-suite
+  - name: grootfs-release-develop
+
+params:
+  ROUTABLE_DOMAIN:
+  CELL_ADDRESS:
+  BBS_ADDRESS:
+  BBS_CLIENT_KEY:
+  BBS_CLIENT_CERT:
+  SSH_PASSWORD:
+
+run:
+  path: grootfs-release-develop/ci/scripts/vizzini.sh
