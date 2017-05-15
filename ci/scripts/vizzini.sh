@@ -4,6 +4,8 @@ set -x -e
 
 cd vizzini-test-suite
 
+go get -t -d -v ./...
+
 ginkgo -nodes=8 \
   -skip="{LOCAL}" \
   -randomizeAllSpecs \
