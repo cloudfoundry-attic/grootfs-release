@@ -19,6 +19,7 @@ groups:
   - deploy-cf
   - deploy-datadog-nozzle
   - CATs
+  - vizzini
   - deploy-stable-release
   - test-upgrade
 - name: grootfs
@@ -52,6 +53,7 @@ groups:
   - deploy-cf
   - deploy-datadog-nozzle
   - CATs
+  - vizzini
   - deliver
 - name: tools
   jobs:
@@ -78,6 +80,12 @@ resources:
   source:
     branch: master
     uri: https://github.com/cloudfoundry/cf-acceptance-tests.git
+
+- name: vizzini-test-suite
+  type: git
+  source:
+    branch: master
+    uri: https://github.com/cloudfoundry/vizzini.git
 
 - name: monday-update
   type: time
@@ -230,6 +238,11 @@ resources:
     driver: s3
 
 - name: performance-time-trigger
+  type: time
+  source:
+    interval: 60m
+
+- name: vizzini-time-trigger
   type: time
   source:
     interval: 60m
@@ -1197,6 +1210,30 @@ jobs:
       CF_PASSWORD: {{cf-password}}
   - task: run-cats
     file: cats-concourse-task/task.yml
+
+- name: vizzini
+  serial_groups:
+  - deploy-cf
+  - deploy-datadog-nozzle
+  plan:
+  - aggregate:
+    - get: vizzini-time-trigger
+      trigger: true
+    - get: vizzini-test-suite
+    - get: grootfs-release-develop
+      trigger: true
+      passed: [deploy-cf]
+      params:
+        submodules: none
+  - task: run-vizzini
+    params:
+      ROUTABLE_DOMAIN: {{gamora-domain}}
+      CELL_ADDRESS: {{cell-address}}
+      BBS_ADDRESS: {{bbs-address}}
+      BBS_CLIENT_KEY: {{bbs-client-key}}
+      BBS_CLIENT_CERT: {{bbs-client-cert}}
+      SSH_PASSWORD: {{diego-ssh-password}}
+    file: grootfs-release-develop/ci/tasks/vizzini.yml
 
 - name: deliver
   plan:

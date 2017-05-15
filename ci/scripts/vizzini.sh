@@ -13,11 +13,11 @@ ginkgo -nodes=8 \
   -trace \
   "$@" \
   -- \
-  --routable-domain-suffix=${ROUTABLE_DOMAIN}
+  --routable-domain-suffix=${ROUTABLE_DOMAIN} \
   --host-address=${CELL_ADDRESS} \
-  --bbs-address=${BBS_ADDRESS}:8889 \
-  --bbs-client-cert=${BBS_CLIENT_CERT} \
-  --bbs-client-key=${BBS_CLIENT_KEY} \
-  --ssh-address=ssh.${ROUTABLE_DOMAIN} \
+  --bbs-address=https://${BBS_ADDRESS}:8889 \
+  --bbs-client-cert=./cert \
+  --bbs-client-key=./key \
+  --ssh-address=ssh.${ROUTABLE_DOMAIN}:2222 \
   --ssh-password=${SSH_PASSWORD} \
 
