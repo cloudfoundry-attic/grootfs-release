@@ -50,8 +50,12 @@ format_volume_file() {
   local volume_file=$1
   local log_device=$2
   local log_volume_file=${volume_file}_log
+  local device=$(losetup -a | grep $log_volume_file | cut -d ":" -f1)
 
-  losetup -d $(losetup -a | grep $log_volume_file | cut -d ":" -f1)
+  if [ ! -z $device ]
+  then
+    losetup -d $device
+  fi
   <% if p("grootfs.use_external_logdevice") %>
   echo "formatting log volume..."
   dd if=/dev/zero of=$log_volume_file bs=1M count=<%= p("grootfs.external_logdevice_size_in_mb") %>
