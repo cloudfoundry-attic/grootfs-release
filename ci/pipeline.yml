@@ -746,38 +746,46 @@ jobs:
       params:
         DATADOG_API_KEY: {{datadog-api-key}}
         DATADOG_APP_KEY: {{datadog-application-key}}
-    - put: grootfs-bench-btrfs-local-deployment
-      params:
-        manifest: manifests/grootfs-bench-btrfs-local.yml
-        releases:
-        - grootfs-release-tarball/*.tgz
-        - grootfs-bench-release-tarball/*.tgz
-        stemcells:
-        - gamora-bosh-stemcell/*.tgz
-    - put: grootfs-bench-btrfs-remote-deployment
-      params:
-        manifest: manifests/grootfs-bench-btrfs-remote.yml
-        releases:
-        - grootfs-release-tarball/*.tgz
-        - grootfs-bench-release-tarball/*.tgz
-        stemcells:
-        - gamora-bosh-stemcell/*.tgz
-    - put: grootfs-bench-xfs-local-deployment
-      params:
-        manifest: manifests/grootfs-bench-xfs-local.yml
-        releases:
-        - grootfs-release-tarball/*.tgz
-        - grootfs-bench-release-tarball/*.tgz
-        stemcells:
-        - gamora-bosh-stemcell/*.tgz
-    - put: grootfs-bench-xfs-remote-deployment
-      params:
-        manifest: manifests/grootfs-bench-xfs-remote.yml
-        releases:
-        - grootfs-release-tarball/*.tgz
-        - grootfs-bench-release-tarball/*.tgz
-        stemcells:
-        - gamora-bosh-stemcell/*.tgz
+    - aggregate:
+      - put: grootfs-bench-btrfs-local-deployment
+        params:
+          manifest: manifests/grootfs-bench-btrfs-local.yml
+          releases:
+          - grootfs-release-tarball/*.tgz
+          - grootfs-bench-release-tarball/*.tgz
+          stemcells:
+          - gamora-bosh-stemcell/*.tgz
+      - put: grootfs-bench-btrfs-remote-deployment
+        params:
+          manifest: manifests/grootfs-bench-btrfs-remote.yml
+          releases:
+          - grootfs-release-tarball/*.tgz
+          - grootfs-bench-release-tarball/*.tgz
+          stemcells:
+          - gamora-bosh-stemcell/*.tgz
+      - put: grootfs-bench-xfs-local-deployment
+        params:
+          manifest: manifests/grootfs-bench-xfs-local.yml
+          releases:
+          - grootfs-release-tarball/*.tgz
+          - grootfs-bench-release-tarball/*.tgz
+          stemcells:
+          - gamora-bosh-stemcell/*.tgz
+      - put: grootfs-bench-xfs-remote-deployment
+        params:
+          manifest: manifests/grootfs-bench-xfs-remote.yml
+          releases:
+          - grootfs-release-tarball/*.tgz
+          - grootfs-bench-release-tarball/*.tgz
+          stemcells:
+          - gamora-bosh-stemcell/*.tgz
+      - task: publish-commit-event-to-datadog
+        privileged: true
+        file: grootfs-bench-release/ci/tasks/publish-commit-event.yml
+        params:
+          ERRAND_NAME: grootfs-bench-local-btrfs
+          DATADOG_API_KEY: {{datadog-api-key}}
+          DATADOG_APPLICATION_KEY: {{datadog-application-key}}
     on_failure:
       put: slack-alert
       params:
