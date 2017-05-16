@@ -35,6 +35,6 @@ cat > integration-config/integration_config.json <<EOF
   "include_tasks": false,
   "include_v3": false,
   "include_zipkin": false,
-  "default_timeout": 60
+  "default_timeout": 90
 }
 EOF
