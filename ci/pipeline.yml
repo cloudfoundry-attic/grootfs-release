@@ -918,6 +918,7 @@ jobs:
 - name: bump-patch-grootfs-release
   serial: true
   plan:
+  - get: grootfs-git-repo
   - get: grootfs-release-version
     params: { bump: patch, pre: rc }
     passed: [ship-bosh-release]
