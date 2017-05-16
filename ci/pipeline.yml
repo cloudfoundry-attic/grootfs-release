@@ -128,6 +128,13 @@ resources:
   source:
     repository: cloudfoundry/diego-release
 
+- name: diego-release-develop
+  type: git
+  source:
+  source:
+    uri: https://github.com/cloudfoundry/diego-release
+    branch: master
+
 - name: cflinuxfs2-release
   type: bosh-io-release
   source:
@@ -1137,6 +1144,9 @@ jobs:
       trigger: true
     - get: diego-release
       trigger: true
+    - get: diego-release-develop
+      params:
+        submodules: none
   - task: generate-cf-manifest
     file: grootfs-release-develop/ci/tasks/generate-cf-manifest.yml
     params:
@@ -1214,7 +1224,6 @@ jobs:
   - aggregate:
     - get: vizzini-time-trigger
       trigger: true
-    - get: diego-release
     - get: grootfs-release-develop
       trigger: true
       passed: [deploy-cf]

@@ -8,7 +8,6 @@ image_resource:
 platform: linux
 
 inputs:
-  - name: diego-release
   - name: grootfs-release-develop
 
 params:
