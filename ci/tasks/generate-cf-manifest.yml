@@ -9,6 +9,7 @@ platform: linux
 inputs:
   - name: grootfs-ci-secrets
   - name: grootfs-release-develop
+  - name: diego-release
   - name: git-cf-deployment
 
 outputs:

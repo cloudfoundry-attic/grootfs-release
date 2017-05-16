@@ -81,12 +81,6 @@ resources:
     branch: master
     uri: https://github.com/cloudfoundry/cf-acceptance-tests.git
 
-- name: vizzini-test-suite
-  type: git
-  source:
-    branch: master
-    uri: https://github.com/cloudfoundry/vizzini.git
-
 - name: monday-update
   type: time
   source:
@@ -1220,21 +1214,22 @@ jobs:
   - aggregate:
     - get: vizzini-time-trigger
       trigger: true
-    - get: vizzini-test-suite
+    - get: diego-release
     - get: grootfs-release-develop
       trigger: true
       passed: [deploy-cf]
       params:
         submodules: none
   - task: run-vizzini
-    params:
-      ROUTABLE_DOMAIN: {{gamora-domain}}
-      CELL_ADDRESS: {{cell-address}}
-      BBS_ADDRESS: {{bbs-address}}
-      BBS_CLIENT_KEY: {{bbs-client-key}}
-      BBS_CLIENT_CERT: {{bbs-client-cert}}
-      SSH_PASSWORD: {{diego-ssh-password}}
+    privileged: true
     file: grootfs-release-develop/ci/tasks/vizzini.yml
+    params:
+      BOSH_TARGET: {{gamora-bosh-target}}
+      BOSH_CLIENT: {{gamora-bosh-username}}
+      BOSH_CLIENT_SECRET: {{gamora-bosh-password}}
+      BOSH_DEPLOYMENT: cf
+      BOSH_CERTIFICATES: {{gamora-bosh-certificates}}
+      ERRAND_NAME: vizzini
 
 - name: deliver
   plan:

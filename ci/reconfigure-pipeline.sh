@@ -48,10 +48,7 @@ set_pipeline() {
     --var cf-loggregator-certs="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/cf-loggregator-certs' --notes)" \
     --var github-client-id="$(lpass show 'Shared-Garden/grootfs-deployments/github-garden-gnome' --username)" \
     --var github-client-secret="$(lpass show 'Shared-Garden/grootfs-deployments/github-garden-gnome' --password)" \
-    --var grootfs-release-private-yaml="$(lpass show 'Shared-Garden/grootfs-release-private.yml' --note)" \
-    --var bbs-client-key="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/bbs-client-key' --notes)" \
-    --var bbs-client-cert="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/bbs-client-cert' --notes)" \
-    --var diego-ssh-password="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/diego-ssh-password' --notes)"
+    --var grootfs-release-private-yaml="$(lpass show 'Shared-Garden/grootfs-release-private.yml' --note)"
 }
 
 expose_pipeline() {

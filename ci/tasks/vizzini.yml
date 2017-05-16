@@ -8,16 +8,16 @@ image_resource:
 platform: linux
 
 inputs:
-  - name: vizzini-test-suite
+  - name: diego-release
   - name: grootfs-release-develop
 
 params:
-  ROUTABLE_DOMAIN:
-  CELL_ADDRESS:
-  BBS_ADDRESS:
-  BBS_CLIENT_KEY:
-  BBS_CLIENT_CERT:
-  SSH_PASSWORD:
+  BOSH_TARGET:
+  BOSH_CLIENT:
+  BOSH_CLIENT_SECRET:
+  BOSH_DEPLOYMENT:
+  BOSH_CERTIFICATES:
+  ERRAND_NAME:
 
 run:
   path: grootfs-release-develop/ci/scripts/vizzini.sh

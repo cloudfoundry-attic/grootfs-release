@@ -1,23 +1,10 @@
 #!/bin/bash
+set -e
 
-set -x -e
+echo "$BOSH_CERTIFICATES" > certificates.yml
+bosh2 int --path "/certs/ca_cert" certificates.yml > ca_cert.crt
 
-cd vizzini-test-suite
-
-go get -t -d -v ./...
-
-ginkgo -nodes=8 \
-  -skip="{LOCAL}" \
-  -randomizeAllSpecs \
-  -progress \
-  -trace \
-  "$@" \
-  -- \
-  --routable-domain-suffix=${ROUTABLE_DOMAIN} \
-  --host-address=${CELL_ADDRESS} \
-  --bbs-address=https://${BBS_ADDRESS}:8889 \
-  --bbs-client-cert=./cert \
-  --bbs-client-key=./key \
-  --ssh-address=ssh.${ROUTABLE_DOMAIN}:2222 \
-  --ssh-password=${SSH_PASSWORD} \
-
+echo "Running performance tests..."
+bosh2 -e $BOSH_TARGET --ca-cert ca_cert.crt alias-env bosh-director
+bosh2 -e bosh-director --client $BOSH_CLIENT --client-secret $BOSH_CLIENT_SECRET login
+bosh2 -e bosh-director -d $BOSH_DEPLOYMENT run-errand $ERRAND_NAME
