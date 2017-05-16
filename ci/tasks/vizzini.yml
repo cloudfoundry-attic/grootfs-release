@@ -20,3 +20,4 @@ params:
 
 run:
   path: grootfs-release-develop/ci/scripts/vizzini.sh
+  user: root
