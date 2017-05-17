@@ -46,5 +46,5 @@ bosh2 int \
   --ops-file grootfs-ci-secrets/deployments/cf-operations/cf-resize.yml \
   --ops-file grootfs-ci-secrets/deployments/cf-operations/use-latest-releases.yml \
   --ops-file grootfs-ci-secrets/deployments/cf-operations/datadog-firehose-nozzle.yml \
-  --ops-file diego-release-develop/operations/add-vizzini-errand.yml \
+  --ops-file diego-release/operations/add-vizzini-errand.yml \
   git-cf-deployment/cf-deployment.yml > manifests/cf.yml
