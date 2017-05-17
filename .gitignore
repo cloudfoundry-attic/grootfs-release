@@ -13,6 +13,7 @@ stub.yml
 releases/**/*.tgz
 releases/*.tgz
 
+ci/dummy_pipeline.yml
 /.drone.yml
 /deployments-runtime
 .vagrant/

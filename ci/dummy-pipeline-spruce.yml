@@ -1,0 +1,9 @@
+jobs:
+- name: ship-bosh-release
+  plan:
+  - do:
+    - aggregate:
+      - (( merge on get ))
+      - get: grootfs-release-develop
+        passed:
+        - (( replace ))

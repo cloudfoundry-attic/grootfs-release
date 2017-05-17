@@ -13,10 +13,16 @@ main() {
   sync_and_login
 
   pipeline_name="grootfs"
-  [ $DEBUG -eq 1 ] && pipeline_name="grootfs-test"
   vars_name="gcp"
-  [ $DEBUG -eq 1 ] && vars_name="lite"
-  [ $DEBUG -eq 1 ] && flyrc_target="lite"
+  pipeline_file="pipeline.yml"
+
+  if [ $DEBUG -eq 1 ]; then
+    pipeline_name="grootfs-test"
+    vars_name="dummy"
+
+    spruce --concourse merge ci/$pipeline_file ci/dummy-pipeline-spruce.yml > ci/dummy_pipeline.yml
+    pipeline_file="dummy_pipeline.yml"
+  fi
 
   set_pipeline
   expose_pipeline
@@ -24,7 +30,7 @@ main() {
 
 set_pipeline() {
   fly --target="$flyrc_target" set-pipeline --pipeline=$pipeline_name \
-    --config=ci/pipeline.yml --load-vars-from=$HOME/workspace/grootfs-ci-secrets/vars/$vars_name.yml \
+    --config=ci/${pipeline_file} --load-vars-from=$HOME/workspace/grootfs-ci-secrets/vars/$vars_name.yml \
     --var gnome-private-key="$(lpass show 'Shared-Garden/grootfs-deployments/github-garden-gnome' --notes)" \
     --var github-access-token="$(lpass show 'Shared-Garden/Garden-Gnome-Github-Account' --field=api-key)" \
     --var gamora-bosh-username="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/bosh-director' --username)" \
