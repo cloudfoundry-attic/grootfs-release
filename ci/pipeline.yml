@@ -128,7 +128,7 @@ resources:
   source:
     repository: cloudfoundry/diego-release
 
-- name: diego-release-develop
+- name: diego-release-master
   type: git
   source:
   source:
@@ -1144,7 +1144,7 @@ jobs:
       trigger: true
     - get: diego-release
       trigger: true
-    - get: diego-release-develop
+    - get: diego-release-master
       params:
         submodules: none
   - task: generate-cf-manifest
