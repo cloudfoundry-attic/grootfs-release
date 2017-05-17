@@ -1240,7 +1240,7 @@ jobs:
       BOSH_CERTIFICATES: {{gamora-bosh-certificates}}
       ERRAND_NAME: vizzini
     on_success:
-      task: run-vizzini
+      task: datadog-event
       file: grootfs-release-develop/ci/tasks/publish-vizzini-execution.yml
       params:
         DATADOG_API_KEY: {{datadog-api-key}}
