@@ -30,7 +30,8 @@ echo "$CF_LOGGREGATOR_CERTS" > loggregator-certs.yml
 
 bosh2 int \
   --var=system_domain=${CF_SYSTEM_DOMAIN} \
-  --var=uaa_scim_users_admin_password="${CF_PASSWORD}"\
+  --var=uaa_scim_users_admin_password="${CF_PASSWORD}"\ # keeping for the moment because of backwards compatibility
+  --var=cf_admin_password="${CF_PASSWORD}"\
   --vars-file ./secrets.yml \
   --vars-file ./uaa-certs.yml \
   --vars-file ./etcd-certs.yml \
