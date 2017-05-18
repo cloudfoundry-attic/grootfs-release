@@ -49,3 +49,6 @@ properties:
   grootfs.extra_mount_options:
     description: "EXPERIMENTAL: Extra mount options to use when mounting the store volume"
     default: ["noatime", "nobarrier"]
+  grootfs.slow_action_threshold_in_seconds:
+    description: "EXPERIMENTAL: defines a acceptable duration for grootfs actions before a system report log is emitted. 0 means disabled."
+    default: 0

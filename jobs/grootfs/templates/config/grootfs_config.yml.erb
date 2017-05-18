@@ -26,3 +26,4 @@ clean:
   <% if p("grootfs.graph_cleanup_threshold_in_mb") >= 0 %>
   threshold_bytes: <%= p("grootfs.graph_cleanup_threshold_in_mb") * 1048576 %>
   <% end %>
+slow_action_threshold: <%= p("grootfs.slow_action_threshold_in_seconds") %>
