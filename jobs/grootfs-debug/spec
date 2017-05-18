@@ -3,11 +3,16 @@ name: grootfs-debug
 
 templates:
   debug_ctl.erb: bin/debug_ctl
+  run.erb: bin/run
+  no-action.erb: bin/no-action
 
 packages:
   - trace-cmd
 
 properties:
+  grootfs-debug.disabled:
+    description: "deploy grootfs-debug in non-running state"
+    default: false
   grootfs-debug.trace_buffer_size:
     description: "kernel buffersize (in kilobytes per CPU)"
     default: 20080

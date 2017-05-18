@@ -14,10 +14,14 @@ jobs:
     templates:
       - name: grootfs
         release: grootfs
+      - name: grootfs-debug
+        release: grootfs
     resource_pool: grootfs
     networks:
       - name: grootfs
     properties:
+      grootfs-debug:
+        disabled: true
       grootfs:
         driver: overlay-xfs
         use_external_logdevice: true
