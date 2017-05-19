@@ -27,7 +27,7 @@ case $1 in
   stop)
     if [[ -f "$PID_FILE" ]]
     then
-      kill -9 $(cat $PID_FILE)
+      kill $(cat $PID_FILE)
       trace-cmd stop
       rm $PID_FILE
     fi
