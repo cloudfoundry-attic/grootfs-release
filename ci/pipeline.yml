@@ -239,7 +239,7 @@ resources:
 - name: vizzini-time-trigger
   type: time
   source:
-    interval: 15m
+    interval: 5m
 
 - name: grootfs-bench-btrfs-remote-deployment
   type: bosh-deployment
