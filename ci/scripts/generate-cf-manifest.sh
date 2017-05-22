@@ -42,7 +42,7 @@ bosh2 int \
   --vars-file ./diego-certs.yml \
   --vars-file ./loggregator-certs.yml \
   --vars-store ./regenerate-secrets.yml \
-  --ops-file git-cf-deployment/operations/${iaas}.yml \
+  --ops-file git-cf-deployment/operations/${IAAS}.yml \
   --ops-file git-cf-deployment/operations/scale-to-one-az.yml \
   --ops-file grootfs-release-develop/manifests/operations/grootfs.yml \
   --ops-file grootfs-ci-secrets/deployments/cf-operations/custom-changes.yml \
