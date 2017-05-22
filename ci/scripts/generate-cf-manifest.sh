@@ -19,6 +19,7 @@ ensure CF_CC_CERTS
 ensure CF_CONSUL_CERTS
 ensure CF_DIEGO_CERTS
 ensure CF_LOGGREGATOR_CERTS
+ensure IAAS
 
 echo "$CF_SECRETS" > secrets.yml
 echo "$CF_UAA_CERTS" > uaa-certs.yml
@@ -41,7 +42,7 @@ bosh2 int \
   --vars-file ./diego-certs.yml \
   --vars-file ./loggregator-certs.yml \
   --vars-store ./regenerate-secrets.yml \
-  --ops-file git-cf-deployment/operations/gcp.yml \
+  --ops-file git-cf-deployment/operations/${iaas}.yml \
   --ops-file git-cf-deployment/operations/scale-to-one-az.yml \
   --ops-file grootfs-release-develop/manifests/operations/grootfs.yml \
   --ops-file grootfs-ci-secrets/deployments/cf-operations/custom-changes.yml \
