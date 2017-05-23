@@ -10,6 +10,7 @@ inputs:
   - name: grootfs-ci-secrets
   - name: grootfs-release-develop
   - name: git-cf-deployment
+  - name: diego-release
 
 outputs:
   - name: manifests
