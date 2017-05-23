@@ -103,6 +103,12 @@ resources:
     ignore_paths:
     - ci
 
+- name: diego-release-git
+  type: git
+  source:
+    uri: https://github.com/cloudfoundry/diego-release
+    branch: master
+
 - name: git-cf-deployment
   type: git
   source:
@@ -1137,6 +1143,9 @@ jobs:
       trigger: true
     - get: diego-release
       trigger: true
+    - get: diego-release-git
+      params:
+        submodules: none
   - task: generate-cf-manifest
     file: grootfs-release-develop/ci/tasks/generate-cf-manifest.yml
     params:
