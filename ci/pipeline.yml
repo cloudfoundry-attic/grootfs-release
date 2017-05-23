@@ -17,7 +17,6 @@ groups:
   - deploy-garden-grootfs
   - GATs
   - deploy-cf
-  - deploy-datadog-nozzle
   - CATs
   - vizzini
   - deploy-stable-release
@@ -51,7 +50,6 @@ groups:
 - name: cf
   jobs:
   - deploy-cf
-  - deploy-datadog-nozzle
   - CATs
   - vizzini
   - deliver
@@ -1145,6 +1143,8 @@ jobs:
       trigger: true
     - get: diego-release-git
       params:
+    - get: datadog-nozzle-release
+      trigger: true
         submodules: none
   - task: generate-cf-manifest
     file: grootfs-release-develop/ci/tasks/generate-cf-manifest.yml
@@ -1157,6 +1157,8 @@ jobs:
       CF_CONSUL_CERTS: {{cf-consul-certs}}
       CF_DIEGO_CERTS: {{cf-diego-certs}}
       CF_LOGGREGATOR_CERTS: {{cf-loggregator-certs}}
+      DATADOG_API_KEY: {{datadog-api-key}}
+      DATADOG_METRIC_PREFIX: "datadog.grootfs-performance.nozzle."
   - put: cf-deployment
     params:
       manifest: manifests/cf.yml
@@ -1166,6 +1168,7 @@ jobs:
       - grootfs-release-tarball/*.tgz
       - garden-release/*.tgz
       - grootfs-bench-release-tarball/*.tgz
+      - datadog-nozzle-release/*.tgz
       stemcells:
       - gamora-bosh-stemcell/*.tgz
   - task: enable-docker-feature-flag
@@ -1174,33 +1177,9 @@ jobs:
       CF_USERNAME: admin
       CF_PASSWORD: {{cf-password}}
 
-- name: deploy-datadog-nozzle
-  serial_groups: [deploy-datadog-nozzle]
-  plan:
-  - aggregate:
-    - get: grootfs-release-develop
-    - get: datadog-nozzle-release
-      trigger: true
-    - get: grootfs-ci-secrets
-    - get: gamora-bosh-stemcell
-  - task: generate-manifest
-    file: grootfs-release-develop/ci/tasks/generate-datadog-firehose-nozzle-manifest.yml
-    params:
-      DATADOG_API_KEY: {{datadog-api-key}}
-      CF_SECRETS: {{cf-secrets}}
-      CF_UAA_CERTS: {{cf-uaa-certs}}
-  - put: datadog-nozzle-deployment
-    params:
-      manifest: manifests/datadog-firehose-nozzle.yml
-      releases:
-      - datadog-nozzle-release/*.tgz
-      stemcells:
-      - gamora-bosh-stemcell/*.tgz
-
 - name: CATs
   serial_groups:
   - deploy-cf
-  - deploy-datadog-nozzle
   plan:
   - aggregate:
     - get: cf-acceptance-tests
@@ -1218,7 +1197,6 @@ jobs:
 - name: vizzini
   serial_groups:
   - deploy-cf
-  - deploy-datadog-nozzle
   plan:
   - aggregate:
     - get: vizzini-time-trigger

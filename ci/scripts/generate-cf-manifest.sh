@@ -34,6 +34,8 @@ bosh2 int \
   --var=system_domain=${CF_SYSTEM_DOMAIN} \
   --var=uaa_scim_users_admin_password="${CF_PASSWORD}"\
   --var=cf_admin_password="${CF_PASSWORD}"\
+  --var=datadog_api_key="${DATADOG_API_KEY}" \
+  --var=datadog_metric_prefix="${DATADOG_METRIC_PREFIX}" \
   --vars-file ./secrets.yml \
   --vars-file ./uaa-certs.yml \
   --vars-file ./etcd-certs.yml \
@@ -42,6 +44,7 @@ bosh2 int \
   --vars-file ./diego-certs.yml \
   --vars-file ./loggregator-certs.yml \
   --vars-store ./regenerate-secrets.yml \
+  --ops-file git-cf-deployment/operations/test/add-datadog-firehose-nozzle-aws.yml \
   --ops-file git-cf-deployment/operations/${IAAS}.yml \
   --ops-file git-cf-deployment/operations/scale-to-one-az.yml \
   --ops-file grootfs-release-develop/manifests/operations/grootfs.yml \
@@ -49,6 +52,5 @@ bosh2 int \
   --ops-file grootfs-ci-secrets/deployments/cf-operations/grootfs-long-running-bench.yml \
   --ops-file grootfs-ci-secrets/deployments/cf-operations/cf-resize.yml \
   --ops-file grootfs-ci-secrets/deployments/cf-operations/use-latest-releases.yml \
-  --ops-file grootfs-ci-secrets/deployments/cf-operations/datadog-firehose-nozzle.yml \
   --ops-file diego-release-git/operations/add-vizzini-errand.yml \
   git-cf-deployment/cf-deployment.yml > manifests/cf.yml
