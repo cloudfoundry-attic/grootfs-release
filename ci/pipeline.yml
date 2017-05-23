@@ -142,15 +142,6 @@ resources:
   source:
     repository: cloudfoundry-incubator/datadog-firehose-nozzle-release
 
-- name: datadog-nozzle-deployment
-  type: bosh-deployment
-  source:
-    target: {{gamora-bosh-target}}
-    username: {{gamora-bosh-username}}
-    password: {{gamora-bosh-password}}
-    deployment: datadog-firehose-nozzle
-    ignore_ssl: true
-
 - name: grootfs-git-repo
   type: git
   source:
@@ -1143,9 +1134,9 @@ jobs:
       trigger: true
     - get: diego-release-git
       params:
+        submodules: none
     - get: datadog-nozzle-release
       trigger: true
-        submodules: none
   - task: generate-cf-manifest
     file: grootfs-release-develop/ci/tasks/generate-cf-manifest.yml
     params:
