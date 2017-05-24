@@ -26,9 +26,6 @@ jobs:
         driver: overlay-xfs
         use_external_logdevice: true
         external_logdevice_size_in_mb: 128
-        extra_mount_options:
-        - noatime
-        - nobarrier
 
 networks:
   - name: grootfs
