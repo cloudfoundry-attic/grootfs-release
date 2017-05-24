@@ -1,8 +1,8 @@
 store: /var/vcap/data/grootfs/store/privileged
 driver: <%= p('grootfs.driver') %>
 btrfs_bin: /var/vcap/packages/btrfs-progs/bin/btrfs
-tardis_bin: /var/vcap/packages/grootfs/bin/tardis
 drax_bin: /var/vcap/packages/grootfs/bin/drax
+tardis_bin: /var/vcap/packages/grootfs/bin/tardis
 newuidmap_bin: /var/vcap/packages/idmapper/bin/newuidmap
 newgidmap_bin: /var/vcap/packages/idmapper/bin/newgidmap
 log_level: <%= p('grootfs.log_level') %>
