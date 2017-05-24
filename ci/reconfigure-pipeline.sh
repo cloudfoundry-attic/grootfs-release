@@ -43,8 +43,8 @@ set_pipeline() {
     --var aws-secret-access-key="$(lpass show "Shared-Garden/grootfs-deployments\thanos/aws-keys" --password)" \
     --var datadog-api-key="$(lpass show 'Shared-Garden/grootfs-deployments/datadog-api-keys' --username)" \
     --var datadog-application-key="$(lpass show 'Shared-Garden/grootfs-deployments/datadog-api-keys' --password)" \
-    --var cf-username="$(lpass show 'Shared-Garden/Grootfs-Performance-CF' --username)" \
-    --var cf-password="$(lpass show 'Shared-Garden/Grootfs-Performance-CF' --password)" \
+    --var cf-username="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/cf-creds' --username)" \
+    --var cf-password="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/cf-creds' --password)" \
     --var cf-secrets="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/cf-secrets' --notes)" \
     --var cf-uaa-certs="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/cf-uaa-certs' --notes)" \
     --var cf-etcd-certs="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/cf-etcd-certs' --notes)" \
