@@ -1140,6 +1140,7 @@ jobs:
   - task: generate-cf-manifest
     file: grootfs-release-develop/ci/tasks/generate-cf-manifest.yml
     params:
+      CF_DOMAIN: grootfs-gamora.cf-app.com
       CF_PASSWORD: {{cf-password}}
       CF_SECRETS: {{cf-secrets}}
       CF_UAA_CERTS: {{cf-uaa-certs}}
@@ -1149,7 +1150,7 @@ jobs:
       CF_DIEGO_CERTS: {{cf-diego-certs}}
       CF_LOGGREGATOR_CERTS: {{cf-loggregator-certs}}
       DATADOG_API_KEY: {{datadog-api-key}}
-      DATADOG_METRIC_PREFIX: "datadog.grootfs-performance.nozzle."
+      DATADOG_METRIC_PREFIX: "datadog.gamora.nozzle."
   - put: cf-deployment
     params:
       manifest: manifests/cf.yml

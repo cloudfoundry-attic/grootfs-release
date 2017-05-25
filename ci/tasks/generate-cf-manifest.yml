@@ -16,7 +16,7 @@ outputs:
   - name: manifests
 
 params:
-  CF_SYSTEM_DOMAIN: grootfs-performance.cf-app.com
+  CF_SYSTEM_DOMAIN: grootfs-gamora.cf-app.com
   CF_SECRETS:
   CF_UAA_CERTS:
   CF_PASSWORD:
