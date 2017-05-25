@@ -33,6 +33,9 @@ set_pipeline() {
     --config=ci/${pipeline_file} --load-vars-from=$HOME/workspace/grootfs-ci-secrets/vars/$vars_name.yml \
     --var gnome-private-key="$(lpass show 'Shared-Garden/grootfs-deployments/github-garden-gnome' --notes)" \
     --var github-access-token="$(lpass show 'Shared-Garden/Garden-Gnome-Github-Account' --field=api-key)" \
+    --var thanos-bosh-username="$(lpass show 'Shared-Garden/grootfs-deployments\thanos/bosh-director' --username)" \
+    --var thanos-bosh-password="$(lpass show 'Shared-Garden/grootfs-deployments\thanos/bosh-director' --password)" \
+    --var thanos-bosh-certificates="$(lpass show 'Shared-Garden/grootfs-deployments\thanos/certificates' --notes)" \
     --var gamora-bosh-username="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/bosh-director' --username)" \
     --var gamora-bosh-password="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/bosh-director' --password)" \
     --var gamora-bosh-certificates="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/certificates' --notes)" \
