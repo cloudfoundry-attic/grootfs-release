@@ -12,7 +12,7 @@ inputs:
 
 params:
   DATADOG_API_KEY:
-  DATADOG_APP_KEY:
+  ENV:
 
 run:
   path: grootfs-release-develop/ci/scripts/publish-vizzini-execution.sh
