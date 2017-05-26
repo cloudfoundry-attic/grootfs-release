@@ -13,7 +13,7 @@ outputs:
   - name: manifests
 
 params:
-  CF_API_URL: api.grootfs-performance.cf-app.com
+  CF_API_URL: api.grootfs-gamora.cf-app.com
   CF_PASSWORD:
   CF_USERNAME:
 

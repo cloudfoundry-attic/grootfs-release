@@ -13,8 +13,8 @@ ensure CF_PASSWORD
 
 cat > integration-config/integration_config.json <<EOF
 {
-  "api": "api.grootfs-performance.cf-app.com",
-  "apps_domain": "grootfs-performance.cf-app.com",
+  "api": "api.grootfs-gamora.cf-app.com",
+  "apps_domain": "grootfs-gamora.cf-app.com",
   "admin_user": "admin",
   "admin_password": "$CF_PASSWORD",
   "backend": "diego",
