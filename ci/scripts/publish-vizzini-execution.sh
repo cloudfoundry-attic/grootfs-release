@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export $IAAS
+export $ENV
 export "$DATADOG_API_KEY"
 curl  -X POST -H "Content-type: application/json" \
   -d '{
