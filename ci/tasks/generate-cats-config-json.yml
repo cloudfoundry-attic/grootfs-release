@@ -12,6 +12,7 @@ inputs:
 
 params:
   CF_PASSWORD:
+  CF_API:
 
 outputs:
   - name: integration-config

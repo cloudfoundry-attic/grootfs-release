@@ -10,11 +10,12 @@ ensure(){
 }
 
 ensure CF_PASSWORD
+ensure CF_API
 
 cat > integration-config/integration_config.json <<EOF
 {
-  "api": "api.grootfs-gamora.cf-app.com",
-  "apps_domain": "grootfs-gamora.cf-app.com",
+  "api": "api.$CF_API",
+  "apps_domain": "$CF_API",
   "admin_user": "admin",
   "admin_password": "$CF_PASSWORD",
   "backend": "diego",
