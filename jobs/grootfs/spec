@@ -16,16 +16,16 @@ packages:
 
 properties:
   grootfs.store_size_bytes:
-    description: "The size of the grootfs store. Changes to this value do not update the store on existing hosts. To resize the store, the job host must be recreated. If 0 the size will be the same as the ephemeral disk"
+    description: "The size of the grootfs store. Changes to this value do not update the store on existing hosts. To resize the store, the job host must be recreated. If 0 the size will be the same as the ephemeral disk."
     default: 0
   grootfs.driver:
-    description: "Filesystem driver to use"
+    description: "Filesystem driver to use."
     default: overlay-xfs
   grootfs.log_level:
-    description: "Log level for grootfs - can be debug, info, error or fatal"
+    description: "Log level for grootfs - can be debug, info, error or fatal."
     default: info
   grootfs.dropsonde_port:
-    description: "Local metron agent's port"
+    description: "Local metron agent's port."
     default: 3457
   grootfs.insecure_docker_registry_list:
     description: "A list of IP:PORT tuples that we allow pulling docker images from using self-signed certificates."
@@ -40,12 +40,9 @@ properties:
     description: "Do not mount image root filesystem automatically, just return the mount information."
     default: false
 
-  grootfs.use_external_logdevice:
-    description: "EXPERIMENTAL: Enable external logdevice. Only usable with overlay-xfs driver"
-    default: false
-  grootfs.external_logdevice_size_in_mb:
-    description: "EXPERIMENTAL: Size of external logdevice. Only usable if using external logdevice"
-    default: 64
   grootfs.slow_action_threshold_in_seconds:
-    description: "EXPERIMENTAL: defines a acceptable duration for grootfs actions before a system report log is emitted. 0 means disabled."
+    description: "EXPERIMENTAL: Defines a acceptable duration for grootfs actions before a system report log is emitted. 0 means disabled."
+    default: 0
+  grootfs.external_logdevice_size_in_mb:
+    description: "EXPERIMENTAL: Size of the XFS external log device in megabytes. 0 means disabled."
     default: 0

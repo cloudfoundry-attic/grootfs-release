@@ -23,9 +23,9 @@ jobs:
       grootfs-debug:
         disabled: true
       grootfs:
-        driver: btrfs
-        use_external_logdevice: true
-        external_logdevice_size_in_mb: 128
+        driver: overlay-xfs
+        store_size_bytes: 1073741824
+        external_logdevice_size_in_mb: 512
 
 networks:
   - name: grootfs
