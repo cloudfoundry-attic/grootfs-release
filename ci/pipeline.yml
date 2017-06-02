@@ -1142,7 +1142,7 @@ jobs:
   - task: generate-cf-manifest
     file: grootfs-release-develop/ci/tasks/generate-cf-manifest.yml
     params:
-      CF_DOMAIN: grootfs-gamora.cf-app.com
+      CF_SYSTEM_DOMAIN: grootfs-gamora.cf-app.com
       CF_PASSWORD: {{cf-password}}
       CF_SECRETS: {{cf-secrets}}
       CF_UAA_CERTS: {{cf-uaa-certs}}
@@ -1186,6 +1186,7 @@ jobs:
     file: grootfs-release-develop/ci/tasks/generate-cats-config-json.yml
     params:
       CF_PASSWORD: {{cf-password}}
+      CF_API: grootfs-gamora.cf-app.com
   - task: run-cats
     file: cats-concourse-task/task.yml
 
@@ -1219,6 +1220,7 @@ jobs:
         ENV: gamora
 
 - name: thanos-vizzini
+  serial: true
   plan:
   - aggregate:
     - get: vizzini-time-trigger
