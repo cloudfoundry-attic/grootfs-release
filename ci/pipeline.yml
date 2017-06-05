@@ -20,6 +20,7 @@ groups:
   - CATs
   - gamora-vizzini
   - thanos-vizzini
+  - thanos-vizzini-shed
   - deploy-stable-release
   - test-upgrade
 - name: grootfs
@@ -54,6 +55,7 @@ groups:
   - CATs
   - gamora-vizzini
   - thanos-vizzini
+  - thanos-vizzini-shed
   - deliver
 - name: tools
   jobs:
@@ -1245,9 +1247,30 @@ jobs:
     on_success:
       task: datadog-event
       file: grootfs-release-develop/ci/tasks/publish-vizzini-execution.yml
+
+- name: thanos-vizzini-shed
+  serial_groups: [vizzini]
+  plan:
+  - aggregate:
+    - get: vizzini-time-trigger
+      tags: [thanos]
+      trigger: true
+    - get: grootfs-release-develop
+      tags: [thanos]
+      trigger: true
       params:
-        DATADOG_API_KEY: {{datadog-api-key}}
-        ENV: thanos
+        submodules: none
+  - task: run-vizzini
+    tags: [thanos]
+    privileged: true
+    file: grootfs-release-develop/ci/tasks/vizzini.yml
+    params:
+      BOSH_TARGET: {{thanos-bosh-target}}
+      BOSH_CLIENT: {{thanos-bosh-username}}
+      BOSH_CLIENT_SECRET: {{thanos-bosh-password}}
+      BOSH_DEPLOYMENT: cf
+      BOSH_CERTIFICATES: {{thanos-bosh-certificates}}
+      ERRAND_NAME: vizzini-shed
 
 - name: deliver
   plan:
