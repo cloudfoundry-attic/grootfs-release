@@ -1220,7 +1220,7 @@ jobs:
         ENV: gamora
 
 - name: thanos-vizzini
-  serial: true
+  serial_groups: [vizzini]
   plan:
   - aggregate:
     - get: vizzini-time-trigger
