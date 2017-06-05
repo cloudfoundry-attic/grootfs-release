@@ -1214,12 +1214,13 @@ jobs:
       BOSH_DEPLOYMENT: cf
       BOSH_CERTIFICATES: {{gamora-bosh-certificates}}
       ERRAND_NAME: vizzini
-    on_success:
-      task: datadog-event
-      file: grootfs-release-develop/ci/tasks/publish-vizzini-execution.yml
-      params:
-        DATADOG_API_KEY: {{datadog-api-key}}
-        ENV: gamora
+  ensure:
+    task: publish-datadog-event
+    file: grootfs-release-develop/ci/tasks/publish-datadog-event.yml
+    params:
+      DATADOG_API_KEY: {{datadog-api-key}}
+      EVENT_NAME: "vizzini-ending"
+      TAG: "gamora"
 
 - name: thanos-vizzini
   serial_groups: [vizzini]
