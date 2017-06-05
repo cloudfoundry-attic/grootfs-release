@@ -1233,6 +1233,12 @@ jobs:
       trigger: true
       params:
         submodules: none
+  - task: publish-datadog-event
+    file: grootfs-release-develop/ci/tasks/publish-datadog-event.yml
+    params:
+      DATADOG_API_KEY: {{datadog-api-key}}
+      EVENT_NAME: "vizzini-starting"
+      TAG: "grootfs"
   - task: run-vizzini
     tags: [thanos]
     privileged: true
@@ -1244,9 +1250,13 @@ jobs:
       BOSH_DEPLOYMENT: cf
       BOSH_CERTIFICATES: {{thanos-bosh-certificates}}
       ERRAND_NAME: vizzini
-    on_success:
-      task: datadog-event
-      file: grootfs-release-develop/ci/tasks/publish-vizzini-execution.yml
+  ensure:
+    task: publish-datadog-event
+    file: grootfs-release-develop/ci/tasks/publish-datadog-event.yml
+    params:
+      DATADOG_API_KEY: {{datadog-api-key}}
+      EVENT_NAME: "vizzini-ending"
+      TAG: "grootfs"
 
 - name: thanos-vizzini-shed
   serial_groups: [vizzini]
@@ -1260,6 +1270,12 @@ jobs:
       trigger: true
       params:
         submodules: none
+  - task: publish-datadog-event
+    file: grootfs-release-develop/ci/tasks/publish-datadog-event.yml
+    params:
+      DATADOG_API_KEY: {{datadog-api-key}}
+      EVENT_NAME: "vizzini-starting"
+      TAG: "shed"
   - task: run-vizzini
     tags: [thanos]
     privileged: true
@@ -1271,6 +1287,13 @@ jobs:
       BOSH_DEPLOYMENT: cf
       BOSH_CERTIFICATES: {{thanos-bosh-certificates}}
       ERRAND_NAME: vizzini-shed
+  ensure:
+    task: publish-datadog-event
+    file: grootfs-release-develop/ci/tasks/publish-datadog-event.yml
+    params:
+      DATADOG_API_KEY: {{datadog-api-key}}
+      EVENT_NAME: "vizzini-ending"
+      TAG: "shed"
 
 - name: deliver
   plan:
