@@ -45,12 +45,13 @@ ginkgo \
   -progress \
   -trace \
   -keepGoing \
+  -skip="{LOCAL}" \
   -- \
+  --bbs-address="https://${DIEGO_BBS_ADDRESS}:8889" \
   --bbs-client-cert=./client.crt \
   --bbs-client-key=./client.key \
-  --bbs-address="https://${DIEGO_BBS_ADDRESS}:8889" \
-  --ssh-address="${DIEGO_BRAIN_ADDRESS}:2222" \
   --rep-placement-tags=$PLACEMENT_TAGS \
+  --ssh-address="${DIEGO_BRAIN_ADDRESS}:2222" \
   --ssh-password=${SSH_PROXY_PASSWORD} \
   --routable-domain-suffix="grootfs-${ENV}.cf-app.com"
 
