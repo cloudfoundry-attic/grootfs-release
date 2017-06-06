@@ -54,11 +54,12 @@ set_pipeline() {
     --var cf-loggregator-certs="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/cf-loggregator-certs' --notes)" \
     --var github-client-id="$(lpass show 'Shared-Garden/grootfs-deployments/github-garden-gnome' --username)" \
     --var github-client-secret="$(lpass show 'Shared-Garden/grootfs-deployments/github-garden-gnome' --password)" \
-    --var grootfs-release-private-yaml="$(lpass show 'Shared-Garden/grootfs-release-private.yml' --note)" \
+    --var grootfs-release-private-yaml="$(lpass show 'Shared-Garden/grootfs-release-private.yml' --notes)" \
     \
     --var thanos-bosh-username="$(lpass show 'Shared-Garden/grootfs-deployments\thanos/bosh-director' --username)" \
     --var thanos-bosh-password="$(lpass show 'Shared-Garden/grootfs-deployments\thanos/bosh-director' --password)" \
-    --var thanos-bosh-certificates="$(lpass show 'Shared-Garden/grootfs-deployments\thanos/certificates' --notes)"
+    --var thanos-bosh-certificates="$(lpass show 'Shared-Garden/grootfs-deployments\thanos/certificates' --notes)" \
+    --var thanos-cf-diego-certs="$(lpass show 'Shared-Garden/grootfs-deployments\thanos/cf-diego-certs' --notes)"
 }
 
 expose_pipeline() {

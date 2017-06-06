@@ -1,0 +1,29 @@
+---
+image_resource:
+  type: docker-image
+  source:
+    repository: cfgarden/grootfs-ci
+    tag: latest
+
+platform: linux
+
+inputs:
+  - name: grootfs-release-develop
+  - name: diego-release-git
+
+params:
+  BOSH_TARGET:
+  BOSH_CLIENT:
+  BOSH_CLIENT_SECRET:
+  BOSH_DEPLOYMENT:
+  BOSH_CERTIFICATES:
+  DIEGO_CREDENTIALS:
+  SSH_PROXY_DIEGO_CREDENTIALS:
+  ENV:
+  GINKGO_NODES: 4
+  VERBOSE: false
+  PLACEMENT_TAGS:
+
+run:
+  path: grootfs-release-develop/ci/scripts/vizzini-ginkgo.sh
+  user: root
