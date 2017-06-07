@@ -19,7 +19,8 @@ groups:
   - deploy-cf
   - CATs
   - gamora-vizzini
-  - thanos-vizzini
+  - thanos-vizzini-shed
+  - thanos-vizzini-grootfs
   - deploy-stable-release
   - test-upgrade
 - name: grootfs
@@ -53,7 +54,8 @@ groups:
   - deploy-cf
   - CATs
   - gamora-vizzini
-  - thanos-vizzini
+  - thanos-vizzini-shed
+  - thanos-vizzini-grootfs
   - deliver
 - name: tools
   jobs:
@@ -1220,7 +1222,7 @@ jobs:
       EVENT_NAME: "vizzini-ending"
       TAG: "gamora"
 
-- name: thanos-vizzini
+- name: thanos-vizzini-grootfs
   serial_groups: [vizzini]
   plan:
   - aggregate:
@@ -1237,40 +1239,67 @@ jobs:
     file: grootfs-release-develop/ci/tasks/publish-datadog-event.yml
     params:
       DATADOG_API_KEY: {{datadog-api-key}}
-      EVENT_NAME: "vizzini-starting"
-  - aggregate:
-    - task: run-vizzini-grootfs
-      tags: [thanos]
-      privileged: true
-      file: grootfs-release-develop/ci/tasks/vizzini-ginkgo.yml
-      params:
-        BOSH_TARGET: {{thanos-bosh-target}}
-        BOSH_CLIENT: {{thanos-bosh-username}}
-        BOSH_CLIENT_SECRET: {{thanos-bosh-password}}
-        BOSH_DEPLOYMENT: cf
-        BOSH_CERTIFICATES: {{thanos-bosh-certificates}}
-        DIEGO_CREDENTIALS: {{thanos-cf-diego-certs}}
-        ENV: thanos
-        PLACEMENT_TAGS: grootfs
-    - task: run-vizzini-shed
-      tags: [thanos]
-      privileged: true
-      file: grootfs-release-develop/ci/tasks/vizzini-ginkgo.yml
-      params:
-        BOSH_TARGET: {{thanos-bosh-target}}
-        BOSH_CLIENT: {{thanos-bosh-username}}
-        BOSH_CLIENT_SECRET: {{thanos-bosh-password}}
-        BOSH_DEPLOYMENT: cf
-        BOSH_CERTIFICATES: {{thanos-bosh-certificates}}
-        DIEGO_CREDENTIALS: {{thanos-cf-diego-certs}}
-        ENV: thanos
-        PLACEMENT_TAGS: shed
+      EVENT_NAME: "vizzini-starting-grootfs"
+      TAG: thanos
+  - task: run-vizzini-grootfs
+    tags: [thanos]
+    privileged: true
+    file: grootfs-release-develop/ci/tasks/vizzini-ginkgo.yml
+    params:
+      BOSH_TARGET: {{thanos-bosh-target}}
+      BOSH_CLIENT: {{thanos-bosh-username}}
+      BOSH_CLIENT_SECRET: {{thanos-bosh-password}}
+      BOSH_DEPLOYMENT: cf
+      BOSH_CERTIFICATES: {{thanos-bosh-certificates}}
+      DIEGO_CREDENTIALS: {{thanos-cf-diego-certs}}
+      ENV: thanos
+      PLACEMENT_TAGS: grootfs
   ensure:
     task: publish-datadog-event
     file: grootfs-release-develop/ci/tasks/publish-datadog-event.yml
     params:
       DATADOG_API_KEY: {{datadog-api-key}}
-      EVENT_NAME: "vizzini-ending"
+      EVENT_NAME: "vizzini-ending-grootfs"
+      TAG: thanos
+
+- name: thanos-vizzini-shed
+  serial_groups: [vizzini]
+  plan:
+  - aggregate:
+    - get: vizzini-time-trigger
+      tags: [thanos]
+      trigger: true
+    - get: diego-release-git
+    - get: grootfs-release-develop
+      tags: [thanos]
+      trigger: true
+      params:
+        submodules: none
+  - task: publish-datadog-event
+    file: grootfs-release-develop/ci/tasks/publish-datadog-event.yml
+    params:
+      DATADOG_API_KEY: {{datadog-api-key}}
+      EVENT_NAME: "vizzini-starting-shed"
+      TAG: thanos
+  - task: run-vizzini-shed
+    tags: [thanos]
+    privileged: true
+    file: grootfs-release-develop/ci/tasks/vizzini-ginkgo.yml
+    params:
+      BOSH_TARGET: {{thanos-bosh-target}}
+      BOSH_CLIENT: {{thanos-bosh-username}}
+      BOSH_CLIENT_SECRET: {{thanos-bosh-password}}
+      BOSH_DEPLOYMENT: cf
+      BOSH_CERTIFICATES: {{thanos-bosh-certificates}}
+      DIEGO_CREDENTIALS: {{thanos-cf-diego-certs}}
+      ENV: thanos
+      PLACEMENT_TAGS: shed
+  ensure:
+    task: publish-datadog-event
+    file: grootfs-release-develop/ci/tasks/publish-datadog-event.yml
+    params:
+      DATADOG_API_KEY: {{datadog-api-key}}
+      EVENT_NAME: "vizzini-ending-shed"
       TAG: thanos
 
 - name: deliver
