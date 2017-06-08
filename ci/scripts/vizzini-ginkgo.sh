@@ -19,7 +19,7 @@ ensure DIEGO_CREDENTIALS
 ensure ENV
 ensure GINKGO_NODES
 ensure VERBOSE
-ensure PLACEMENT_TAGS
+ensure PLACEMENT_TAG
 
 cd diego-release-git
 export GOPATH=$(pwd)
@@ -58,7 +58,7 @@ ginkgo \
   --bbs-address="https://${DIEGO_BBS_ADDRESS}:8889" \
   --bbs-client-cert=./client.crt \
   --bbs-client-key=./client.key \
-  --rep-placement-tags=$PLACEMENT_TAGS \
+  --rep-placement-tag=$PLACEMENT_TAG \
   --ssh-address="${DIEGO_BRAIN_ADDRESS}:2222" \
   --ssh-password=${SSH_PROXY_PASSWORD} \
   --routable-domain-suffix="grootfs-${ENV}.cf-app.com"

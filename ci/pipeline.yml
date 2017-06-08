@@ -1255,7 +1255,7 @@ jobs:
       BOSH_CERTIFICATES: {{thanos-bosh-certificates}}
       DIEGO_CREDENTIALS: {{thanos-cf-diego-certs}}
       ENV: thanos
-      PLACEMENT_TAGS: grootfs
+      PLACEMENT_TAG: grootfs
       FORCE_UNPACK: false
   ensure:
     task: publish-datadog-event
@@ -1296,7 +1296,7 @@ jobs:
       BOSH_CERTIFICATES: {{thanos-bosh-certificates}}
       DIEGO_CREDENTIALS: {{thanos-cf-diego-certs}}
       ENV: thanos
-      PLACEMENT_TAGS: shed
+      PLACEMENT_TAG: shed
       FORCE_UNPACK: false
   ensure:
     task: publish-datadog-event
@@ -1337,7 +1337,7 @@ jobs:
       BOSH_CERTIFICATES: {{thanos-bosh-certificates}}
       DIEGO_CREDENTIALS: {{thanos-cf-diego-certs}}
       ENV: thanos
-      PLACEMENT_TAGS: custom_agent
+      PLACEMENT_TAG: custom_agent
       FORCE_UNPACK: false
   ensure:
     task: publish-datadog-event
