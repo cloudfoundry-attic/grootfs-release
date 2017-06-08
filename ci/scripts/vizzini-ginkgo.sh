@@ -39,10 +39,13 @@ DIEGO_BBS_ADDRESS=$(bosh2 -e bosh-director -d cf vms | awk '/diego-bbs/ {print $
 
 EXITSTATUS=0
 
-for cell in $(bosh2 -e bosh-director -d cf vms | grep diego-cell | awk '{print $1}')
-do
-  bosh2 -e bosh-director -d cf ssh $cell -c "sudo touch /var/vcap/packages/cflinuxfs2/*"
-done
+if [ "$FORCE_UNPACK" == "true" ]
+then
+  for cell in $(bosh2 -e bosh-director -d cf vms | grep diego-cell | awk '{print $1}')
+  do
+    bosh2 -e bosh-director -d cf ssh $cell -c "sudo touch /var/vcap/packages/cflinuxfs2/*"
+  done
+fi
 
 ginkgo \
   -nodes=${GINKGO_NODES} \

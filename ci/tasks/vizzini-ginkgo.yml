@@ -23,6 +23,7 @@ params:
   GINKGO_NODES: 4
   VERBOSE: false
   PLACEMENT_TAGS:
+  FORCE_UNPACK: false
 
 run:
   path: grootfs-release-develop/ci/scripts/vizzini-ginkgo.sh
