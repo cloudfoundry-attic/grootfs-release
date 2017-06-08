@@ -1337,7 +1337,7 @@ jobs:
       BOSH_CERTIFICATES: {{thanos-bosh-certificates}}
       DIEGO_CREDENTIALS: {{thanos-cf-diego-certs}}
       ENV: thanos
-      PLACEMENT_TAGS: custom-agent
+      PLACEMENT_TAGS: custom_agent
       FORCE_UNPACK: false
   ensure:
     task: publish-datadog-event
