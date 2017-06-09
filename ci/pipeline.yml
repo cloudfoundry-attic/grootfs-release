@@ -1265,7 +1265,7 @@ jobs:
     params:
       DATADOG_API_KEY: {{datadog-api-key}}
       EVENT_NAME: "vizzini-ending-grootfs"
-      TAG: thanos
+      TAG: grootfs
 
 - name: thanos-vizzini-shed
   serial_groups: [vizzini]
@@ -1306,7 +1306,7 @@ jobs:
     params:
       DATADOG_API_KEY: {{datadog-api-key}}
       EVENT_NAME: "vizzini-ending-shed"
-      TAG: thanos
+      TAG: shed
 
 - name: thanos-vizzini-grootfs-custom-agent
   serial_groups: [vizzini]
@@ -1347,7 +1347,7 @@ jobs:
     params:
       DATADOG_API_KEY: {{datadog-api-key}}
       EVENT_NAME: "vizzini-ending-grootfs-custom-agent"
-      TAG: thanos
+      TAG: custom-agent
 
 - name: thanos-vizzini-grootfs-no-quotas
   serial_groups: [vizzini]
@@ -1388,7 +1388,7 @@ jobs:
     params:
       DATADOG_API_KEY: {{datadog-api-key}}
       EVENT_NAME: "vizzini-ending-grootfs-no-quotas"
-      TAG: thanos
+      TAG: quotaless-groot
 
 - name: deliver
   plan:
