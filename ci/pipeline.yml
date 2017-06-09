@@ -22,6 +22,7 @@ groups:
   - thanos-vizzini-shed
   - thanos-vizzini-grootfs
   - thanos-vizzini-grootfs-custom-agent
+  - thanos-vizzini-grootfs-no-quotas
   - deploy-stable-release
   - test-upgrade
 - name: grootfs
@@ -58,6 +59,7 @@ groups:
   - thanos-vizzini-shed
   - thanos-vizzini-grootfs
   - thanos-vizzini-grootfs-custom-agent
+  - thanos-vizzini-grootfs-no-quotas
   - deliver
 - name: tools
   jobs:
@@ -1345,6 +1347,47 @@ jobs:
     params:
       DATADOG_API_KEY: {{datadog-api-key}}
       EVENT_NAME: "vizzini-ending-grootfs-custom-agent"
+      TAG: thanos
+
+- name: thanos-vizzini-grootfs-no-quotas
+  serial_groups: [vizzini]
+  plan:
+  - aggregate:
+    - get: vizzini-time-trigger
+      tags: [thanos]
+      trigger: true
+    - get: diego-release-git
+    - get: grootfs-release-develop
+      tags: [thanos]
+      trigger: true
+      params:
+        submodules: none
+  - task: publish-datadog-event
+    file: grootfs-release-develop/ci/tasks/publish-datadog-event.yml
+    params:
+      DATADOG_API_KEY: {{datadog-api-key}}
+      EVENT_NAME: "vizzini-starting-grootfs-no-quotas"
+      TAG: thanos
+  - task: run-vizzini-grootfs-no-quotas
+    tags: [thanos]
+    privileged: true
+    file: grootfs-release-develop/ci/tasks/vizzini-ginkgo.yml
+    params:
+      BOSH_TARGET: {{thanos-bosh-target}}
+      BOSH_CLIENT: {{thanos-bosh-username}}
+      BOSH_CLIENT_SECRET: {{thanos-bosh-password}}
+      BOSH_DEPLOYMENT: cf
+      BOSH_CERTIFICATES: {{thanos-bosh-certificates}}
+      DIEGO_CREDENTIALS: {{thanos-cf-diego-certs}}
+      ENV: thanos
+      PLACEMENT_TAG: quotaless_groot
+      FORCE_UNPACK: false
+  ensure:
+    task: publish-datadog-event
+    file: grootfs-release-develop/ci/tasks/publish-datadog-event.yml
+    params:
+      DATADOG_API_KEY: {{datadog-api-key}}
+      EVENT_NAME: "vizzini-ending-grootfs-no-quotas"
       TAG: thanos
 
 - name: deliver
