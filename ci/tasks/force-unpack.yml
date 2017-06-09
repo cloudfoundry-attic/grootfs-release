@@ -1,0 +1,22 @@
+---
+image_resource:
+  type: docker-image
+  source:
+    repository: cfgarden/grootfs-ci
+    tag: latest
+
+platform: linux
+
+inputs:
+  - name: grootfs-release-develop
+
+params:
+  BOSH_TARGET:
+  BOSH_CLIENT:
+  BOSH_CLIENT_SECRET:
+  BOSH_CERTIFICATES:
+  CELL_NAME:
+
+run:
+  path: grootfs-release-develop/ci/scripts/force-unpack.sh
+  user: root
