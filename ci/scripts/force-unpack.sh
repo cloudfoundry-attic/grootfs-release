@@ -11,7 +11,6 @@ ensure(){
   fi
 }
 
-export $CELL_NAME
 ensure BOSH_CERTIFICATES
 ensure BOSH_TARGET
 ensure BOSH_CLIENT
