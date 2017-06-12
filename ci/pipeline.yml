@@ -1215,7 +1215,6 @@ jobs:
       BOSH_TARGET: {{gamora-bosh-target}}
       BOSH_CLIENT: {{gamora-bosh-username}}
       BOSH_CLIENT_SECRET: {{gamora-bosh-password}}
-      BOSH_DEPLOYMENT: cf
       BOSH_CERTIFICATES: {{gamora-bosh-certificates}}
       ERRAND_NAME: vizzini
   ensure:
@@ -1244,7 +1243,7 @@ jobs:
     params:
       DATADOG_API_KEY: {{datadog-api-key}}
       EVENT_NAME: "vizzini-starting-standard-groot"
-      TAG: thanos
+      TAG: grootfs
   - task: run-vizzini-grootfs
     tags: [thanos]
     privileged: true
@@ -1253,12 +1252,17 @@ jobs:
       BOSH_TARGET: {{thanos-bosh-target}}
       BOSH_CLIENT: {{thanos-bosh-username}}
       BOSH_CLIENT_SECRET: {{thanos-bosh-password}}
-      BOSH_DEPLOYMENT: cf
       BOSH_CERTIFICATES: {{thanos-bosh-certificates}}
       DIEGO_CREDENTIALS: {{thanos-cf-diego-certs}}
       ENV: thanos
       PLACEMENT_TAG: grootfs
-      FORCE_UNPACK: false
+    on_failure:
+      task: publish-datadog-event
+      file: grootfs-release-develop/ci/tasks/publish-datadog-event.yml
+      params:
+        DATADOG_API_KEY: 0524f8f4479e3de09c39d2c10070428e
+        EVENT_NAME: vizzini-failed-standard-groot
+        TAG: grootfs
   ensure:
     task: publish-datadog-event
     file: grootfs-release-develop/ci/tasks/publish-datadog-event.yml
@@ -1285,7 +1289,7 @@ jobs:
     params:
       DATADOG_API_KEY: {{datadog-api-key}}
       EVENT_NAME: "vizzini-starting-shed"
-      TAG: thanos
+      TAG: shed
   - task: run-vizzini-shed
     tags: [thanos]
     privileged: true
@@ -1294,12 +1298,17 @@ jobs:
       BOSH_TARGET: {{thanos-bosh-target}}
       BOSH_CLIENT: {{thanos-bosh-username}}
       BOSH_CLIENT_SECRET: {{thanos-bosh-password}}
-      BOSH_DEPLOYMENT: cf
       BOSH_CERTIFICATES: {{thanos-bosh-certificates}}
       DIEGO_CREDENTIALS: {{thanos-cf-diego-certs}}
       ENV: thanos
       PLACEMENT_TAG: shed
-      FORCE_UNPACK: false
+    on_failure:
+      task: publish-datadog-event
+      file: grootfs-release-develop/ci/tasks/publish-datadog-event.yml
+      params:
+        DATADOG_API_KEY: 0524f8f4479e3de09c39d2c10070428e
+        EVENT_NAME: vizzini-failed-shed
+        TAG: shed
   ensure:
     task: publish-datadog-event
     file: grootfs-release-develop/ci/tasks/publish-datadog-event.yml
@@ -1326,7 +1335,7 @@ jobs:
     params:
       DATADOG_API_KEY: {{datadog-api-key}}
       EVENT_NAME: "vizzini-starting-grootfs-custom-agent"
-      TAG: thanos
+      TAG: custom-agent
   - task: run-vizzini-grootfs-custom-agent
     tags: [thanos]
     privileged: true
@@ -1335,12 +1344,17 @@ jobs:
       BOSH_TARGET: {{thanos-bosh-target}}
       BOSH_CLIENT: {{thanos-bosh-username}}
       BOSH_CLIENT_SECRET: {{thanos-bosh-password}}
-      BOSH_DEPLOYMENT: cf
       BOSH_CERTIFICATES: {{thanos-bosh-certificates}}
       DIEGO_CREDENTIALS: {{thanos-cf-diego-certs}}
       ENV: thanos
       PLACEMENT_TAG: custom_agent
-      FORCE_UNPACK: false
+    on_failure:
+      task: publish-datadog-event
+      file: grootfs-release-develop/ci/tasks/publish-datadog-event.yml
+      params:
+        DATADOG_API_KEY: 0524f8f4479e3de09c39d2c10070428e
+        EVENT_NAME: vizzini-failed-grootfs-custom-agent
+        TAG: custom-agent
   ensure:
     task: publish-datadog-event
     file: grootfs-release-develop/ci/tasks/publish-datadog-event.yml
@@ -1367,7 +1381,7 @@ jobs:
     params:
       DATADOG_API_KEY: {{datadog-api-key}}
       EVENT_NAME: "vizzini-starting-grootfs-no-quotas"
-      TAG: thanos
+      TAG: quotaless-groot
   - task: run-vizzini-grootfs-no-quotas
     tags: [thanos]
     privileged: true
@@ -1376,12 +1390,17 @@ jobs:
       BOSH_TARGET: {{thanos-bosh-target}}
       BOSH_CLIENT: {{thanos-bosh-username}}
       BOSH_CLIENT_SECRET: {{thanos-bosh-password}}
-      BOSH_DEPLOYMENT: cf
       BOSH_CERTIFICATES: {{thanos-bosh-certificates}}
       DIEGO_CREDENTIALS: {{thanos-cf-diego-certs}}
       ENV: thanos
       PLACEMENT_TAG: quotaless_groot
-      FORCE_UNPACK: false
+    on_failure:
+      task: publish-datadog-event
+      file: grootfs-release-develop/ci/tasks/publish-datadog-event.yml
+      params:
+        DATADOG_API_KEY: 0524f8f4479e3de09c39d2c10070428e
+        EVENT_NAME: vizzini-failed-grootfs-no-quotas
+        TAG: quotaless-groot
   ensure:
     task: publish-datadog-event
     file: grootfs-release-develop/ci/tasks/publish-datadog-event.yml
