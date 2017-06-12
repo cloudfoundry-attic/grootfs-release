@@ -1238,6 +1238,16 @@ jobs:
       trigger: true
       params:
         submodules: none
+  - task: force-unpack-cflinuxfs2
+    tags: [thanos]
+    privileged: true
+    file: grootfs-release-develop/ci/tasks/force-unpack.yml
+    params:
+      BOSH_TARGET: {{thanos-bosh-target}}
+      BOSH_CLIENT: {{thanos-bosh-username}}
+      BOSH_CLIENT_SECRET: {{thanos-bosh-password}}
+      BOSH_CERTIFICATES: {{thanos-bosh-certificates}}
+      CELL_NAME: diego-cell
   - task: publish-datadog-event
     file: grootfs-release-develop/ci/tasks/publish-datadog-event.yml
     params:
@@ -1260,7 +1270,7 @@ jobs:
       task: publish-datadog-event
       file: grootfs-release-develop/ci/tasks/publish-datadog-event.yml
       params:
-        DATADOG_API_KEY: 0524f8f4479e3de09c39d2c10070428e
+        DATADOG_API_KEY: {{datadog-api-key}}
         EVENT_NAME: vizzini-failed-standard-groot
         TAG: grootfs
   ensure:
@@ -1284,6 +1294,16 @@ jobs:
       trigger: true
       params:
         submodules: none
+  - task: force-unpack-cflinuxfs2
+    tags: [thanos]
+    privileged: true
+    file: grootfs-release-develop/ci/tasks/force-unpack.yml
+    params:
+      BOSH_TARGET: {{thanos-bosh-target}}
+      BOSH_CLIENT: {{thanos-bosh-username}}
+      BOSH_CLIENT_SECRET: {{thanos-bosh-password}}
+      BOSH_CERTIFICATES: {{thanos-bosh-certificates}}
+      CELL_NAME: diego-cell-shed
   - task: publish-datadog-event
     file: grootfs-release-develop/ci/tasks/publish-datadog-event.yml
     params:
@@ -1306,7 +1326,7 @@ jobs:
       task: publish-datadog-event
       file: grootfs-release-develop/ci/tasks/publish-datadog-event.yml
       params:
-        DATADOG_API_KEY: 0524f8f4479e3de09c39d2c10070428e
+        DATADOG_API_KEY: {{datadog-api-key}}
         EVENT_NAME: vizzini-failed-shed
         TAG: shed
   ensure:
@@ -1330,6 +1350,16 @@ jobs:
       trigger: true
       params:
         submodules: none
+  - task: force-unpack-cflinuxfs2
+    tags: [thanos]
+    privileged: true
+    file: grootfs-release-develop/ci/tasks/force-unpack.yml
+    params:
+      BOSH_TARGET: {{thanos-bosh-target}}
+      BOSH_CLIENT: {{thanos-bosh-username}}
+      BOSH_CLIENT_SECRET: {{thanos-bosh-password}}
+      BOSH_CERTIFICATES: {{thanos-bosh-certificates}}
+      CELL_NAME: diego-cell-custom-agent
   - task: publish-datadog-event
     file: grootfs-release-develop/ci/tasks/publish-datadog-event.yml
     params:
@@ -1352,7 +1382,7 @@ jobs:
       task: publish-datadog-event
       file: grootfs-release-develop/ci/tasks/publish-datadog-event.yml
       params:
-        DATADOG_API_KEY: 0524f8f4479e3de09c39d2c10070428e
+        DATADOG_API_KEY: {{datadog-api-key}}
         EVENT_NAME: vizzini-failed-grootfs-custom-agent
         TAG: custom-agent
   ensure:
@@ -1376,6 +1406,16 @@ jobs:
       trigger: true
       params:
         submodules: none
+  - task: force-unpack-cflinuxfs2
+    tags: [thanos]
+    privileged: true
+    file: grootfs-release-develop/ci/tasks/force-unpack.yml
+    params:
+      BOSH_TARGET: {{thanos-bosh-target}}
+      BOSH_CLIENT: {{thanos-bosh-username}}
+      BOSH_CLIENT_SECRET: {{thanos-bosh-password}}
+      BOSH_CERTIFICATES: {{thanos-bosh-certificates}}
+      CELL_NAME: diego-cell-quotaless-groot
   - task: publish-datadog-event
     file: grootfs-release-develop/ci/tasks/publish-datadog-event.yml
     params:
@@ -1398,7 +1438,7 @@ jobs:
       task: publish-datadog-event
       file: grootfs-release-develop/ci/tasks/publish-datadog-event.yml
       params:
-        DATADOG_API_KEY: 0524f8f4479e3de09c39d2c10070428e
+        DATADOG_API_KEY: {{datadog-api-key}}
         EVENT_NAME: vizzini-failed-grootfs-no-quotas
         TAG: quotaless-groot
   ensure:
