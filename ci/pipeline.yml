@@ -1216,6 +1216,7 @@ jobs:
       BOSH_CLIENT: {{gamora-bosh-username}}
       BOSH_CLIENT_SECRET: {{gamora-bosh-password}}
       BOSH_CERTIFICATES: {{gamora-bosh-certificates}}
+      BOSH_DEPLOYMENT: cf
       ERRAND_NAME: vizzini
   ensure:
     task: publish-datadog-event
