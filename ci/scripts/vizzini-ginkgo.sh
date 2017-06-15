@@ -29,23 +29,14 @@ echo "$DIEGO_CREDENTIALS" | python -c 'import yaml; import sys; print yaml.load(
 echo "$DIEGO_CREDENTIALS" | python -c 'import yaml; import sys; print yaml.load(sys.stdin).get("diego_bbs_client").get("certificate")' > client.crt
 echo "$BOSH_CERTIFICATES" > certificates.yml
 
-SSH_PROXY_PASSWORD=$(echo "$DIEGO_CREDENTIALS" | python -c 'import yaml; import sys; print yaml.load(sys.stdin).get("ssh_proxy_diego_credentials")')
-
 bosh2 int --path "/certs/ca_cert" certificates.yml > ca_cert.crt
 bosh2 -e $BOSH_TARGET --ca-cert ca_cert.crt alias-env bosh-director
 bosh2 -e bosh-director --client $BOSH_CLIENT --client-secret $BOSH_CLIENT_SECRET login
 DIEGO_BRAIN_ADDRESS=$(bosh2 -e bosh-director -d cf vms | awk '/diego-brain/ {print $4}')
 DIEGO_BBS_ADDRESS=$(bosh2 -e bosh-director -d cf vms | awk '/diego-bbs/ {print $4}')
+SSH_PROXY_PASSWORD=$(echo "$DIEGO_CREDENTIALS" | python -c 'import yaml; import sys; print yaml.load(sys.stdin).get("ssh_proxy_diego_credentials")')
 
 EXITSTATUS=0
-
-if [ "$FORCE_UNPACK" == "true" ]
-then
-  for cell in $(bosh2 -e bosh-director -d cf vms | grep diego-cell | awk '{print $1}')
-  do
-    bosh2 -e bosh-director -d cf ssh $cell -c "sudo touch /var/vcap/packages/cflinuxfs2/*"
-  done
-fi
 
 ginkgo \
   -nodes=${GINKGO_NODES} \
