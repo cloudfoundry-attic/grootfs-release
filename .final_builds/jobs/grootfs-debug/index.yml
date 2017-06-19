@@ -1,4 +1,8 @@
 builds:
+  2020252bb5b5c5c9accf2a895ab1a5834558f654:
+    version: 2020252bb5b5c5c9accf2a895ab1a5834558f654
+    blobstore_id: 8388bba8-3cf9-44ed-69d6-dce7f6a47371
+    sha1: 981fc0f561ba56efeb1ed05b60f5a6a0040e58ce
   fa19e89edbc54c38392ecb686201248d03976fe0:
     version: fa19e89edbc54c38392ecb686201248d03976fe0
     blobstore_id: bd6ae6e8-b965-4147-5144-2b7425a94606
