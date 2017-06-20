@@ -1,5 +1,9 @@
 #!/bin/bash
 
+vcap_data_filesystem() {
+  echo $(df --print-type | awk '/\/var\/vcap\/data$/ {print $2}')
+}
+
 create_volume_file() {
   local volume_file=$1
 
@@ -69,6 +73,12 @@ unprivileged_range_mapping() {
 
 volume_size() {
   <% if p('grootfs.store_size_bytes') <= 0 %>
+    <% if p('grootfs.driver') == 'overlay-xfs' %>
+      if [ $(vcap_data_filesystem) = "xfs" ]; then
+        echo "0"
+        return
+      fi
+    <% end %>
   echo "$(( $(df --output=size  /var/vcap/data | sed 1d) * 1024 ))"
   <% else %>
   echo "<%= p('grootfs.store_size_bytes') %>"
