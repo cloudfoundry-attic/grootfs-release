@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -e
+
+mount_options=$(mount | awk '/ \/var\/vcap\/store / {print $6}')
+if [ ! $(echo $mount_options | grep pquota) ]; then
+  device=$(mount | awk '/ \/var\/vcap\/store / {print $1}')
+  umount $device
+  mount -t xfs -o noatime,nobarrier,pquota $device /var/vcap/store
+  echo "Remounted /var/vcap/store with pquota option"
+else
+  echo "/var/vcap/store already mounted with pquota option"
+fi
