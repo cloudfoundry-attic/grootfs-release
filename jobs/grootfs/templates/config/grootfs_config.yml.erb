@@ -1,4 +1,4 @@
-store: /var/vcap/data/grootfs/store/unprivileged
+store: /var/vcap/<%= p('grootfs.use_persistent_disk') ? 'store': 'data' %>/grootfs/store/unprivileged
 driver: <%= p("grootfs.driver") %>
 btrfs_bin: /var/vcap/packages/btrfs-progs/bin/btrfs
 drax_bin: /var/vcap/packages/grootfs/bin/drax

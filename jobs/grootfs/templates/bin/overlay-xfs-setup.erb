@@ -9,7 +9,7 @@ main() {
 
   export PATH=/var/vcap/packages/grootfs/bin:/var/vcap/packages/xfs-progs/sbin:$PATH
 
-  mkdir -p /var/vcap/data/grootfs/store
+  mkdir -p "$(store_mountpoint)/grootfs/store"
 
   create_loop_devices
   permit_device_control
@@ -26,7 +26,7 @@ main() {
 pre_init_store() {
   local store_name=$1
   local store_config=$2
-  local store_path="/var/vcap/data/grootfs/store/${store_name}"
+  local store_path="$(store_mountpoint)/grootfs/store/${store_name}"
   local external_log_size_file="${store_path}.external-log.size"
 
   converge_store ${store_name}
@@ -73,9 +73,9 @@ tardis_setup() {
 converge_store() {
   local store_type=$1
 
-  local old_volume_path=/var/vcap/data/grootfs/volume_${store_type}
-  local new_volume_path=/var/vcap/data/grootfs/store/${store_type}.backing-store
-  local store_path=/var/vcap/data/grootfs/store/${store_type}
+  local old_volume_path="$(store_mountpoint)/grootfs/volume_${store_type}"
+  local new_volume_path="$(store_mountpoint)/grootfs/store/${store_type}.backing-store"
+  local store_path="$(store_mountpoint)/grootfs/store/${store_type}"
 
   if mount | grep $old_volume_path | grep xfs
   then
@@ -101,7 +101,7 @@ current_external_log_file_size() {
 store_needs_cleanup() {
   local store_name=$1
 
-  local external_log_file="/var/vcap/data/grootfs/store/${store_name}.external-log"
+  local external_log_file="$(store_mountpoint)/grootfs/store/${store_name}.external-log"
   local current_logsize=$(current_external_log_file_size $external_log_file)
 
   [ $current_logsize != <%= p("grootfs.external_logdevice_size_in_mb") %> ]
@@ -111,8 +111,8 @@ cleanup_store() {
   local store_name=$1
   local config_path=$2
 
-  local store_path=/var/vcap/data/grootfs/store/${store_name}
-  local volume_path=${store_path}.backing-store
+  local store_path="$(store_mountpoint)/grootfs/store/${store_name}"
+  local volume_path="${store_path}.backing-store"
   local external_log_file="${store_path}.external-log"
 
   delete_store $config_path $store_path $volume_path
