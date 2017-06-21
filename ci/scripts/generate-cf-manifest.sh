@@ -44,7 +44,7 @@ bosh2 int \
   --vars-file ./diego-certs.yml \
   --vars-file ./loggregator-certs.yml \
   --vars-store ./regenerate-secrets.yml \
-  --ops-file git-cf-deployment/operations/test/add-datadog-firehose-nozzle-aws.yml \
+  --ops-file git-cf-deployment/operations/test/add-datadog-firehose-nozzle.yml \
   --ops-file git-cf-deployment/operations/${IAAS}.yml \
   --ops-file git-cf-deployment/operations/scale-to-one-az.yml \
   --ops-file grootfs-release-develop/manifests/operations/grootfs.yml \
