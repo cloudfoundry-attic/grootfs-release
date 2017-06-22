@@ -1,0 +1,17 @@
+---
+name: dstate-counter
+
+templates:
+  dstate-counter.sh.erb: bin/dstate-counter
+  dstate-counter-ctl.erb: bin/dstate-counter-ctl
+
+packages:
+  - metatron
+
+properties:
+  grootfs.dropsonde_port:
+    description: "Local metron agent's port."
+    default: 3457
+  dstate_counter.interval:
+    description: "interval at which D state processes are counted in seconds"
+    default: 60

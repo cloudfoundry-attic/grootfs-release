@@ -5,3 +5,6 @@
 [submodule "src/code.cloudfoundry.org/idmapper"]
 	path = src/code.cloudfoundry.org/idmapper
 	url = https://github.com/cloudfoundry/idmapper
+[submodule "src/github.com/masters-of-cats/metatron"]
+	path = src/github.com/masters-of-cats/metatron
+	url = http://github.com/masters-of-cats/metatron.git

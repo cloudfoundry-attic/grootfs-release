@@ -1,0 +1,33 @@
+#!/bin/bash
+
+BIN_PATH=/var/vcap/jobs/dstate-counter/bin
+RUN_PATH=/var/vcap/sys/run/dstate-counter
+PID_FILE=${RUN_PATH}/dstate-counter.pid
+LOG_PATH=/var/vcap/sys/log/dstate-counter
+
+mkdir -p $RUN_PATH
+mkdir -p $LOG_PATH
+
+case $1 in
+
+  start)
+    ${BIN_PATH}/dstate-counter > ${LOG_PATH}/dstate-counter.stdout.log 2> ${LOG_PATH}/dstate-counter.stderr.log
+
+    ;;
+
+  stop)
+    if [[ -f "$PID_FILE" ]]
+    then
+      kill $(cat $PID_FILE)
+      rm $PID_FILE
+    fi
+
+    ;;
+
+  *)
+    echo "Usage: $0 {start|stop}"
+
+    ;;
+
+esac
+
