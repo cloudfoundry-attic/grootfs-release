@@ -33,7 +33,7 @@ bosh2 int --path "/certs/ca_cert" certificates.yml > ca_cert.crt
 bosh2 -e $BOSH_TARGET --ca-cert ca_cert.crt alias-env bosh-director
 bosh2 -e bosh-director --client $BOSH_CLIENT --client-secret $BOSH_CLIENT_SECRET login
 DIEGO_BRAIN_ADDRESS=$(bosh2 -e bosh-director -d cf vms | awk '/diego-brain/ {print $4}')
-DIEGO_BBS_ADDRESS=$(bosh2 -e bosh-director -d cf vms | awk '/diego-bbs/ {print $4}')
+DIEGO_API_ADDRESS=$(bosh2 -e bosh-director -d cf vms | awk '/diego-api/ {print $4}')
 SSH_PROXY_PASSWORD=$(echo "$DIEGO_CREDENTIALS" | python -c 'import yaml; import sys; print yaml.load(sys.stdin).get("ssh_proxy_diego_credentials")')
 
 EXITSTATUS=0
@@ -46,7 +46,7 @@ ginkgo \
   -keepGoing \
   -skip="{LOCAL}" \
   -- \
-  --bbs-address="https://${DIEGO_BBS_ADDRESS}:8889" \
+  --bbs-address="https://${DIEGO_API_ADDRESS}:8889" \
   --bbs-client-cert=./client.crt \
   --bbs-client-key=./client.key \
   --rep-placement-tag=$PLACEMENT_TAG \
