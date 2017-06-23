@@ -7,6 +7,8 @@ director_uuid: <%= `bosh target lite > /dev/null 2>&1 && bosh status --uuid` %>
 releases:
   - name: grootfs
     version: latest
+  - name: grootfs-diagnostics
+    version: latest
 
 jobs:
   - name: grootfs
@@ -14,13 +16,13 @@ jobs:
     templates:
       - name: grootfs
         release: grootfs
-      - name: grootfs-debug
-        release: grootfs
+      - name: grootfs-diagnostics
+        release: grootfs-diagnostics
     resource_pool: grootfs
     networks:
       - name: grootfs
     properties:
-      grootfs-debug:
+      grootfs-diagnostics:
         disabled: true
       grootfs:
         driver: overlay-xfs
