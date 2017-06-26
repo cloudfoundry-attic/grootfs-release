@@ -11,6 +11,7 @@ main() {
 
   mkdir -p "$(store_mountpoint)/grootfs/store"
 
+  pre_validate_store
   create_loop_devices
   permit_device_control
 
@@ -142,6 +143,16 @@ cleanup_store() {
   done
 
   rm -f $external_log_file
+}
+
+pre_validate_store() {
+  <% if p('grootfs.store_size_bytes') > 0 && p('grootfs.driver') == 'overlay-xfs' %>
+    if [ $(vcap_data_filesystem) = "xfs" ]; then
+      echo "Filesystem already XFS. Set `grootfs.store_size_bytes property` to 0"
+      exit 1
+    fi
+  <% end %>
+  return
 }
 
 main
