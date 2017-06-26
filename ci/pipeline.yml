@@ -1237,16 +1237,6 @@ jobs:
       trigger: true
       params:
         submodules: none
-  - task: force-unpack-cflinuxfs2
-    tags: [thanos]
-    privileged: true
-    file: grootfs-release-develop/ci/tasks/force-unpack.yml
-    params:
-      BOSH_TARGET: {{thanos-bosh-target}}
-      BOSH_CLIENT: {{thanos-bosh-username}}
-      BOSH_CLIENT_SECRET: {{thanos-bosh-password}}
-      BOSH_CERTIFICATES: {{thanos-bosh-certificates}}
-      CELL_NAME: diego-cell
   - task: publish-datadog-event
     file: grootfs-release-develop/ci/tasks/publish-datadog-event.yml
     params:
@@ -1293,16 +1283,6 @@ jobs:
       trigger: true
       params:
         submodules: none
-  - task: force-unpack-cflinuxfs2
-    tags: [thanos]
-    privileged: true
-    file: grootfs-release-develop/ci/tasks/force-unpack.yml
-    params:
-      BOSH_TARGET: {{thanos-bosh-target}}
-      BOSH_CLIENT: {{thanos-bosh-username}}
-      BOSH_CLIENT_SECRET: {{thanos-bosh-password}}
-      BOSH_CERTIFICATES: {{thanos-bosh-certificates}}
-      CELL_NAME: diego-cell-shed
   - task: publish-datadog-event
     file: grootfs-release-develop/ci/tasks/publish-datadog-event.yml
     params:
@@ -1349,16 +1329,6 @@ jobs:
       trigger: true
       params:
         submodules: none
-  - task: force-unpack-cflinuxfs2
-    tags: [thanos]
-    privileged: true
-    file: grootfs-release-develop/ci/tasks/force-unpack.yml
-    params:
-      BOSH_TARGET: {{thanos-bosh-target}}
-      BOSH_CLIENT: {{thanos-bosh-username}}
-      BOSH_CLIENT_SECRET: {{thanos-bosh-password}}
-      BOSH_CERTIFICATES: {{thanos-bosh-certificates}}
-      CELL_NAME: diego-cell-custom-agent
   - task: publish-datadog-event
     file: grootfs-release-develop/ci/tasks/publish-datadog-event.yml
     params:
