@@ -20,7 +20,26 @@ main() {
   pre_init_store privileged /var/vcap/jobs/grootfs/config/privileged_grootfs_config.yml
   init_privileged_store
 
+  <% if p('grootfs.use_persistent_disk') %>
+  unify_projectid_dir "$(store_mountpoint)/grootfs/store"
+  <% end %>
+
   tardis_setup
+}
+
+unify_projectid_dir() {
+  local store_root=$1
+
+  local store1="${store_root}/unprivileged"
+  local store2="${store_root}/privileged"
+  local projectids_dir="${store_root}/projectids"
+
+  mkdir -p $projectids_dir
+  rm -rf "${store1}/projectids"
+  rm -rf "${store2}/projectids"
+
+  ln -s $projectids_dir "${store1}/projectids"
+  ln -s $projectids_dir "${store2}/projectids"
 }
 
 pre_init_store() {
