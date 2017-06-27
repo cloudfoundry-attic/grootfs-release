@@ -1,5 +1,0 @@
-check process dstate-counter
-  with pidfile /var/vcap/sys/run/dstate-counter/dstate-counter.pid
-  start program = "/var/vcap/jobs/dstate-counter/bin/dstate-counter-ctl start"
-  stop program = "/var/vcap/jobs/dstate-counter/bin/dstate-counter-ctl stop"
-  group vcap
