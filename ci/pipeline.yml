@@ -22,6 +22,7 @@ groups:
   - thanos-vizzini-shed
   - thanos-vizzini-grootfs
   - thanos-vizzini-grootfs-custom-agent
+  - thanos-refresh-rootfs
   - deploy-stable-release
   - test-upgrade
 - name: grootfs
@@ -58,6 +59,7 @@ groups:
   - thanos-vizzini-shed
   - thanos-vizzini-grootfs
   - thanos-vizzini-grootfs-custom-agent
+  - thanos-refresh-rootfs
   - deliver
 - name: tools
   jobs:
@@ -242,6 +244,11 @@ resources:
   source:
     interval: 15m
 
+- name: vizzini-rootfs-refresher
+  type: time
+  source:
+    interval: 1h
+
 - name: grootfs-bench-btrfs-remote-deployment
   type: bosh-deployment
   source:
@@ -344,6 +351,12 @@ resources:
     repository: cfgarden/grootfs-ci
     username: {{dockerhub-username}}
     password: {{dockerhub-password}}
+
+- name: datadog-event
+  type: datadog-event
+  source:
+    api_key: {{datadog-api-key}}
+    application_key: {{datadog-application-key}}
 
 jobs:
 - name: grootfs
@@ -1224,6 +1237,50 @@ jobs:
         EVENT_NAME: "vizzini-failed-gamora"
         TAG: gamora
 
+- name: thanos-refresh-rootfs
+  serial_groups: [vizzini]
+  plan:
+  - get: vizzini-rootfs-refresher
+    tags: [thanos]
+    trigger: true
+  - get: grootfs-release-develop
+    params:
+      submodules: none
+  - task: force-unpack-cflinuxfs2-loop
+    tags: [thanos]
+    privileged: true
+    file: grootfs-release-develop/ci/tasks/force-unpack.yml
+    params:
+      BOSH_TARGET: {{thanos-bosh-target}}
+      BOSH_CLIENT: {{thanos-bosh-username}}
+      BOSH_CLIENT_SECRET: {{thanos-bosh-password}}
+      BOSH_CERTIFICATES: {{thanos-bosh-certificates}}
+      CELL_NAME: diego-cell
+  - task: force-unpack-cflinuxfs2-loopless
+    tags: [thanos]
+    privileged: true
+    file: grootfs-release-develop/ci/tasks/force-unpack.yml
+    params:
+      BOSH_TARGET: {{thanos-bosh-target}}
+      BOSH_CLIENT: {{thanos-bosh-username}}
+      BOSH_CLIENT_SECRET: {{thanos-bosh-password}}
+      BOSH_CERTIFICATES: {{thanos-bosh-certificates}}
+      CELL_NAME: diego-cell-custom-agent
+  - task: force-unpack-cflinuxfs2-shed
+    tags: [thanos]
+    privileged: true
+    file: grootfs-release-develop/ci/tasks/force-unpack.yml
+    params:
+      BOSH_TARGET: {{thanos-bosh-target}}
+      BOSH_CLIENT: {{thanos-bosh-username}}
+      BOSH_CLIENT_SECRET: {{thanos-bosh-password}}
+      BOSH_CERTIFICATES: {{thanos-bosh-certificates}}
+      CELL_NAME: diego-cell-shed
+  - put: datadog-event
+    params:
+      title: thanos-rootfs-refresh
+      text: The rootfs was refreshed
+
 - name: thanos-vizzini-grootfs
   serial_groups: [vizzini]
   plan:
@@ -1394,3 +1451,7 @@ resource_types:
   type: docker-image
   source:
     repository: concourse/tracker-resource
+- name: datadog-event
+  type: docker-image
+  source:
+    repository: concourse/datadog-event-resource
