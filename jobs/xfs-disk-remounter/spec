@@ -1,9 +1,0 @@
----
-name: xfs-disk-remounter
-
-templates:
-  bin/pre-start.erb: bin/pre-start
-
-packages: []
-
-properties: {}

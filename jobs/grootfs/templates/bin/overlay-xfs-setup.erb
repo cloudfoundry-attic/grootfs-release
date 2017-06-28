@@ -22,6 +22,7 @@ main() {
   init_privileged_store
 
   <% if p('grootfs.use_persistent_disk') %>
+  remount_persistent_disk
   unify_projectid_dir "$(store_mountpoint)/grootfs/store"
   <% end %>
 
@@ -41,6 +42,18 @@ unify_projectid_dir() {
 
   ln -s $projectids_dir "${store1}/projectids"
   ln -s $projectids_dir "${store2}/projectids"
+}
+
+remount_persistent_disk() {
+  mount_options=$(mount | awk '/ \/var\/vcap\/store / {print $6}')
+  if [ ! $(echo $mount_options | grep pquota) ]; then
+    device=$(mount | awk '/ \/var\/vcap\/store / {print $1}')
+    umount $device
+    mount -t xfs -o noatime,nobarrier,pquota $device /var/vcap/store
+    echo "Remounted /var/vcap/store with pquota option"
+  else
+    echo "/var/vcap/store already mounted with pquota option"
+  fi
 }
 
 pre_init_store() {
