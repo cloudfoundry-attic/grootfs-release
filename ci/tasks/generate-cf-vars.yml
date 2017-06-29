@@ -1,0 +1,26 @@
+---
+image_resource:
+  type: docker-image
+  source:
+    repository: cfgarden/grootfs-ci
+
+platform: linux
+
+inputs: []
+
+outputs:
+  - name: vars_files
+
+params:
+  CF_SECRETS:
+  CF_UAA_CERTS:
+  CF_ETCD_CERTS:
+  CF_CC_CERTS:
+  CF_CONSUL_CERTS:
+  CF_DIEGO_CERTS:
+  CF_LOGGREGATOR_CERTS:
+  CF_NETWORKING:
+
+run:
+  path: grootfs-release-develop/ci/scripts/generate-cf-vars.sh
+  user: root
