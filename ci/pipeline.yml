@@ -122,13 +122,13 @@ resources:
     branch: master
 
 - name: cf-deployment
-  type: bosh-deployment
+  type: bosh-deployment-resource
   source:
     target: {{gamora-bosh-target}}
-    username: {{gamora-bosh-username}}
-    password: {{gamora-bosh-password}}
+    client: {{gamora-bosh-username}}
+    client_secret: {{gamora-bosh-password}}
+    ca_cert: {{gamora-root-ca-cert}}
     deployment: cf
-    ignore_ssl: true
 
 - name: garden-release
   type: bosh-io-release
@@ -250,58 +250,58 @@ resources:
     interval: 2h
 
 - name: grootfs-bench-btrfs-remote-deployment
-  type: bosh-deployment
+  type: bosh-deployment-resource
   source:
     target: {{gamora-bosh-target}}
-    username: {{gamora-bosh-username}}
-    password: {{gamora-bosh-password}}
+    client: {{gamora-bosh-username}}
+    client_secret: {{gamora-bosh-password}}
+    ca_cert: {{gamora-root-ca-cert}}
     deployment: grootfs-bench-btrfs-remote
-    ignore_ssl: true
 
 - name: grootfs-bench-btrfs-local-deployment
-  type: bosh-deployment
+  type: bosh-deployment-resource
   source:
     target: {{gamora-bosh-target}}
-    username: {{gamora-bosh-username}}
-    password: {{gamora-bosh-password}}
+    client: {{gamora-bosh-username}}
+    client_secret: {{gamora-bosh-password}}
+    ca_cert: {{gamora-root-ca-cert}}
     deployment: grootfs-bench-btrfs-local
-    ignore_ssl: true
 
 - name: grootfs-bench-xfs-local-deployment
-  type: bosh-deployment
+  type: bosh-deployment-resource
   source:
     target: {{gamora-bosh-target}}
-    username: {{gamora-bosh-username}}
-    password: {{gamora-bosh-password}}
+    client: {{gamora-bosh-username}}
+    client_secret: {{gamora-bosh-password}}
+    ca_cert: {{gamora-root-ca-cert}}
     deployment: grootfs-bench-xfs-local
-    ignore_ssl: true
 
 - name: grootfs-bench-xfs-remote-deployment
-  type: bosh-deployment
+  type: bosh-deployment-resource
   source:
     target: {{gamora-bosh-target}}
-    username: {{gamora-bosh-username}}
-    password: {{gamora-bosh-password}}
+    client: {{gamora-bosh-username}}
+    client_secret: {{gamora-bosh-password}}
+    ca_cert: {{gamora-root-ca-cert}}
     deployment: grootfs-bench-xfs-remote
-    ignore_ssl: true
 
 - name: garden-grootfs-deployment
-  type: bosh-deployment
+  type: bosh-deployment-resource
   source:
     target: {{gamora-bosh-target}}
-    username: {{gamora-bosh-username}}
-    password: {{gamora-bosh-password}}
+    client: {{gamora-bosh-username}}
+    client_secret: {{gamora-bosh-password}}
+    ca_cert: {{gamora-root-ca-cert}}
     deployment: garden-grootfs
-    ignore_ssl: true
 
 - name: garden-grootfs-deployment-rolling-upgrade
-  type: bosh-deployment
+  type: bosh-deployment-resource
   source:
     target: {{gamora-bosh-target}}
-    username: {{gamora-bosh-username}}
-    password: {{gamora-bosh-password}}
+    client: {{gamora-bosh-username}}
+    client_secret: {{gamora-bosh-password}}
+    ca_cert: {{gamora-root-ca-cert}}
     deployment: garden-grootfs-rolling-upgrade
-    ignore_ssl: true
 
 - name: gamora-bosh-stemcell
   type: bosh-io-stemcell
@@ -1456,3 +1456,7 @@ resource_types:
   type: docker-image
   source:
     repository: concourse/datadog-event-resource
+- name: bosh-deployment-resource
+  type: docker-image
+  source:
+    repository: cloudfoundry/bosh-deployment-resource
