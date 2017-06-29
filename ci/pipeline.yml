@@ -762,44 +762,51 @@ jobs:
       - get: gamora-bosh-stemcell
         trigger: true
       - get: grootfs-ci-secrets
-    - task: generate-bench-manifests
-      file: grootfs-release-develop/ci/tasks/generate-grootfs-bench-manifest.yml
-      params:
-        DATADOG_API_KEY: {{datadog-api-key}}
-        DATADOG_APP_KEY: {{datadog-application-key}}
     - aggregate:
       - put: grootfs-bench-btrfs-local-deployment
         params:
-          manifest: manifests/grootfs-bench-btrfs-local.yml
+          manifest: grootfs-ci-secrets/deployments/grootfs-bench/grootfs-bench-btrfs-local.yml
           releases:
           - grootfs-release-tarball/*.tgz
           - grootfs-bench-release-tarball/*.tgz
           stemcells:
           - gamora-bosh-stemcell/*.tgz
+          vars:
+            datadog_api-key: {{datadog-api-key}}
+            datadog_app-key: {{datadog-application-key}}
       - put: grootfs-bench-btrfs-remote-deployment
         params:
-          manifest: manifests/grootfs-bench-btrfs-remote.yml
+          manifest: grootfs-ci-secrets/deployments/grootfs-bench/grootfs-bench-btrfs-remote.yml
           releases:
           - grootfs-release-tarball/*.tgz
           - grootfs-bench-release-tarball/*.tgz
           stemcells:
           - gamora-bosh-stemcell/*.tgz
+          vars:
+            datadog_api-key: {{datadog-api-key}}
+            datadog_app-key: {{datadog-application-key}}
       - put: grootfs-bench-xfs-local-deployment
         params:
-          manifest: manifests/grootfs-bench-xfs-local.yml
+          manifest: grootfs-ci-secrets/deployments/grootfs-bench/grootfs-bench-xfs-local.yml
           releases:
           - grootfs-release-tarball/*.tgz
           - grootfs-bench-release-tarball/*.tgz
           stemcells:
           - gamora-bosh-stemcell/*.tgz
+          vars:
+            datadog_api-key: {{datadog-api-key}}
+            datadog_app-key: {{datadog-application-key}}
       - put: grootfs-bench-xfs-remote-deployment
         params:
-          manifest: manifests/grootfs-bench-xfs-remote.yml
+          manifest: grootfs-ci-secrets/deployments/grootfs-bench/grootfs-bench-xfs-remote.yml
           releases:
           - grootfs-release-tarball/*.tgz
           - grootfs-bench-release-tarball/*.tgz
           stemcells:
           - gamora-bosh-stemcell/*.tgz
+          vars:
+            datadog_api-key: {{datadog-api-key}}
+            datadog_app-key: {{datadog-application-key}}
       - task: publish-commit-event-to-datadog
         privileged: true
         file: grootfs-bench-release/ci/tasks/publish-commit-event.yml
