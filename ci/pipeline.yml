@@ -247,7 +247,7 @@ resources:
 - name: vizzini-rootfs-refresher
   type: time
   source:
-    interval: 1h
+    interval: 2h
 
 - name: grootfs-bench-btrfs-remote-deployment
   type: bosh-deployment
