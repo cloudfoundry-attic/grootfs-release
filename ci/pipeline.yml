@@ -772,8 +772,8 @@ jobs:
           stemcells:
           - gamora-bosh-stemcell/*.tgz
           vars:
-            datadog_api-key: {{datadog-api-key}}
-            datadog_app-key: {{datadog-application-key}}
+            datadog_api_key: {{datadog-api-key}}
+            datadog_app_key: {{datadog-application-key}}
       - put: grootfs-bench-btrfs-remote-deployment
         params:
           manifest: grootfs-ci-secrets/deployments/grootfs-bench/grootfs-bench-btrfs-remote.yml
@@ -783,8 +783,8 @@ jobs:
           stemcells:
           - gamora-bosh-stemcell/*.tgz
           vars:
-            datadog_api-key: {{datadog-api-key}}
-            datadog_app-key: {{datadog-application-key}}
+            datadog_api_key: {{datadog-api-key}}
+            datadog_app_key: {{datadog-application-key}}
       - put: grootfs-bench-xfs-local-deployment
         params:
           manifest: grootfs-ci-secrets/deployments/grootfs-bench/grootfs-bench-xfs-local.yml
@@ -794,8 +794,8 @@ jobs:
           stemcells:
           - gamora-bosh-stemcell/*.tgz
           vars:
-            datadog_api-key: {{datadog-api-key}}
-            datadog_app-key: {{datadog-application-key}}
+            datadog_api_key: {{datadog-api-key}}
+            datadog_app_key: {{datadog-application-key}}
       - put: grootfs-bench-xfs-remote-deployment
         params:
           manifest: grootfs-ci-secrets/deployments/grootfs-bench/grootfs-bench-xfs-remote.yml
@@ -805,8 +805,8 @@ jobs:
           stemcells:
           - gamora-bosh-stemcell/*.tgz
           vars:
-            datadog_api-key: {{datadog-api-key}}
-            datadog_app-key: {{datadog-application-key}}
+            datadog_api_key: {{datadog-api-key}}
+            datadog_app_key: {{datadog-application-key}}
       - task: publish-commit-event-to-datadog
         privileged: true
         file: grootfs-bench-release/ci/tasks/publish-commit-event.yml
