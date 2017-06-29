@@ -52,6 +52,7 @@ set_pipeline() {
     --var cf-consul-certs="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/cf-consul-certs' --notes)" \
     --var cf-diego-certs="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/cf-diego-certs' --notes)" \
     --var cf-loggregator-certs="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/cf-loggregator-certs' --notes)" \
+    --var cf-networking="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/cf-networking' --notes)" \
     --var github-client-id="$(lpass show 'Shared-Garden/grootfs-deployments/github-garden-gnome' --username)" \
     --var github-client-secret="$(lpass show 'Shared-Garden/grootfs-deployments/github-garden-gnome' --password)" \
     --var grootfs-release-private-yaml="$(lpass show 'Shared-Garden/grootfs-release-private.yml' --notes)" \

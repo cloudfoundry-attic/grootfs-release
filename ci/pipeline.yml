@@ -1168,6 +1168,7 @@ jobs:
       CF_CONSUL_CERTS: {{cf-consul-certs}}
       CF_DIEGO_CERTS: {{cf-diego-certs}}
       CF_LOGGREGATOR_CERTS: {{cf-loggregator-certs}}
+      CF_NETWORKING: {{cf-networking}}
       DATADOG_API_KEY: {{datadog-api-key}}
       DATADOG_METRIC_PREFIX: "datadog.gamora.nozzle."
       IAAS: gcp

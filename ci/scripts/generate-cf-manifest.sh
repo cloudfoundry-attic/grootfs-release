@@ -19,6 +19,7 @@ ensure CF_CC_CERTS
 ensure CF_CONSUL_CERTS
 ensure CF_DIEGO_CERTS
 ensure CF_LOGGREGATOR_CERTS
+ensure CF_NETWORKING
 ensure IAAS
 
 echo "$CF_SECRETS" > secrets.yml
@@ -28,6 +29,7 @@ echo "$CF_CC_CERTS" > cc-certs.yml
 echo "$CF_CONSUL_CERTS" > consul-certs.yml
 echo "$CF_DIEGO_CERTS" > diego-certs.yml
 echo "$CF_LOGGREGATOR_CERTS" > loggregator-certs.yml
+echo "$CF_NETWORKING" > networking.yml
 
 # keeping both cf_admin_password and uaa_scim_users_admin_password for the moment because of backwards compatibility
 bosh2 int \
@@ -43,6 +45,7 @@ bosh2 int \
   --vars-file ./consul-certs.yml \
   --vars-file ./diego-certs.yml \
   --vars-file ./loggregator-certs.yml \
+  --vars-file ./networking.yml \
   --vars-store ./regenerate-secrets.yml \
   --ops-file git-cf-deployment/operations/test/add-datadog-firehose-nozzle.yml \
   --ops-file git-cf-deployment/operations/${IAAS}.yml \
