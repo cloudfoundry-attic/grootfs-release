@@ -6,7 +6,8 @@ image_resource:
 
 platform: linux
 
-inputs: []
+inputs:
+  - grootfs-release-develop
 
 outputs:
   - name: vars_files
