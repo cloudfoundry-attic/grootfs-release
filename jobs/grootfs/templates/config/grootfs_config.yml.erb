@@ -1,6 +1,6 @@
 store: /var/vcap/<%= p('grootfs.use_persistent_disk') ? 'store': 'data' %>/grootfs/store/unprivileged
 driver: <%= p("grootfs.driver") %>
-btrfs_bin: /var/vcap/packages/btrfs-progs/bin/btrfs
+btrfs_progs_path: /var/vcap/packages/btrfs-progs/bin
 drax_bin: /var/vcap/packages/grootfs/bin/drax
 tardis_bin: /var/vcap/packages/grootfs/bin/tardis
 newuidmap_bin: /var/vcap/packages/idmapper/bin/newuidmap
