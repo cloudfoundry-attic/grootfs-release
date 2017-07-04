@@ -25,4 +25,6 @@ bosh2 -e bosh-director --client $BOSH_CLIENT --client-secret $BOSH_CLIENT_SECRET
 for cell in $(bosh2 -e bosh-director -d cf vms | awk '/'"$CELL_NAME"'\// {print $1}')
 do
   bosh2 -e bosh-director -d cf ssh $cell -c "sudo touch /var/vcap/packages/cflinuxfs2/*"
+  bosh2 -e bosh-director -d cf ssh $cell -c "sudo /var/vcap/packages/grootfs/bin/grootfs --config /var/vcap/jobs/grootfs/config/grootfs_config.yml clean --threshold-bytes 0"
+  bosh2 -e bosh-director -d cf ssh $cell -c "sudo /var/vcap/packages/grootfs/bin/grootfs --config /var/vcap/jobs/grootfs/config/privileged_grootfs_config.yml clean --threshold-bytes 0"
 done
