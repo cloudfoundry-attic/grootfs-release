@@ -161,7 +161,7 @@ cleanup_store() {
 pre_validate_store() {
   <% if p('grootfs.store_size_bytes') > 0 && p('grootfs.driver') == 'overlay-xfs' %>
     if [ $(vcap_data_filesystem) = "xfs" ]; then
-      echo "Filesystem already XFS. Set `grootfs.store_size_bytes property` to 0"
+      echo "Filesystem already XFS. Set 'grootfs.store_size_bytes property' to 0"
       exit 1
     fi
   <% end %>
