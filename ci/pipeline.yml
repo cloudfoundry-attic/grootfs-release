@@ -112,8 +112,8 @@ resources:
 - name: diego-release-git
   type: git
   source:
-    uri: https://github.com/masters-of-cats/diego-release
-    branch: custom-vizzini
+    uri: https://github.com/cloudfoundry/diego-release
+    branch: master
 
 - name: git-cf-deployment
   type: git
