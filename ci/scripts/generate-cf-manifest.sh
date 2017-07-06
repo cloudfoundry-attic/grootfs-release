@@ -52,7 +52,6 @@ bosh2 int \
   --ops-file git-cf-deployment/operations/scale-to-one-az.yml \
   --ops-file grootfs-release-develop/manifests/operations/grootfs.yml \
   --ops-file grootfs-ci-secrets/deployments/cf-operations/custom-changes.yml \
-  --ops-file grootfs-ci-secrets/deployments/cf-operations/grootfs-long-running-bench.yml \
   --ops-file grootfs-ci-secrets/deployments/cf-operations/use-latest-releases.yml \
   --ops-file diego-release-git/operations/add-vizzini-errand.yml \
   git-cf-deployment/cf-deployment.yml > manifests/cf.yml
