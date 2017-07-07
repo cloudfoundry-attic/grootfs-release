@@ -16,6 +16,7 @@ params:
   BOSH_CLIENT_SECRET:
   BOSH_CERTIFICATES:
   CELL_NAME:
+  CLEAN: false
 
 run:
   path: grootfs-release-develop/ci/scripts/force-unpack.sh

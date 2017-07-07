@@ -1267,6 +1267,7 @@ jobs:
       BOSH_CLIENT_SECRET: {{thanos-bosh-password}}
       BOSH_CERTIFICATES: {{thanos-bosh-certificates}}
       CELL_NAME: diego-cell
+      CLEAN: true
   - task: force-unpack-cflinuxfs2-loopless
     tags: [thanos]
     privileged: true
@@ -1277,6 +1278,7 @@ jobs:
       BOSH_CLIENT_SECRET: {{thanos-bosh-password}}
       BOSH_CERTIFICATES: {{thanos-bosh-certificates}}
       CELL_NAME: diego-cell-custom-agent
+      CLEAN: true
   - task: force-unpack-cflinuxfs2-shed
     tags: [thanos]
     privileged: true
@@ -1287,6 +1289,7 @@ jobs:
       BOSH_CLIENT_SECRET: {{thanos-bosh-password}}
       BOSH_CERTIFICATES: {{thanos-bosh-certificates}}
       CELL_NAME: diego-cell-shed
+      CLEAN: false
   - put: datadog-event
     params:
       title: thanos-rootfs-refresh
