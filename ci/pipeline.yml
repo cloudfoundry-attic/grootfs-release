@@ -19,6 +19,8 @@ groups:
   - deploy-cf
   - CATs
   - gamora-vizzini
+  - bench-with-loops
+  - bench-without-loops
   - thanos-vizzini-shed
   - thanos-vizzini-grootfs
   - thanos-vizzini-grootfs-custom-agent
@@ -60,6 +62,8 @@ groups:
   - thanos-vizzini-grootfs
   - thanos-vizzini-grootfs-custom-agent
   - thanos-refresh-rootfs
+  - bench-with-loops
+  - bench-without-loops
   - deliver
 - name: tools
   jobs:
@@ -238,6 +242,11 @@ resources:
   type: time
   source:
     interval: 60m
+
+- name: thanos-bench-time-trigger
+  type: time
+  source:
+    interval: 20m
 
 - name: vizzini-time-trigger
   type: time
@@ -709,7 +718,6 @@ jobs:
   serial: true
   plan:
     - aggregate:
-      - get: grootfs-ci-secrets
       - get: grootfs-bench-release
         trigger: true
       - get: grootfs-bench-git-repo
@@ -842,7 +850,6 @@ jobs:
         - deploy-grootfs-bench
       - get: performance-time-trigger
         trigger: true
-      - get: grootfs-ci-secrets
     - aggregate:
       - task: benchmark-LOCAL-BTRFS
         privileged: true
@@ -896,7 +903,6 @@ jobs:
         - deploy-grootfs-bench
       - get: performance-time-trigger
         trigger: true
-      - get: grootfs-ci-secrets
     - aggregate:
       - task: benchmark-LOCAL-OVERLAY-XFS
         privileged: true
@@ -1141,8 +1147,6 @@ jobs:
   plan:
   - aggregate:
     - get: grootfs-release-tarball
-    - get: grootfs-bench-release-tarball
-      trigger: true
     - get: git-cf-deployment
       trigger: true
     - get: grootfs-release-develop
@@ -1187,7 +1191,6 @@ jobs:
       - cflinuxfs2-release/*.tgz
       - grootfs-release-tarball/*.tgz
       - garden-release/*.tgz
-      - grootfs-bench-release-tarball/*.tgz
       - datadog-nozzle-release/*.tgz
       stemcells:
       - gamora-bosh-stemcell/*.tgz
@@ -1426,6 +1429,60 @@ jobs:
       DATADOG_API_KEY: {{datadog-api-key}}
       EVENT_NAME: "vizzini-ending-grootfs-custom-agent"
       TAG: custom-agent
+
+- name: bench-without-loops
+  serial_groups:
+  - thanos-bench
+  public: true
+  plan:
+  - do:
+    - aggregate:
+      - get: grootfs-bench-release
+        trigger: true
+        tags: [thanos]
+      - get: thanos-bench-time-trigger
+        trigger: true
+        tags: [thanos]
+    - task: benchmark-LOCAL-LOOPLESS
+      tags: [thanos]
+      privileged: true
+      file: grootfs-bench-release/ci/tasks/performance-tests.yml
+      params:
+        BOSH_TARGET: {{thanos-bosh-target}}
+        BOSH_CLIENT: {{thanos-bosh-username}}
+        BOSH_CLIENT_SECRET: {{thanos-bosh-password}}
+        BOSH_DEPLOYMENT: cf
+        BOSH_CERTIFICATES: {{thanos-bosh-certificates}}
+        ERRAND_NAME: loopless-bench-errand
+        DATADOG_API_KEY: {{datadog-api-key}}
+        DATADOG_APPLICATION_KEY: {{datadog-application-key}}
+
+- name: bench-with-loops
+  serial_groups:
+  - thanos-bench
+  public: true
+  plan:
+  - do:
+    - aggregate:
+      - get: grootfs-bench-release
+        trigger: true
+        tags: [thanos]
+      - get: thanos-bench-time-trigger
+        trigger: true
+        tags: [thanos]
+    - task: benchmark-LOCAL-LOOPED
+      tags: [thanos]
+      privileged: true
+      file: grootfs-bench-release/ci/tasks/performance-tests.yml
+      params:
+        BOSH_TARGET: {{thanos-bosh-target}}
+        BOSH_CLIENT: {{thanos-bosh-username}}
+        BOSH_CLIENT_SECRET: {{thanos-bosh-password}}
+        BOSH_DEPLOYMENT: cf
+        BOSH_CERTIFICATES: {{thanos-bosh-certificates}}
+        ERRAND_NAME: looped-bench-errand
+        DATADOG_API_KEY: {{datadog-api-key}}
+        DATADOG_APPLICATION_KEY: {{datadog-application-key}}
 
 - name: deliver
   plan:
