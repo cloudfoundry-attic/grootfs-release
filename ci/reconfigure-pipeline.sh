@@ -24,31 +24,48 @@ main() {
     pipeline_file="dummy_pipeline.yml"
   fi
 
+  load_vars_file
   set_pipeline
   expose_pipeline
+}
+
+VARS_FILE=/tmp/concourse_vars.yml
+
+trap "rm $VARS_FILE" exit
+
+load_vars_file() {
+  touch $VARS_FILE
+
+  echo "datadog-api-key: $(lpass show 'Shared-Garden/grootfs-deployments/datadog-api-keys' --username)" >> $VARS_FILE
+  echo "datadog-application-key: $(lpass show 'Shared-Garden/grootfs-deployments/datadog-api-keys' --password)" >> $VARS_FILE
+  echo "github-access-token: $(lpass show 'Shared-Garden/Garden-Gnome-Github-Account' --field=api-key)" >> $VARS_FILE
+  echo "github-client-id: $(lpass show 'Shared-Garden/grootfs-deployments/github-garden-gnome' --username)" >> $VARS_FILE
+  echo "github-client-secret: $(lpass show 'Shared-Garden/grootfs-deployments/github-garden-gnome' --password)" >> $VARS_FILE
+  echo "dockerhub-username: $(lpass show 'Shared-Garden/cf-garden-docker' --username)" >> $VARS_FILE
+  echo "dockerhub-password: $(lpass show 'Shared-Garden/cf-garden-docker' --password)" >> $VARS_FILE
+
+  echo "gamora-bosh-username: $(lpass show 'Shared-Garden/grootfs-deployments\gamora/bosh-director' --username)" >> $VARS_FILE
+  echo "gamora-bosh-password: $(lpass show 'Shared-Garden/grootfs-deployments\gamora/bosh-director' --password)" >> $VARS_FILE
+  echo "gamora-cf-username: $(lpass show 'Shared-Garden/grootfs-deployments\gamora/cf-creds' --username)" >> $VARS_FILE
+  echo "gamora-cf-password: $(lpass show 'Shared-Garden/grootfs-deployments\gamora/cf-creds' --password)" >> $VARS_FILE
+  echo "aws-access-key-id: $(lpass show "Shared-Garden/grootfs-deployments\thanos/aws-keys" --username)" >> $VARS_FILE
+  echo "aws-secret-access-key: $(lpass show "Shared-Garden/grootfs-deployments\thanos/aws-keys" --password)" >> $VARS_FILE
+  echo "thanos-bosh-username: $(lpass show 'Shared-Garden/grootfs-deployments\thanos/bosh-director' --username)" >> $VARS_FILE
+  echo "thanos-bosh-password: $(lpass show 'Shared-Garden/grootfs-deployments\thanos/bosh-director' --password)" >> $VARS_FILE
 }
 
 set_pipeline() {
   export gamora_bosh_certs="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/certificates' --notes)"
   gamora_ca_cert=$(ruby -e 'require "yaml"; puts YAML.load(ENV["gamora_bosh_certs"])["certs"]["ca_cert"]')
-
   fly --target="$flyrc_target" set-pipeline --pipeline=$pipeline_name \
     --config=ci/${pipeline_file} --load-vars-from=$HOME/workspace/grootfs-ci-secrets/vars/$vars_name.yml \
+    --load-vars-from=$VARS_FILE \
     --var gnome-private-key="$(lpass show 'Shared-Garden/grootfs-deployments/github-garden-gnome' --notes)" \
-    --var github-access-token="$(lpass show 'Shared-Garden/Garden-Gnome-Github-Account' --field=api-key)" \
-    --var github-client-id="$(lpass show 'Shared-Garden/grootfs-deployments/github-garden-gnome' --username)" \
-    --var github-client-secret="$(lpass show 'Shared-Garden/grootfs-deployments/github-garden-gnome' --password)" \
-    --var gamora-bosh-username="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/bosh-director' --username)" \
-    --var gamora-bosh-password="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/bosh-director' --password)" \
+    --var garden-tracker-token="$(lpass show 'Shared-Garden/Garden-Gnome-Tracker-Account' --notes)" \
+    --var grootfs-release-private-yaml="$(lpass show 'Shared-Garden/grootfs-release-private.yml' --notes)" \
+    \
     --var gamora-bosh-certificates="$gamora_bosh_certs" \
     --var gamora-root-ca-cert="$gamora_ca_cert" \
-    --var dockerhub-username="$(lpass show 'Shared-Garden/cf-garden-docker' --username)" \
-    --var dockerhub-password="$(lpass show 'Shared-Garden/cf-garden-docker' --password)" \
-    --var garden-tracker-token="$(lpass show 'Shared-Garden/Garden-Gnome-Tracker-Account' --notes)" \
-    --var datadog-api-key="$(lpass show 'Shared-Garden/grootfs-deployments/datadog-api-keys' --username)" \
-    --var datadog-application-key="$(lpass show 'Shared-Garden/grootfs-deployments/datadog-api-keys' --password)" \
-    --var cf-username="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/cf-creds' --username)" \
-    --var cf-password="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/cf-creds' --password)" \
     --var cf-secrets="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/cf-secrets' --notes)" \
     --var cf-uaa-certs="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/cf-uaa-certs' --notes)" \
     --var cf-etcd-certs="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/cf-etcd-certs' --notes)" \
@@ -59,10 +76,6 @@ set_pipeline() {
     --var cf-networking="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/cf-networking' --notes)" \
     --var grootfs-release-private-yaml="$(lpass show 'Shared-Garden/grootfs-release-private.yml' --notes)" \
     \
-    --var aws-access-key-id="$(lpass show "Shared-Garden/grootfs-deployments\thanos/aws-keys" --username)" \
-    --var aws-secret-access-key="$(lpass show "Shared-Garden/grootfs-deployments\thanos/aws-keys" --password)" \
-    --var thanos-bosh-username="$(lpass show 'Shared-Garden/grootfs-deployments\thanos/bosh-director' --username)" \
-    --var thanos-bosh-password="$(lpass show 'Shared-Garden/grootfs-deployments\thanos/bosh-director' --password)" \
     --var thanos-bosh-certificates="$(lpass show 'Shared-Garden/grootfs-deployments\thanos/certificates' --notes)" \
     --var thanos-cf-diego-certs="$(lpass show 'Shared-Garden/grootfs-deployments\thanos/cf-diego-certs' --notes)"
 }

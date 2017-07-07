@@ -1171,7 +1171,7 @@ jobs:
     file: grootfs-release-develop/ci/tasks/generate-cf-manifest.yml
     params:
       CF_SYSTEM_DOMAIN: grootfs-gamora.cf-app.com
-      CF_PASSWORD: {{cf-password}}
+      CF_PASSWORD: {{gamora-cf-password}}
       CF_SECRETS: {{cf-secrets}}
       CF_UAA_CERTS: {{cf-uaa-certs}}
       CF_ETCD_CERTS: {{cf-etcd-certs}}
@@ -1197,8 +1197,8 @@ jobs:
   - task: enable-docker-feature-flag
     file: grootfs-release-develop/ci/tasks/enable-docker-feature-flag.yml
     params:
-      CF_USERNAME: admin
-      CF_PASSWORD: {{cf-password}}
+      CF_USERNAME: {{gamora-cf-username}}
+      CF_PASSWORD: {{gamora-cf-password}}
 
 - name: CATs
   serial_groups:
@@ -1213,7 +1213,7 @@ jobs:
   - task: generate-cats-config-json
     file: grootfs-release-develop/ci/tasks/generate-cats-config-json.yml
     params:
-      CF_PASSWORD: {{cf-password}}
+      CF_PASSWORD: {{gamora-cf-password}}
       CF_API: grootfs-gamora.cf-app.com
   - task: run-cats
     file: cats-concourse-task/task.yml
