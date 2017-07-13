@@ -26,7 +26,7 @@ cd grootfs-release-develop
 git config --global user.email "cf-garden+garden-gnome@pivotal.io"
 git config --global user.name "I am Groot CI"
 
-bosh2 -n create-release --final --version "$VERSION" --tarball ${BUILD_FOLDER}/final-release/grootfs-${VERSION}.tgz  --name grootfs
+bosh2 -n create-release --final --sha2 --version "$VERSION" --tarball ${BUILD_FOLDER}/final-release/grootfs-${VERSION}.tgz  --name grootfs
 git add -A
 git commit -m "release v${VERSION}"
 
