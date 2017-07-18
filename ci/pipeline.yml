@@ -19,6 +19,7 @@ groups:
   - deploy-cf
   - CATs
   - gamora-vizzini
+  - deploy-thanos-cf
   - bench-with-loops
   - bench-without-loops
   - thanos-vizzini-shed
@@ -53,18 +54,21 @@ groups:
   - deploy-garden-grootfs
   - GATs
   - deliver
-- name: cf
+- name: gamora-cf
   jobs:
   - deploy-cf
   - CATs
   - gamora-vizzini
+  - deliver
+- name: thanos-cf
+  jobs:
+  - deploy-thanos-cf
   - thanos-vizzini-shed
   - thanos-vizzini-grootfs
   - thanos-vizzini-grootfs-custom-agent
   - thanos-refresh-rootfs
   - bench-with-loops
   - bench-without-loops
-  - deliver
 - name: tools
   jobs:
   - build-grootfs-ci-image
@@ -119,6 +123,12 @@ resources:
     uri: https://github.com/cloudfoundry/diego-release
     branch: master
 
+- name: diegocanaryapp
+  type: git
+  source:
+    branch: master
+    uri: https://github.com/cloudfoundry/diegocanaryapp.git
+
 - name: git-cf-deployment
   type: git
   source:
@@ -132,6 +142,15 @@ resources:
     client: {{gamora-bosh-username}}
     client_secret: {{gamora-bosh-password}}
     ca_cert: {{gamora-root-ca-cert}}
+    deployment: cf
+
+- name: thanos-cf-deployment
+  type: bosh-deployment-resource
+  source:
+    target: {{thanos-bosh-target}}
+    client: {{thanos-bosh-username}}
+    client_secret: {{thanos-bosh-password}}
+    ca_cert: {{thanos-root-ca-cert}}
     deployment: cf
 
 - name: garden-release
@@ -246,7 +265,7 @@ resources:
 - name: thanos-bench-time-trigger
   type: time
   source:
-    interval: 20m
+    interval: 10m
 
 - name: vizzini-time-trigger
   type: time
@@ -316,6 +335,11 @@ resources:
   type: bosh-io-stemcell
   source:
     name: {{gamora-bosh-stemcell-name}}
+
+- name: thanos-bosh-stemcell
+  type: bosh-io-stemcell
+  source:
+    name: {{thanos-bosh-stemcell-name}}
 
 - name: slack-alert
   type: slack-notification-docker
@@ -1248,6 +1272,84 @@ jobs:
         EVENT_NAME: "vizzini-failed-gamora"
         TAG: gamora
 
+- name: deploy-thanos-cf
+  serial_groups: [deploy-thanos-cf]
+  plan:
+  - aggregate:
+    - get: grootfs-release-tarball
+      tags: [thanos]
+    - get: git-cf-deployment
+      tags: [thanos]
+      trigger: true
+    - get: grootfs-release-develop
+      tags: [thanos]
+      trigger: true
+      params:
+        submodules: none
+    - get: grootfs-ci-secrets
+      tags: [thanos]
+    - get: thanos-bosh-stemcell
+      tags: [thanos]
+    - get: garden-release
+      tags: [thanos]
+      trigger: true
+    - get: cflinuxfs2-release
+      tags: [thanos]
+    - get: diego-release
+      tags: [thanos]
+      trigger: true
+    - get: diego-release-git
+      tags: [thanos]
+      params:
+        submodules: none
+    - get: diegocanaryapp
+      tags: [thanos]
+    - get: datadog-nozzle-release
+      tags: [thanos]
+  - task: generate-cf-manifest
+    tags: [thanos]
+    file: grootfs-release-develop/ci/tasks/generate-thanos-cf-manifest.yml
+    params:
+      CF_SYSTEM_DOMAIN: grootfs-thanos.cf-app.com
+      CF_PASSWORD: {{thanos-cf-password}}
+      CF_SECRETS: {{thanos-cf-secrets}}
+      CF_UAA_CERTS: {{thanos-cf-uaa-certs}}
+      CF_ETCD_CERTS: {{thanos-cf-etcd-certs}}
+      CF_CC_CERTS: {{thanos-cf-cc-certs}}
+      CF_CONSUL_CERTS: {{thanos-cf-consul-certs}}
+      CF_DIEGO_CERTS: {{thanos-cf-diego-certs}}
+      CF_LOGGREGATOR_CERTS: {{thanos-cf-loggregator-certs}}
+      CF_NETWORKING: {{thanos-cf-networking}}
+      DATADOG_API_KEY: {{datadog-api-key}}
+      DATADOG_METRIC_PREFIX: "datadog.thanos.nozzle."
+  - put: thanos-cf-deployment
+    tags: [thanos]
+    params:
+      manifest: manifests/cf.yml
+      releases:
+      - diego-release/*.tgz
+      - cflinuxfs2-release/*.tgz
+      - grootfs-release-tarball/*.tgz
+      - garden-release/*.tgz
+      - datadog-nozzle-release/*.tgz
+      stemcells:
+      - thanos-bosh-stemcell/*.tgz
+  - task: enable-docker-feature-flag
+    tags: [thanos]
+    file: grootfs-release-develop/ci/tasks/enable-docker-feature-flag.yml
+    params:
+      CF_API_URL: api.grootfs-thanos.cf-app.com
+      CF_USERNAME: {{thanos-cf-username}}
+      CF_PASSWORD: {{thanos-cf-password}}
+  - task: isolate-canaries
+    tags: [thanos]
+    file: grootfs-release-develop/ci/tasks/isolate-canaries.yml
+    params:
+      DATADOG_API_KEY: {{datadog-api-key}}
+      CF_API_URL: api.grootfs-thanos.cf-app.com
+      CF_USERNAME: {{thanos-cf-username}}
+      CF_PASSWORD: {{thanos-cf-password}}
+
 - name: thanos-refresh-rootfs
   serial_groups: [vizzini]
   plan:
@@ -1435,13 +1537,18 @@ jobs:
 
 - name: bench-without-loops
   serial_groups:
-  - thanos-bench
+  - deploy-thanos-cf
   public: true
   plan:
   - do:
     - aggregate:
-      - get: grootfs-bench-release
+      - get: grootfs-release-develop
+        tags: [thanos]
         trigger: true
+        passed: [deploy-thanos-cf]
+        params:
+          submodules: none
+      - get: grootfs-bench-release
         tags: [thanos]
       - get: thanos-bench-time-trigger
         trigger: true
@@ -1462,13 +1569,18 @@ jobs:
 
 - name: bench-with-loops
   serial_groups:
-  - thanos-bench
+  - deploy-thanos-cf
   public: true
   plan:
   - do:
     - aggregate:
-      - get: grootfs-bench-release
+      - get: grootfs-release-develop
+        tags: [thanos]
         trigger: true
+        passed: [deploy-thanos-cf]
+        params:
+          submodules: none
+      - get: grootfs-bench-release
         tags: [thanos]
       - get: thanos-bench-time-trigger
         trigger: true
