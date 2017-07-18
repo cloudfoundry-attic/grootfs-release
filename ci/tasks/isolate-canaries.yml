@@ -1,0 +1,22 @@
+---
+image_resource:
+  type: docker-image
+  source:
+    repository: cfgarden/grootfs-ci
+
+platform: linux
+
+inputs:
+  - name: grootfs-release-develop
+  - name: diegocanaryapp
+
+params:
+  DATADOG_API_KEY:
+  DEPLOYMENT_NAME: cf
+  CF_API_URL: api.grootfs-gamora.cf-app.com
+  CF_PASSWORD:
+  CF_USERNAME:
+
+run:
+  path: grootfs-release-develop/ci/scripts/isolate-canaries.sh
+  user: root
