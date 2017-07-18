@@ -9,9 +9,6 @@ platform: linux
 inputs:
   - name: grootfs-release-develop
 
-outputs:
-  - name: manifests
-
 params:
   CF_API_URL: api.grootfs-gamora.cf-app.com
   CF_PASSWORD:
