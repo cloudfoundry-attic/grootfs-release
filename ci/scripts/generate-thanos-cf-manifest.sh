@@ -35,6 +35,7 @@ bosh2 int \
   --var=uaa_scim_users_admin_password="${CF_PASSWORD}"\
   --var=cf_admin_password="${CF_PASSWORD}"\
   --var=datadog_api_key="${DATADOG_API_KEY}" \
+  --var=datadog_app_key="${DATADOG_APPLICATION_KEY}" \
   --var=datadog_metric_prefix="${DATADOG_METRIC_PREFIX}" \
   --vars-file ./secrets.yml \
   --vars-file ./uaa-certs.yml \
