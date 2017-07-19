@@ -56,5 +56,6 @@ bosh2 int \
   --ops-file grootfs-ci-secrets/deployments/cf-operations/custom-changes.yml \
   --ops-file grootfs-ci-secrets/deployments/cf-operations/use-latest-releases.yml \
   --ops-file grootfs-ci-secrets/deployments/cf-operations/custom-thanos-changes.yml \
+  --ops-file grootfs-diagnostics-develop/manifests/grootfs-diagnostics-ops.yml \
   git-cf-deployment/cf-deployment.yml > manifests/cf.yml
 

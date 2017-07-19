@@ -11,6 +11,7 @@ inputs:
   - name: grootfs-release-develop
   - name: git-cf-deployment
   - name: diego-release-git
+  - name: grootfs-diagnostics-develop
 
 outputs:
   - name: manifests
