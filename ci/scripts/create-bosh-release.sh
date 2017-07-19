@@ -2,8 +2,6 @@
 
 set -e
 
-bosh2 --version
-
 VERSION=$(cat version/number)
 BUILD_FOLDER=$PWD
 

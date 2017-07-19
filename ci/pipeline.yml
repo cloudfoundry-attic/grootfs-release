@@ -28,6 +28,7 @@ groups:
   - thanos-refresh-rootfs
   - deploy-stable-release
   - test-upgrade
+  - create-grootfs-diagnostics-release
 - name: grootfs
   jobs:
   - grootfs
@@ -38,6 +39,9 @@ groups:
   - btrfs-performance-tests
   - xfs-performance-tests
   - deliver
+- name: diagnostics
+  jobs:
+  - create-grootfs-diagnostics-release
 - name: bench-release
   jobs:
   - grootfs-bench
@@ -193,6 +197,33 @@ resources:
     uri: {{grootfs-release-git-repo}}
     branch: master
     private_key: {{gnome-private-key}}
+
+- name: grootfs-diagnostics-develop
+  type: git
+  source:
+    uri: git@github.com:cloudfoundry/grootfs-diagnostics-release
+    branch: develop
+    private_key: {{gnome-private-key}}
+
+- name: grootfs-diagnostics-release-version
+  type: semver
+  source:
+    bucket: grootfs-ci-meta
+    key: grootfs-diagnostics-release-version
+    access_key_id: {{aws-access-key-id}}
+    secret_access_key: {{aws-secret-access-key}}
+    region_name: eu-west-1
+    initial_version: 0.1.1-rc.1
+    driver: s3
+
+- name: grootfs-diagnostics-release-tarball
+  type: s3
+  source:
+    bucket: grootfs-bosh-releases
+    regexp: grootfs-diagnostics-releases/grootfs-diagnostics-(.*).tgz
+    region_name: eu-west-1
+    access_key_id: {{aws-access-key-id}}
+    secret_access_key: {{aws-secret-access-key}}
 
 - name: grootfs-release-version
   type: semver
@@ -543,8 +574,10 @@ jobs:
         pre: rc
     - get: release
       resource: grootfs-release-develop
-    - get: grootfs-release-develop
       trigger: true
+    - get: grootfs-release-develop
+      params:
+        submodules: none
     - get: grootfs-git-repo
       passed:
       - bump-grootfs-release
@@ -1628,6 +1661,38 @@ jobs:
       - grootfs-release-develop
       - grootfs-bench-release/src/code.cloudfoundry.org/grootfs-bench
       - grootfs-bench-release
+
+- name: create-grootfs-diagnostics-release
+  plan:
+  - aggregate:
+    - get: grootfs-release-develop
+      params:
+        submodules: none
+    - get: version
+      resource: grootfs-diagnostics-release-version
+      params:
+        pre: rc
+    - get: release
+      resource: grootfs-diagnostics-develop
+      trigger: true
+  - put: grootfs-diagnostics-release-version
+    params:
+      file: version/number
+  - do:
+    - task: create-grootfs-diagnostics-release
+      file: grootfs-release-develop/ci/tasks/create-bosh-release.yml
+      params:
+        NAME: grootfs-diagnostics
+    - put: grootfs-diagnostics-release-tarball
+      params:
+        file: bosh-release/grootfs-diagnostics-*.tgz
+    on_failure:
+      put: slack-alert
+      params:
+        username: {{slack-alert-username}}
+        icon_url: "https://i.imgur.com/0xoYLaO.png?1"
+        channel: {{slack-alert-channel}}
+        text: "<!subteam^S1U0HSJ9E|grootfsteam>: BOO! Not cool: http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
 resource_types:
 - name: slack-notification-docker
