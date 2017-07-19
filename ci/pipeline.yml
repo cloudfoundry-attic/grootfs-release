@@ -1167,6 +1167,8 @@ jobs:
   - aggregate:
     - get: grootfs-git-repo-dockerfile
       trigger: true
+      params:
+        submodules: none
   - put: grootfs-ci-image
     params:
       build: grootfs-git-repo-dockerfile
