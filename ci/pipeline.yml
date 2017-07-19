@@ -1372,7 +1372,7 @@ jobs:
       CF_LOGGREGATOR_CERTS: {{thanos-cf-loggregator-certs}}
       CF_NETWORKING: {{thanos-cf-networking}}
       DATADOG_API_KEY: {{datadog-api-key}}
-      DATADOG_APP_KEY: {{datadog-application-key}}
+      DATADOG_APPLICATION_KEY: {{datadog-application-key}}
       DATADOG_METRIC_PREFIX: "datadog.thanos.nozzle."
   - put: thanos-cf-deployment
     tags: [thanos]
