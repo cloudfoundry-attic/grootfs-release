@@ -8,7 +8,8 @@ platform: linux
 
 inputs:
   - name: grootfs-release-develop
-  - name: grootfs-release-version
+  - name: dev-release
+  - name: version
   - name: grootfs-ci-secrets
 
 outputs:
@@ -17,6 +18,7 @@ outputs:
 
 params:
   PRIVATE_YML:
+  NAME:
 
 run:
   path: grootfs-release-develop/ci/scripts/ship-it.sh
