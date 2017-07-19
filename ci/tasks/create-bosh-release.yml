@@ -7,12 +7,16 @@ image_resource:
 platform: linux
 
 inputs:
-  - name: grootfs-release-version
+  - name: version
+  - name: release
   - name: grootfs-release-develop
 
 outputs:
   - name: bosh-release
 
+params:
+  NAME: "grootfs"
+
 run:
-  path: grootfs-release-develop/ci/scripts/create-grootfs-release.sh
+  path: grootfs-release-develop/ci/scripts/create-bosh-release.sh
   user: root

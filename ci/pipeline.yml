@@ -537,9 +537,12 @@ jobs:
   serial_groups: [grootfs-release-creation]
   plan:
   - aggregate:
-    - get: grootfs-release-version
+    - get: version
+      resource: grootfs-release-version
       params:
         pre: rc
+    - get: release
+      resource: grootfs-release-develop
     - get: grootfs-release-develop
       trigger: true
     - get: grootfs-git-repo
@@ -549,10 +552,12 @@ jobs:
         submodules: none
   - put: grootfs-release-version
     params:
-      file: grootfs-release-version/number
+      file: version/number
   - do:
     - task: create-grootfs-release
-      file: grootfs-release-develop/ci/tasks/create-grootfs-release.yml
+      file: grootfs-release-develop/ci/tasks/create-bosh-release.yml
+      params:
+        NAME: grootfs
     - put: grootfs-release-tarball
       params:
         file: bosh-release/grootfs-*.tgz
