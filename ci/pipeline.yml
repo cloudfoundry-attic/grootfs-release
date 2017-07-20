@@ -44,6 +44,10 @@ groups:
   jobs:
   - test-grootfs-diagnostics-release
   - create-grootfs-diagnostics-release
+  - ship-diagnostics-bosh-release
+  - bump-minor-grootfs-diagnostics-release
+  - bump-patch-grootfs-diagnostics-release
+  - grootfs-diagnostics-merge-master-into-develop
 - name: bench-release
   jobs:
   - grootfs-bench
@@ -203,26 +207,41 @@ resources:
 - name: grootfs-diagnostics-develop
   type: git
   source:
-    uri: git@github.com:cloudfoundry/grootfs-diagnostics-release
+    uri: {{grootfs-diagnostics-release-git-repo}}
     branch: develop
+    private_key: {{gnome-private-key}}
+
+- name: grootfs-diagnostics-master
+  type: git
+  source:
+    uri: {{grootfs-diagnostics-release-git-repo}}
+    branch: master
     private_key: {{gnome-private-key}}
 
 - name: grootfs-diagnostics-release-version
   type: semver
   source:
     bucket: grootfs-ci-meta
-    key: grootfs-diagnostics-release-version
+    key: {{diagnostics-s3-version-key}}
     access_key_id: {{aws-access-key-id}}
     secret_access_key: {{aws-secret-access-key}}
     region_name: eu-west-1
     initial_version: 0.1.1-rc.1
     driver: s3
 
+- name: grootfs-diagnostics-github-release
+  type: github-release
+  source:
+    user: {{github-organization}}
+    repository: grootfs-release
+    access_token: {{github-access-token}}
+    drafts: true
+
 - name: grootfs-diagnostics-release-tarball
   type: s3
   source:
     bucket: grootfs-bosh-releases
-    regexp: grootfs-diagnostics-releases/grootfs-diagnostics-(.*).tgz
+    regexp: {{diagnostics-s3-release-tarball-regexp}}
     region_name: eu-west-1
     access_key_id: {{aws-access-key-id}}
     secret_access_key: {{aws-secret-access-key}}
@@ -1704,8 +1723,7 @@ jobs:
     - get: release
       resource: grootfs-diagnostics-develop
       passed: [test-grootfs-diagnostics-release]
-      params:
-        submodules: none
+      trigger: true
   - put: grootfs-diagnostics-release-version
     params:
       file: version/number
@@ -1724,6 +1742,100 @@ jobs:
         icon_url: "https://i.imgur.com/0xoYLaO.png?1"
         channel: {{slack-alert-channel}}
         text: "<!subteam^S1U0HSJ9E|grootfsteam>: BOO! Not cool: http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+
+- name: ship-diagnostics-bosh-release
+  serial: true
+  plan:
+  - do:
+    - aggregate:
+      - get: grootfs-ci-secrets
+      - get: dev-release
+        resource: grootfs-diagnostics-develop
+        passed: [create-grootfs-diagnostics-release]
+      - get: grootfs-release-develop
+        passed: [create-grootfs-diagnostics-release]
+        params:
+          submodules: none
+      - get: version
+        resource: grootfs-diagnostics-release-version
+        params:
+          bump: final
+    - task: ship-it
+      file: grootfs-release-develop/ci/tasks/ship-it.yml
+      params:
+        PRIVATE_YML: {{grootfs-release-private-yaml}}
+        NAME: grootfs-diagnostics
+    - aggregate:
+      - put: grootfs-diagnostics-master
+        params:
+          repository: release/master
+          tag: version/number
+          tag_prefix: v
+      - put: grootfs-diagnostics-release-tarball
+        params:
+          file: final-release/grootfs-diagnostics-*.tgz
+      - put: grootfs-diagnostics-github-release
+        params:
+          name: version/number
+          tag: version/number
+          tag_prefix: v
+          globs:
+          - final-release/grootfs-diagnostics-*.tgz
+      - put: grootfs-diagnostics-release-version
+        params: { file: version/number }
+    on_failure:
+      put: slack-alert
+      params:
+        username: {{slack-alert-username}}
+        icon_url: {{slack-alert-icon-url}}
+        channel: {{slack-alert-channel}}
+        text: "<!subteam^S1U0HSJ9E|grootfsteam>: BOOOOO Not cool. http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+
+- name: grootfs-diagnostics-merge-master-into-develop
+  serial: true
+  plan:
+  - do:
+    - aggregate:
+      - get: grootfs-release-develop
+        params:
+          submodules: none
+      - get: dev-release
+        resource: grootfs-diagnostics-develop
+      - get: master-release
+        resource: grootfs-diagnostics-master
+        passed: [ship-diagnostics-bosh-release]
+        trigger: true
+    - task: merge-master-into-develop
+      file: grootfs-release-develop/ci/tasks/merge-master-into-develop.yml
+    - put: grootfs-diagnostics-develop
+      params:
+        repository: release-merged
+    on_failure:
+      put: slack-alert
+      params:
+        username: {{slack-alert-username}}
+        icon_url: {{slack-alert-icon-url}}
+        channel: {{slack-alert-channel}}
+        text: "<!subteam^S1U0HSJ9E|grootfsteam>: I CAN'T BUMP DEVELOP. http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+
+
+- name: bump-patch-grootfs-diagnostics-release
+  serial: true
+  plan:
+  - get: grootfs-diagnostics-release-version
+    params: { bump: patch, pre: rc }
+    passed: [ship-diagnostics-bosh-release]
+    trigger: true
+  - put: grootfs-diagnostics-release-version
+    params: { file: grootfs-diagnostics-release-version/number }
+
+- name: bump-minor-grootfs-diagnostics-release
+  serial: true
+  plan:
+  - get: grootfs-diagnostics-release-version
+    params: { bump: minor, pre: rc }
+  - put: grootfs-diagnostics-release-version
+    params: { file: grootfs-diagnostics-release-version/number }
 
 resource_types:
 - name: slack-notification-docker
