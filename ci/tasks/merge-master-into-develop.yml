@@ -8,7 +8,8 @@ platform: linux
 
 inputs:
   - name: grootfs-release-develop
-  - name: grootfs-release-master
+  - name: dev-release
+  - name: master-release
 
 outputs:
   - name: release-merged

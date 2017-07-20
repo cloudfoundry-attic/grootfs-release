@@ -1167,7 +1167,10 @@ jobs:
   - do:
     - aggregate:
       - get: grootfs-release-develop
-      - get: grootfs-release-master
+      - get: dev-release
+        resource: grootfs-release-develop
+      - get: master-release
+        resource: grootfs-release-master
         passed:
         - ship-bosh-release
         trigger: true

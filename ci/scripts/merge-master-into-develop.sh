@@ -3,9 +3,9 @@ set -e -x
 git config --global user.email "cf-garden+garden-gnome@pivotal.io"
 git config --global user.name "I am Groot CI"
 
-git clone ./grootfs-release-master ./release-merged
+git clone ./master-release ./release-merged
 
-DEVELOP=$PWD/grootfs-release-develop
+DEVELOP=$PWD/dev-release
 cd ./release-merged
 
 git remote add local $DEVELOP
