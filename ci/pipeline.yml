@@ -386,7 +386,7 @@ resources:
     project_id: "1661239"
     token: {{garden-tracker-token}}
 
-- name: grootfs-standalone-gh-release
+- name: grootfs-standalone-github-release
   type: github-release
   source:
     user: {{github-organization}}
@@ -394,7 +394,7 @@ resources:
     access_token: {{github-access-token}}
     drafts: true
 
-- name: grootfs-gh-release
+- name: grootfs-github-release
   type: github-release
   source:
     user: {{github-organization}}
@@ -1087,7 +1087,7 @@ jobs:
       - put: grootfs-release-tarball
         params:
           file: final-release/grootfs-*.tgz
-      - put: grootfs-gh-release
+      - put: grootfs-github-release
         params:
           name: version/number
           tag: version/number
@@ -1121,7 +1121,7 @@ jobs:
         tag_prefix: v
         repository: grootfs-release-master/src/code.cloudfoundry.org/grootfs
         only_tag: true
-    - put: grootfs-standalone-gh-release
+    - put: grootfs-standalone-github-release
       params:
         name: grootfs-release-version/number
         tag: grootfs-release-version/number
