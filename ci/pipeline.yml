@@ -233,7 +233,7 @@ resources:
   type: github-release
   source:
     user: {{github-organization}}
-    repository: grootfs-release
+    repository: grootfs-diagnostics-release
     access_token: {{github-access-token}}
     drafts: true
 
