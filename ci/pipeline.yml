@@ -1009,7 +1009,6 @@ jobs:
     passed: [ship-bosh-release]
     trigger: true
   - put: grootfs-release-version
-    resource: grootfs-release-version
     params: { file: grootfs-release-version/number }
   - get: grootfs-next-final-version
     resource: grootfs-release-version
@@ -1026,7 +1025,6 @@ jobs:
   - get: grootfs-release-version
     params: { bump: major, pre: rc }
   - put: grootfs-release-version
-    resource: grootfs-release-version
     params: { file: grootfs-release-version/number }
   - get: grootfs-git-repo
   - get: grootfs-next-final-version
@@ -1044,7 +1042,6 @@ jobs:
   - get: grootfs-release-version
     params: { bump: minor, pre: rc }
   - put: grootfs-release-version
-    resource: grootfs-release-version
     params: { file: grootfs-release-version/number }
   - get: grootfs-git-repo
   - get: grootfs-next-final-version
@@ -1698,6 +1695,8 @@ jobs:
   plan:
   - aggregate:
     - get: grootfs-release-develop
+      params:
+        submodules: none
     - get: version
       resource: grootfs-diagnostics-release-version
       params:

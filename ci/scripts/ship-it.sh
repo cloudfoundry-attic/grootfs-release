@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e -x
+set -e
 BUILD_FOLDER=$PWD
 
 ensure(){
