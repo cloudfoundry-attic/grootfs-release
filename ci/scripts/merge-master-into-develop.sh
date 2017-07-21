@@ -1,5 +1,5 @@
 #!/bin/sh
-set -e -x
+set -e
 git config --global user.email "cf-garden+garden-gnome@pivotal.io"
 git config --global user.name "I am Groot CI"
 

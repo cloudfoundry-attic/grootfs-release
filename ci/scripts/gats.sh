@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x -e
+set -e
 
 export GOPATH=$PWD/garden-runc-release
 cd garden-runc-release/src/code.cloudfoundry.org/garden-integration-tests
