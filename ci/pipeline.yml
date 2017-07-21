@@ -1357,41 +1357,28 @@ jobs:
     - get: grootfs-diagnostics-release-tarball
       trigger: true
     - get: grootfs-release-tarball
-      tags: [thanos]
     - get: git-cf-deployment
-      tags: [thanos]
       trigger: true
     - get: grootfs-release-develop
-      tags: [thanos]
       trigger: true
       params:
         submodules: none
     - get: grootfs-diagnostics-develop
-      tags: [thanos]
       params:
         submodules: none
     - get: grootfs-ci-secrets
-      tags: [thanos]
     - get: thanos-bosh-stemcell
-      tags: [thanos]
     - get: garden-release
-      tags: [thanos]
       trigger: true
     - get: cflinuxfs2-release
-      tags: [thanos]
     - get: diego-release
-      tags: [thanos]
       trigger: true
     - get: diego-release-git
-      tags: [thanos]
       params:
         submodules: none
     - get: diegocanaryapp
-      tags: [thanos]
     - get: datadog-nozzle-release
-      tags: [thanos]
   - task: generate-cf-manifest
-    tags: [thanos]
     file: grootfs-release-develop/ci/tasks/generate-thanos-cf-manifest.yml
     params:
       CF_SYSTEM_DOMAIN: grootfs-thanos.cf-app.com
@@ -1408,7 +1395,6 @@ jobs:
       DATADOG_APPLICATION_KEY: {{datadog-application-key}}
       DATADOG_METRIC_PREFIX: "datadog.thanos.nozzle."
   - put: thanos-cf-deployment
-    tags: [thanos]
     params:
       manifest: manifests/cf.yml
       releases:
@@ -1421,14 +1407,12 @@ jobs:
       stemcells:
       - thanos-bosh-stemcell/*.tgz
   - task: enable-docker-feature-flag
-    tags: [thanos]
     file: grootfs-release-develop/ci/tasks/enable-docker-feature-flag.yml
     params:
       CF_API_URL: api.grootfs-thanos.cf-app.com
       CF_USERNAME: {{thanos-cf-username}}
       CF_PASSWORD: {{thanos-cf-password}}
   - task: isolate-canaries
-    tags: [thanos]
     file: grootfs-release-develop/ci/tasks/isolate-canaries.yml
     params:
       DATADOG_API_KEY: {{datadog-api-key}}
@@ -1481,7 +1465,6 @@ jobs:
   serial_groups: [vizzini]
   plan:
   - get: vizzini-rootfs-refresher
-    tags: [thanos]
     trigger: true
   - get: grootfs-release-develop
     params:
@@ -1529,11 +1512,9 @@ jobs:
   plan:
   - aggregate:
     - get: vizzini-time-trigger
-      tags: [thanos]
       trigger: true
     - get: diego-release-git
     - get: grootfs-release-develop
-      tags: [thanos]
       trigger: true
       params:
         submodules: none
@@ -1575,11 +1556,9 @@ jobs:
   plan:
   - aggregate:
     - get: vizzini-time-trigger
-      tags: [thanos]
       trigger: true
     - get: diego-release-git
     - get: grootfs-release-develop
-      tags: [thanos]
       trigger: true
       params:
         submodules: none
@@ -1621,11 +1600,9 @@ jobs:
   plan:
   - aggregate:
     - get: vizzini-time-trigger
-      tags: [thanos]
       trigger: true
     - get: diego-release-git
     - get: grootfs-release-develop
-      tags: [thanos]
       trigger: true
       params:
         submodules: none
@@ -1670,16 +1647,13 @@ jobs:
   - do:
     - aggregate:
       - get: grootfs-release-develop
-        tags: [thanos]
         trigger: true
         passed: [deploy-thanos-cf]
         params:
           submodules: none
       - get: grootfs-bench-release
-        tags: [thanos]
       - get: thanos-bench-time-trigger
         trigger: true
-        tags: [thanos]
     - task: benchmark-LOCAL-LOOPLESS
       tags: [thanos]
       privileged: true
@@ -1702,16 +1676,13 @@ jobs:
   - do:
     - aggregate:
       - get: grootfs-release-develop
-        tags: [thanos]
         trigger: true
         passed: [deploy-thanos-cf]
         params:
           submodules: none
       - get: grootfs-bench-release
-        tags: [thanos]
       - get: thanos-bench-time-trigger
         trigger: true
-        tags: [thanos]
     - task: benchmark-LOCAL-LOOPED
       tags: [thanos]
       privileged: true
