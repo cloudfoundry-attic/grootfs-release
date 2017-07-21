@@ -25,7 +25,9 @@ groups:
   - thanos-vizzini-shed
   - thanos-vizzini-grootfs
   - thanos-vizzini-grootfs-custom-agent
+  - thanos-vizzini-grootfs-dstate
   - thanos-refresh-rootfs
+  - recreate-thanos-dstate-cell
   - deploy-stable-release
   - test-upgrade
   - test-grootfs-diagnostics-release
@@ -76,9 +78,11 @@ groups:
   - thanos-vizzini-shed
   - thanos-vizzini-grootfs
   - thanos-vizzini-grootfs-custom-agent
+  - thanos-vizzini-grootfs-dstate
   - thanos-refresh-rootfs
   - bench-with-loops
   - bench-without-loops
+  - recreate-thanos-dstate-cell
 - name: tools
   jobs:
   - build-grootfs-ci-image
@@ -442,6 +446,16 @@ resources:
   source:
     api_key: {{datadog-api-key}}
     application_key: {{datadog-application-key}}
+
+- name: recreate-dstate-cell-timer
+  type: time
+  source:
+    interval: 5m
+
+- name: vizzini-dstate-timer
+  type: time
+  source:
+    interval: 4m
 
 jobs:
 - name: grootfs
@@ -1421,6 +1435,47 @@ jobs:
       CF_API_URL: api.grootfs-thanos.cf-app.com
       CF_USERNAME: {{thanos-cf-username}}
       CF_PASSWORD: {{thanos-cf-password}}
+
+- name: recreate-thanos-dstate-cell
+  serial_groups: [deploy-thanos-cf]
+  plan:
+    - get: recreate-dstate-cell-timer
+      trigger: true
+    - get: grootfs-release-develop
+    - task: recreate-job
+      file: grootfs-release-develop/ci/tasks/recreate-job.yml
+      tags: [thanos]
+      params:
+        BOSH_TARGET: {{thanos-bosh-target}}
+        BOSH_CLIENT: {{thanos-bosh-username}}
+        BOSH_CLIENT_SECRET: {{thanos-bosh-password}}
+        BOSH_CERTIFICATES: {{thanos-bosh-certificates}}
+        JOB_NAME: diego-cell-dstate
+
+- name: thanos-vizzini-grootfs-dstate
+  serial: true
+  plan:
+  - aggregate:
+    - get: vizzini-dstate-timer
+      trigger: true
+    - get: diego-release-git
+    - get: grootfs-release-develop
+      trigger: true
+      params:
+        submodules: none
+  - try:
+      task: run-vizzini-grootfs
+      tags: [thanos]
+      privileged: true
+      file: grootfs-release-develop/ci/tasks/vizzini-ginkgo.yml
+      params:
+        BOSH_TARGET: {{thanos-bosh-target}}
+        BOSH_CLIENT: {{thanos-bosh-username}}
+        BOSH_CLIENT_SECRET: {{thanos-bosh-password}}
+        BOSH_CERTIFICATES: {{thanos-bosh-certificates}}
+        DIEGO_CREDENTIALS: {{thanos-cf-diego-certs}}
+        ENV: thanos
+        PLACEMENT_TAG: dstate
 
 - name: thanos-refresh-rootfs
   serial_groups: [vizzini]
