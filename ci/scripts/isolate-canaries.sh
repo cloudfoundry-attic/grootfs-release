@@ -18,7 +18,7 @@ cf api $CF_API_URL --skip-ssl-validation
 cf auth $CF_USERNAME $CF_PASSWORD
 cf target -o system
 
-spaces=(grootfs shed custom_agent)
+spaces=(grootfs shed custom_agent dstate)
 for space in ${spaces[@]}
 do
   cf create-isolation-segment $space
