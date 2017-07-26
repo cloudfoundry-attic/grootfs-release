@@ -1,32 +1,49 @@
-#!/bin/bash -ex
+#!/bin/bash -e
 cd $(dirname $0)/..
 
-flyrc_target=$1
-if [ -z $flyrc_target ]; then
-  echo "No target passed, using 'grootfs-ci'"
-  flyrc_target="grootfs-ci"
+pipeline_target=$1
+if [ -z $pipeline_target ]; then
+  echo "No target pipeline passed, setting grootfs main pipeline"
+  pipeline_target="grootfs"
 fi
+
 [ -z $DEBUG ] && DEBUG=0
 
 main() {
+  flyrc_target="grootfs-ci"
   check_fly_alias_exists
   sync_and_login
 
-  pipeline_name="grootfs"
   vars_name="gcp"
   pipeline_file="pipeline.yml"
 
-  if [ $DEBUG -eq 1 ]; then
-    pipeline_name="grootfs-test"
-    vars_name="dummy"
-
-    spruce --concourse merge ci/$pipeline_file ci/dummy-pipeline-spruce.yml > ci/dummy_pipeline.yml
-    pipeline_file="dummy_pipeline.yml"
-  fi
-
   load_vars_file
-  set_pipeline
-  expose_pipeline
+
+  case $pipeline_target in
+    "grootfs")
+      pipeline_name="grootfs"
+      pipeline_file="pipeline.yml"
+      set_main_pipeline
+    ;;
+    "dummy")
+      pipeline_name="grootfs-test"
+      vars_name="dummy"
+      spruce --concourse merge ci/$pipeline_file ci/dummy-pipeline-spruce.yml > ci/dummy_pipeline.yml
+      pipeline_file="dummy_pipeline.yml"
+      echo "Setting dummy pipeline"
+      set_main_pipeline
+    ;;
+    "thanos")
+      pipeline_name="thanos"
+      pipeline_file="thanos.yml"
+      echo "Setting thanos pipeline"
+      set_thanos_pipeline
+    ;;
+    *)
+      echo "Usage: reconfigure-pipeline.sh <grootfs|thanos|dummy>"
+    ;;
+  esac
+
 }
 
 VARS_FILE=/tmp/concourse_vars.yml
@@ -43,7 +60,6 @@ load_vars_file() {
   echo "github-client-secret: $(lpass show 'Shared-Garden/grootfs-deployments/github-garden-gnome' --password)" >> $VARS_FILE
   echo "dockerhub-username: $(lpass show 'Shared-Garden/cf-garden-docker' --username)" >> $VARS_FILE
   echo "dockerhub-password: $(lpass show 'Shared-Garden/cf-garden-docker' --password)" >> $VARS_FILE
-
   echo "gamora-bosh-username: $(lpass show 'Shared-Garden/grootfs-deployments\gamora/bosh-director' --username)" >> $VARS_FILE
   echo "gamora-bosh-password: $(lpass show 'Shared-Garden/grootfs-deployments\gamora/bosh-director' --password)" >> $VARS_FILE
   echo "gamora-cf-username: $(lpass show 'Shared-Garden/grootfs-deployments\gamora/cf-creds' --username)" >> $VARS_FILE
@@ -56,12 +72,9 @@ load_vars_file() {
   echo "thanos-cf-password: $(lpass show 'Shared-Garden/grootfs-deployments\thanos/cf-creds' --password)" >> $VARS_FILE
 }
 
-set_pipeline() {
+set_main_pipeline() {
   export gamora_bosh_certs="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/certificates' --notes)"
   gamora_ca_cert=$(ruby -e 'require "yaml"; puts YAML.load(ENV["gamora_bosh_certs"])["certs"]["ca_cert"]')
-
-  export thanos_bosh_certs="$(lpass show 'Shared-Garden/grootfs-deployments\thanos/certificates' --notes)"
-  thanos_ca_cert=$(ruby -e 'require "yaml"; puts YAML.load(ENV["thanos_bosh_certs"])["certs"]["ca_cert"]')
 
   fly --target="$flyrc_target" set-pipeline --pipeline=$pipeline_name \
     --config=ci/${pipeline_file} --load-vars-from=$HOME/workspace/grootfs-ci-secrets/vars/$vars_name.yml \
@@ -69,7 +82,6 @@ set_pipeline() {
     --var gnome-private-key="$(lpass show 'Shared-Garden/grootfs-deployments/github-garden-gnome' --notes)" \
     --var garden-tracker-token="$(lpass show 'Shared-Garden/Garden-Gnome-Tracker-Account' --notes)" \
     --var grootfs-release-private-yaml="$(lpass show 'Shared-Garden/grootfs-release-private.yml' --notes)" \
-    \
     --var gamora-bosh-certificates="$gamora_bosh_certs" \
     --var gamora-root-ca-cert="$gamora_ca_cert" \
     --var cf-secrets="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/cf-secrets' --notes)" \
@@ -79,10 +91,19 @@ set_pipeline() {
     --var cf-consul-certs="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/cf-consul-certs' --notes)" \
     --var cf-diego-certs="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/cf-diego-certs' --notes)" \
     --var cf-loggregator-certs="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/cf-loggregator-certs' --notes)" \
-    --var cf-networking="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/cf-networking' --notes)" \
-    --var grootfs-release-private-yaml="$(lpass show 'Shared-Garden/grootfs-release-private.yml' --notes)" \
-    \
-    --var thanos-bosh-certificates="$(lpass show 'Shared-Garden/grootfs-deployments\thanos/certificates' --notes)" \
+    --var cf-networking="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/cf-networking' --notes)"
+
+  expose_pipeline $pipeline_name
+}
+
+set_thanos_pipeline() {
+  export thanos_bosh_certs="$(lpass show 'Shared-Garden/grootfs-deployments\thanos/certificates' --notes)"
+  thanos_ca_cert=$(ruby -e 'require "yaml"; puts YAML.load(ENV["thanos_bosh_certs"])["certs"]["ca_cert"]')
+
+  fly --target="$flyrc_target" set-pipeline --pipeline=$pipeline_name \
+    --config=ci/${pipeline_file} --load-vars-from=$HOME/workspace/grootfs-ci-secrets/vars/$vars_name.yml \
+    --load-vars-from=$VARS_FILE \
+    --var gnome-private-key="$(lpass show 'Shared-Garden/grootfs-deployments/github-garden-gnome' --notes)" \
     --var thanos-bosh-certificates="$thanos_bosh_certs" \
     --var thanos-root-ca-cert="$thanos_ca_cert" \
     --var thanos-cf-secrets="$(lpass show 'Shared-Garden/grootfs-deployments\thanos/cf-secrets' --notes)" \
@@ -94,10 +115,11 @@ set_pipeline() {
     --var thanos-cf-loggregator-certs="$(lpass show 'Shared-Garden/grootfs-deployments\thanos/cf-loggregator-certs' --notes)" \
     --var thanos-cf-networking="$(lpass show 'Shared-Garden/grootfs-deployments\thanos/cf-networking' --notes)"
 
+  expose_pipeline $pipeline_name
 }
 
 expose_pipeline() {
-  fly --target="$flyrc_target" expose-pipeline --pipeline="$pipeline_name"
+  fly --target="$flyrc_target" expose-pipeline --pipeline="$1"
 }
 
 check_fly_alias_exists() {
