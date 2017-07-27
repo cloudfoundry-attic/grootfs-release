@@ -220,6 +220,7 @@ jobs:
         JOB_NAME: diego-cell-dstate
 
 - name: thanos-vizzini-grootfs-dstate
+  serial_groups: [vizzini]
   serial: true
   plan:
   - aggregate:
