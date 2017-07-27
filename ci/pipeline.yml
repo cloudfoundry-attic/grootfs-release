@@ -132,7 +132,7 @@ resources:
     ca_cert: {{gamora-root-ca-cert}}
     deployment: cf
 
-- name: garden-runc-release
+- name: garden-runc-release-bosh
   type: bosh-io-release
   source:
     repository: cloudfoundry/garden-runc-release
@@ -581,7 +581,7 @@ jobs:
       - get: grootfs-release-develop
         params:
           submodules: none
-      - get: garden-runc-release
+      - get: garden-runc-release-bosh
         trigger: true
       - get: grootfs-release-latest
         trigger: true
@@ -602,7 +602,7 @@ jobs:
       params:
         manifest: grootfs-ci-secrets/deployments/garden-grootfs/gcp-rolling-upgrade.yml
         releases:
-        - garden-runc-release/*.tgz
+        - garden-runc-release-bosh/*.tgz
         - grootfs-release-latest/*.tgz
         stemcells:
         - gamora-bosh-stemcell/*.tgz
@@ -633,7 +633,7 @@ jobs:
       - get: grootfs-release-develop
         params:
           submodules: none
-      - get: garden-runc-release
+      - get: garden-runc-release-bosh
         trigger: true
       - get: grootfs-release-tarball
         trigger: true
@@ -646,7 +646,7 @@ jobs:
       params:
         manifest: grootfs-ci-secrets/deployments/garden-grootfs/gcp-rolling-upgrade.yml
         releases:
-        - garden-runc-release/*.tgz
+        - garden-runc-release-bosh/*.tgz
         - grootfs-release-tarball/*.tgz
         stemcells:
         - gamora-bosh-stemcell/*.tgz
@@ -677,7 +677,7 @@ jobs:
       - get: grootfs-release-develop
         params:
           submodules: none
-      - get: garden-runc-release
+      - get: garden-runc-release-bosh
         trigger: true
       - get: grootfs-release-tarball
         trigger: true
@@ -687,7 +687,7 @@ jobs:
       params:
         manifest: grootfs-ci-secrets/deployments/garden-grootfs/gcp.yml
         releases:
-        - garden-runc-release/*.tgz
+        - garden-runc-release-bosh/*.tgz
         - grootfs-release-tarball/*.tgz
         stemcells:
         - gamora-bosh-stemcell/*.tgz
@@ -708,7 +708,7 @@ jobs:
         passed: [deploy-garden-grootfs]
         params:
           submodules: none
-      - get: garden-runc-release
+      - get: garden-runc-release-bosh
         passed: [deploy-garden-grootfs]
         trigger: true
       - get: garden-runc-release-git
@@ -1192,7 +1192,7 @@ jobs:
         submodules: none
     - get: grootfs-ci-secrets
     - get: gamora-bosh-stemcell
-    - get: garden-runc-release
+    - get: garden-runc-release-bosh
       trigger: true
     - get: cflinuxfs2-release
       trigger: true
@@ -1226,7 +1226,7 @@ jobs:
       - diego-release/*.tgz
       - cflinuxfs2-release/*.tgz
       - grootfs-release-tarball/*.tgz
-      - garden-runc-release/*.tgz
+      - garden-runc-release-bosh/*.tgz
       - datadog-nozzle-release/*.tgz
       stemcells:
       - gamora-bosh-stemcell/*.tgz
