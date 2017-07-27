@@ -101,6 +101,9 @@ resources:
 - name: vizzini-time-trigger
   type: time
   source:
+    location: Europe/London
+    start: 8:00 AM
+    stop: 7:00 PM
     interval: 15m
 
 - name: vizzini-rootfs-refresher
@@ -123,10 +126,16 @@ resources:
   type: time
   source:
     interval: 5m
+    location: Europe/London
+    start: 7:00 PM
+    stop: 8:00 AM
 
 - name: vizzini-dstate-timer
   type: time
   source:
+    location: Europe/London
+    start: 7:00 PM
+    stop: 8:00 AM
     interval: 4m
 
 jobs:
@@ -220,7 +229,6 @@ jobs:
         JOB_NAME: diego-cell-dstate
 
 - name: thanos-vizzini-grootfs-dstate
-  serial_groups: [vizzini]
   serial: true
   plan:
   - aggregate:
