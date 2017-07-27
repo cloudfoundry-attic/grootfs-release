@@ -183,7 +183,7 @@ jobs:
       - cflinuxfs2-release/*.tgz
       - grootfs-release-tarball/*.tgz
       - grootfs-diagnostics-release-tarball/*.tgz
-      - garden-release/*.tgz
+      - garden-runc-release/*.tgz
       - datadog-nozzle-release/*.tgz
       stemcells:
       - thanos-bosh-stemcell/*.tgz
