@@ -284,7 +284,6 @@ jobs:
       trigger: true
     - get: diego-release-git
     - get: grootfs-release-develop
-      trigger: true
       params:
         submodules: none
   - task: publish-datadog-event
