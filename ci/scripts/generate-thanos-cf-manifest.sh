@@ -49,7 +49,6 @@ bosh2 int \
   --ops-file grootfs-ci-secrets/deployments/cf-operations/diego-cell-shed.yml \
   --ops-file grootfs-ci-secrets/deployments/cf-operations/diego-cell-custom-agent.yml \
   --ops-file grootfs-ci-secrets/deployments/cf-operations/diego-cell-dstate.yml \
-  --ops-file grootfs-ci-secrets/deployments/cf-operations/diego-runc-hack.yml \
   --ops-file grootfs-ci-secrets/deployments/cf-operations/loopless-bench-errand.yml \
   --ops-file grootfs-ci-secrets/deployments/cf-operations/looped-bench-errand.yml \
   --ops-file git-cf-deployment/operations/test/add-datadog-firehose-nozzle.yml \
