@@ -47,7 +47,6 @@ bosh2 int \
   --vars-file ./cf-networking.yml \
   --vars-store ./regenerate-secrets.yml \
   --ops-file grootfs-ci-secrets/deployments/cf-operations/diego-cell-shed.yml \
-  --ops-file grootfs-ci-secrets/deployments/cf-operations/diego-cell-custom-agent.yml \
   --ops-file grootfs-ci-secrets/deployments/cf-operations/diego-cell-dstate.yml \
   --ops-file grootfs-ci-secrets/deployments/cf-operations/loopless-bench-errand.yml \
   --ops-file grootfs-ci-secrets/deployments/cf-operations/looped-bench-errand.yml \
