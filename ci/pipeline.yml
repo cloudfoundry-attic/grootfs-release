@@ -453,7 +453,7 @@ jobs:
         username: {{slack-alert-username}}
         icon_url: {{slack-alert-icon-url}}
         channel: {{slack-alert-channel}}
-        text: "<!subteam^S1U0HSJ9E|grootfsteam>: System Failure. Explosion Imminent. http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+        text: "<!subteam^S1U0HSJ9E|grootfsteam>: System Failure. Explosion Imminent. http://grootfs.ci.cf-app.com/teams/main/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
 - name: bump-dependencies
   public: true
@@ -503,7 +503,7 @@ jobs:
         username: {{slack-alert-username}}
         icon_url: {{slack-alert-icon-url}}
         channel: {{slack-alert-channel}}
-        text: "<!subteam^S1U0HSJ9E|grootfsteam>: Bump dependencies failed. http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+        text: "<!subteam^S1U0HSJ9E|grootfsteam>: Bump dependencies failed. http://grootfs.ci.cf-app.com/teams/main/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
   - put: grootfs-git-repo
     params:
       repository: grootfs-git-repo-updated
@@ -531,7 +531,7 @@ jobs:
           username: {{slack-alert-username}}
           icon_url: {{slack-alert-icon-url}}
           channel: {{slack-alert-channel}}
-          text: "<!subteam^S1U0HSJ9E|grootfsteam>: What the BOSH? You can bump it yourself. http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+          text: "<!subteam^S1U0HSJ9E|grootfsteam>: What the BOSH? You can bump it yourself. http://grootfs.ci.cf-app.com/teams/main/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
 - name: create-grootfs-release
   serial_groups: [grootfs-release-creation]
@@ -569,7 +569,7 @@ jobs:
         username: {{slack-alert-username}}
         icon_url: {{slack-alert-icon-url}}
         channel: {{slack-alert-channel}}
-        text: "<!subteam^S1U0HSJ9E|grootfsteam>: What the BOSH? You can deploy it yourself. http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+        text: "<!subteam^S1U0HSJ9E|grootfsteam>: What the BOSH? You can deploy it yourself. http://grootfs.ci.cf-app.com/teams/main/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
 - name: deploy-stable-release
   serial_groups: [grootfs-garden-rolling-upgrade-deployment]
@@ -621,7 +621,7 @@ jobs:
         username: {{slack-alert-username}}
         icon_url: {{slack-alert-icon-url}}
         channel: {{slack-alert-channel}}
-        text: "<!subteam^S1U0HSJ9E|grootfsteam>: System Failure. Explosion Imminent. http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+        text: "<!subteam^S1U0HSJ9E|grootfsteam>: System Failure. Explosion Imminent. http://grootfs.ci.cf-app.com/teams/main/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
 - name: test-upgrade
   serial_groups: [grootfs-garden-rolling-upgrade-deployment]
@@ -665,7 +665,7 @@ jobs:
         username: {{slack-alert-username}}
         icon_url: {{slack-alert-icon-url}}
         channel: {{slack-alert-channel}}
-        text: "<!subteam^S1U0HSJ9E|grootfsteam>: System Failure. Explosion Imminent. http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+        text: "<!subteam^S1U0HSJ9E|grootfsteam>: System Failure. Explosion Imminent. http://grootfs.ci.cf-app.com/teams/main/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
 - name: deploy-garden-grootfs
   serial_groups: [grootfs-garden-deployment]
@@ -697,7 +697,7 @@ jobs:
         username: {{slack-alert-username}}
         icon_url: {{slack-alert-icon-url}}
         channel: {{slack-alert-channel}}
-        text: "<!subteam^S1U0HSJ9E|grootfsteam>: System Failure. Explosion Imminent. http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+        text: "<!subteam^S1U0HSJ9E|grootfsteam>: System Failure. Explosion Imminent. http://grootfs.ci.cf-app.com/teams/main/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
 - name: GATs
   serial_groups: [grootfs-garden-deployment]
@@ -743,7 +743,7 @@ jobs:
           username: {{slack-alert-username}}
           icon_url: {{slack-alert-icon-url}}
           channel: {{slack-alert-channel}}
-          text: "<!subteam^S1U0HSJ9E|grootfsteam>: It's not the end of the world, it's just the end of this pipeline. http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+          text: "<!subteam^S1U0HSJ9E|grootfsteam>: It's not the end of the world, it's just the end of this pipeline. http://grootfs.ci.cf-app.com/teams/main/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
 - name: create-grootfs-bench-release
   serial: true
@@ -772,7 +772,7 @@ jobs:
           username: {{slack-alert-username}}
           icon_url: {{slack-alert-icon-url}}
           channel: {{slack-alert-channel}}
-          text: "<!subteam^S1U0HSJ9E|grootfsteam>: You know what, fix it. http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+          text: "<!subteam^S1U0HSJ9E|grootfsteam>: You know what, fix it. http://grootfs.ci.cf-app.com/pipelines/teams/main/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
 - name: deploy-grootfs-bench
   serial_groups:
@@ -859,7 +859,7 @@ jobs:
         username: {{slack-alert-username}}
         icon_url: {{slack-alert-icon-url}}
         channel: {{slack-alert-channel}}
-        text: "<!subteam^S1U0HSJ9E|grootfsteam>: What the BOSH? You can deploy it yourself. http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+        text: "<!subteam^S1U0HSJ9E|grootfsteam>: What the BOSH? You can deploy it yourself. http://grootfs.ci.cf-app.com/teams/main/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
 - name: btrfs-performance-tests
   serial_groups:
@@ -912,7 +912,7 @@ jobs:
         username: {{slack-alert-username}}
         icon_url: {{slack-alert-icon-url}}
         channel: {{slack-alert-channel}}
-        text: "<!subteam^S1U0HSJ9E|grootfsteam>: You don't need metrics for a thing that doesn't even work! http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+        text: "<!subteam^S1U0HSJ9E|grootfsteam>: You don't need metrics for a thing that doesn't even work! http://grootfs.ci.cf-app.com/pipelines/teams/main/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
 - name: xfs-performance-tests
   serial_groups:
@@ -965,7 +965,7 @@ jobs:
         username: {{slack-alert-username}}
         icon_url: {{slack-alert-icon-url}}
         channel: {{slack-alert-channel}}
-        text: "<!subteam^S1U0HSJ9E|grootfsteam>: You don't need metrics for a thing that doesn't even work! http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+        text: "<!subteam^S1U0HSJ9E|grootfsteam>: You don't need metrics for a thing that doesn't even work! http://grootfs.ci.cf-app.com/pipelines/teams/main/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
 - name: bump-patch-grootfs-release
   serial: true
@@ -1066,7 +1066,7 @@ jobs:
         username: {{slack-alert-username}}
         icon_url: {{slack-alert-icon-url}}
         channel: {{slack-alert-channel}}
-        text: "<!subteam^S1U0HSJ9E|grootfsteam>: Final bosh release went super wrong. Sorry. http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+        text: "<!subteam^S1U0HSJ9E|grootfsteam>: Final bosh release went super wrong. Sorry. http://grootfs.ci.cf-app.com/teams/main/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
 - name: ship-grootfs
   plan:
@@ -1100,7 +1100,7 @@ jobs:
         username: {{slack-alert-username}}
         icon_url: {{slack-alert-icon-url}}
         channel: {{slack-alert-channel}}
-        text: "<!subteam^S1U0HSJ9E|grootfsteam>: I don't know how to create github release anyway!  http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+        text: "<!subteam^S1U0HSJ9E|grootfsteam>: I don't know how to create github release anyway!  http://grootfs.ci.cf-app.com/teams/main/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
 - name: tag-grootfs-ci-image
   plan:
@@ -1122,7 +1122,7 @@ jobs:
         username: {{slack-alert-username}}
         icon_url: {{slack-alert-icon-url}}
         channel: {{slack-alert-channel}}
-        text: "<!subteam^S1U0HSJ9E|grootfsteam>: I don't know how to create github release anyway!  http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+        text: "<!subteam^S1U0HSJ9E|grootfsteam>: I don't know how to create github release anyway!  http://grootfs.ci.cf-app.com/teams/main/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
 
 - name: merge-master-into-develop
@@ -1149,7 +1149,7 @@ jobs:
         username: {{slack-alert-username}}
         icon_url: {{slack-alert-icon-url}}
         channel: {{slack-alert-channel}}
-        text: "<!subteam^S1U0HSJ9E|grootfsteam>: I CAN'T BUMP DEVELOP. http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+        text: "<!subteam^S1U0HSJ9E|grootfsteam>: I CAN'T BUMP DEVELOP. http://grootfs.ci.cf-app.com/teams/main/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
 - name: grootfs-bench
   public: true
@@ -1165,7 +1165,7 @@ jobs:
         username: {{slack-alert-username}}
         icon_url: {{slack-alert-icon-url}}
         channel: {{slack-alert-channel}}
-        text: "<!subteam^S1U0HSJ9E|grootfsteam>: I've destroyed your build (groot tests are dead). Come and get me!  http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+        text: "<!subteam^S1U0HSJ9E|grootfsteam>: I've destroyed your build (groot tests are dead). Come and get me!  http://grootfs.ci.cf-app.com/teams/main/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
 - name: build-grootfs-ci-image
   plan:
@@ -1321,7 +1321,7 @@ jobs:
         username: {{slack-alert-username}}
         icon_url: "https://i.imgur.com/0xoYLaO.png?1"
         channel: {{slack-alert-channel}}
-        text: "<!subteam^S1U0HSJ9E|grootfsteam>: BOO! Not cool: http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+        text: "<!subteam^S1U0HSJ9E|grootfsteam>: BOO! Not cool: http://grootfs.ci.cf-app.com/teams/main/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
 - name: create-grootfs-diagnostics-release
   plan:
@@ -1354,7 +1354,7 @@ jobs:
         username: {{slack-alert-username}}
         icon_url: "https://i.imgur.com/0xoYLaO.png?1"
         channel: {{slack-alert-channel}}
-        text: "<!subteam^S1U0HSJ9E|grootfsteam>: BOO! Not cool: http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+        text: "<!subteam^S1U0HSJ9E|grootfsteam>: BOO! Not cool: http://grootfs.ci.cf-app.com/teams/main/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
 - name: ship-diagnostics-bosh-release
   serial: true
@@ -1402,7 +1402,7 @@ jobs:
         username: {{slack-alert-username}}
         icon_url: {{slack-alert-icon-url}}
         channel: {{slack-alert-channel}}
-        text: "<!subteam^S1U0HSJ9E|grootfsteam>: BOOOOO Not cool. http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+        text: "<!subteam^S1U0HSJ9E|grootfsteam>: BOOOOO Not cool. http://grootfs.ci.cf-app.com/teams/main/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
 - name: grootfs-diagnostics-merge-master-into-develop
   serial: true
@@ -1429,7 +1429,7 @@ jobs:
         username: {{slack-alert-username}}
         icon_url: {{slack-alert-icon-url}}
         channel: {{slack-alert-channel}}
-        text: "<!subteam^S1U0HSJ9E|grootfsteam>: I CAN'T BUMP DEVELOP. http://grootfs.ci.cf-app.com/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+        text: "<!subteam^S1U0HSJ9E|grootfsteam>: I CAN'T BUMP DEVELOP. http://grootfs.ci.cf-app.com/teams/main/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
 
 - name: bump-patch-grootfs-diagnostics-release
