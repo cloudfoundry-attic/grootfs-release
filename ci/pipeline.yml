@@ -3,6 +3,7 @@ groups:
 - name: all
   jobs:
   - grootfs
+  - grootfs-periodic
   - deliver
   - bump-dependencies
   - bump-grootfs-release
@@ -26,6 +27,7 @@ groups:
 - name: grootfs
   jobs:
   - grootfs
+  - grootfs-periodic
   - bump-dependencies
   - bump-grootfs-release
   - create-grootfs-release
@@ -391,6 +393,11 @@ resources:
   source:
     interval: 15m
 
+- name: grootfs-periodic-test-timer
+  type: time
+  source:
+    interval: 1h
+
 jobs:
 - name: grootfs
   public: true
@@ -454,6 +461,62 @@ jobs:
         icon_url: {{slack-alert-icon-url}}
         channel: {{slack-alert-channel}}
         text: "<!subteam^S1U0HSJ9E|grootfsteam>: System Failure. Explosion Imminent. http://grootfs.ci.cf-app.com/teams/main/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+
+- name: grootfs-periodic
+  public: true
+  plan:
+  - aggregate:
+    - get: grootfs-git-repo
+      trigger: true
+    - get: grootfs-periodic-test-timer
+      trigger: true
+  - do:
+    - task: make
+      privileged: true
+      file: grootfs-git-repo/ci/tasks/make.yml
+    - aggregate:
+      - task: unit-tests
+        privileged: true
+        file: grootfs-git-repo/ci/tasks/unit-tests.yml
+        params:
+          REGISTRY_USERNAME: {{dockerhub-username}}
+          REGISTRY_PASSWORD: {{dockerhub-password}}
+      - task: integration-tests-OVERLAY+XFS (ROOT)
+        privileged: true
+        file: grootfs-git-repo/ci/tasks/integration-tests.yml
+        params:
+          REGISTRY_USERNAME: {{dockerhub-username}}
+          REGISTRY_PASSWORD: {{dockerhub-password}}
+          GROOTFS_TEST_UID: 0
+          GROOTFS_TEST_GID: 0
+          VOLUME_DRIVER: overlay-xfs
+      - task: integration-tests-OVERLAY+XFS (GROOT)
+        privileged: true
+        file: grootfs-git-repo/ci/tasks/integration-tests.yml
+        params:
+          REGISTRY_USERNAME: {{dockerhub-username}}
+          REGISTRY_PASSWORD: {{dockerhub-password}}
+          GROOTFS_TEST_UID: 1000
+          GROOTFS_TEST_GID: 1000
+          VOLUME_DRIVER: overlay-xfs
+      - task: integration-tests-BTRFS (ROOT)
+        privileged: true
+        file: grootfs-git-repo/ci/tasks/integration-tests.yml
+        params:
+          REGISTRY_USERNAME: {{dockerhub-username}}
+          REGISTRY_PASSWORD: {{dockerhub-password}}
+          VOLUME_DRIVER: btrfs
+          GROOTFS_TEST_UID: 0
+          GROOTFS_TEST_GID: 0
+      - task: integration-tests-BTRFS (GROOT)
+        privileged: true
+        file: grootfs-git-repo/ci/tasks/integration-tests.yml
+        params:
+          REGISTRY_USERNAME: {{dockerhub-username}}
+          REGISTRY_PASSWORD: {{dockerhub-password}}
+          GROOTFS_TEST_UID: 1000
+          GROOTFS_TEST_GID: 1000
+          VOLUME_DRIVER: btrfs
 
 - name: bump-dependencies
   public: true
