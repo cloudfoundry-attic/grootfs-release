@@ -400,6 +400,7 @@ resources:
 
 jobs:
 - name: grootfs
+  serial: true
   public: true
   plan:
   - aggregate:
@@ -463,6 +464,7 @@ jobs:
         text: "<!subteam^S1U0HSJ9E|grootfsteam>: System Failure. Explosion Imminent. http://grootfs.ci.cf-app.com/teams/main/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
 - name: grootfs-periodic
+  serial: true
   public: true
   plan:
   - aggregate:
