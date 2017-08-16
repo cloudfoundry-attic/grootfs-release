@@ -15,7 +15,7 @@ resources:
 - name: git-cf-deployment
   type: git
   source:
-    uri: https://github.com/cloudfoundry/cf-deployment
+    uri: https://github.com/masters-of-cats/cf-deployment
     branch: master
 
 - name: thanos-cf-deployment
