@@ -474,16 +474,19 @@ jobs:
       trigger: true
   - do:
     - task: make
+      tags: ["unstable"]
       privileged: true
       file: grootfs-git-repo/ci/tasks/make.yml
     - aggregate:
       - task: unit-tests
+        tags: ["unstable"]
         privileged: true
         file: grootfs-git-repo/ci/tasks/unit-tests.yml
         params:
           REGISTRY_USERNAME: {{dockerhub-username}}
           REGISTRY_PASSWORD: {{dockerhub-password}}
       - task: integration-tests-OVERLAY+XFS (ROOT)
+        tags: ["unstable"]
         privileged: true
         file: grootfs-git-repo/ci/tasks/integration-tests.yml
         params:
@@ -493,6 +496,7 @@ jobs:
           GROOTFS_TEST_GID: 0
           VOLUME_DRIVER: overlay-xfs
       - task: integration-tests-OVERLAY+XFS (GROOT)
+        tags: ["unstable"]
         privileged: true
         file: grootfs-git-repo/ci/tasks/integration-tests.yml
         params:
@@ -502,6 +506,7 @@ jobs:
           GROOTFS_TEST_GID: 1000
           VOLUME_DRIVER: overlay-xfs
       - task: integration-tests-BTRFS (ROOT)
+        tags: ["unstable"]
         privileged: true
         file: grootfs-git-repo/ci/tasks/integration-tests.yml
         params:
@@ -511,6 +516,7 @@ jobs:
           GROOTFS_TEST_UID: 0
           GROOTFS_TEST_GID: 0
       - task: integration-tests-BTRFS (GROOT)
+        tags: ["unstable"]
         privileged: true
         file: grootfs-git-repo/ci/tasks/integration-tests.yml
         params:
