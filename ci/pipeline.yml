@@ -396,7 +396,7 @@ resources:
 - name: grootfs-periodic-test-timer
   type: time
   source:
-    interval: 1h
+    interval: 45m
 
 jobs:
 - name: grootfs
