@@ -17,9 +17,6 @@ groups:
   - deploy-grootfs-bench
   - deploy-garden-grootfs
   - GATs
-  - deploy-cf
-  - CATs
-  - gamora-vizzini
   - deploy-stable-release
   - test-upgrade
   - test-grootfs-diagnostics-release
@@ -59,12 +56,6 @@ groups:
   - deploy-garden-grootfs
   - GATs
   - deliver
-- name: gamora-cf
-  jobs:
-  - deploy-cf
-  - CATs
-  - gamora-vizzini
-  - deliver
 - name: tools
   jobs:
   - build-grootfs-ci-image
@@ -79,18 +70,6 @@ groups:
   - tag-grootfs-ci-image
 
 resources:
-- name: cats-concourse-task
-  type: git
-  source:
-    branch: master
-    uri: https://github.com/cloudfoundry/cats-concourse-task.git
-
-- name: cf-acceptance-tests
-  type: git
-  source:
-    branch: master
-    uri: https://github.com/cloudfoundry/cf-acceptance-tests.git
-
 - name: monday-update
   type: time
   source:
@@ -113,46 +92,10 @@ resources:
     ignore_paths:
     - ci
 
-- name: diego-release-git
-  type: git
-  source:
-    uri: https://github.com/cloudfoundry/diego-release
-    branch: master
-
-- name: git-cf-deployment
-  type: git
-  source:
-    uri: https://github.com/masters-of-cats/cf-deployment
-    branch: master
-
-- name: cf-deployment
-  type: bosh-deployment-resource
-  source:
-    target: {{gamora-bosh-target}}
-    client: {{gamora-bosh-username}}
-    client_secret: {{gamora-bosh-password}}
-    ca_cert: {{gamora-root-ca-cert}}
-    deployment: cf
-
 - name: garden-runc-release-bosh
   type: bosh-io-release
   source:
     repository: cloudfoundry/garden-runc-release
-
-- name: diego-release
-  type: bosh-io-release
-  source:
-    repository: cloudfoundry/diego-release
-
-- name: cflinuxfs2-release
-  type: bosh-io-release
-  source:
-    repository: cloudfoundry/cflinuxfs2-release
-
-- name: datadog-nozzle-release
-  type: bosh-io-release
-  source:
-    repository: cloudfoundry-incubator/datadog-firehose-nozzle-release
 
 - name: grootfs-git-repo
   type: git
@@ -387,11 +330,6 @@ resources:
     repository: cfgarden/grootfs-ci
     username: {{dockerhub-username}}
     password: {{dockerhub-password}}
-
-- name: vizzini-time-trigger
-  type: time
-  source:
-    interval: 15m
 
 - name: grootfs-periodic-test-timer
   type: time
@@ -1249,112 +1187,6 @@ jobs:
     params:
       build: grootfs-git-repo-dockerfile
 
-- name: deploy-cf
-  serial_groups: [deploy-cf]
-  plan:
-  - aggregate:
-    - get: grootfs-release-tarball
-    - get: git-cf-deployment
-      trigger: true
-    - get: grootfs-release-develop
-      passed: [create-grootfs-release]
-      trigger: true
-      params:
-        submodules: none
-    - get: grootfs-ci-secrets
-    - get: gamora-bosh-stemcell
-    - get: garden-runc-release-bosh
-      trigger: true
-    - get: cflinuxfs2-release
-      trigger: true
-    - get: diego-release
-      trigger: true
-    - get: diego-release-git
-      params:
-        submodules: none
-    - get: datadog-nozzle-release
-      trigger: true
-  - task: generate-cf-manifest
-    file: grootfs-release-develop/ci/tasks/generate-cf-manifest.yml
-    params:
-      CF_SYSTEM_DOMAIN: grootfs-gamora.cf-app.com
-      CF_PASSWORD: {{gamora-cf-password}}
-      CF_SECRETS: {{cf-secrets}}
-      CF_UAA_CERTS: {{cf-uaa-certs}}
-      CF_ETCD_CERTS: {{cf-etcd-certs}}
-      CF_CC_CERTS: {{cf-cc-certs}}
-      CF_CONSUL_CERTS: {{cf-consul-certs}}
-      CF_DIEGO_CERTS: {{cf-diego-certs}}
-      CF_LOGGREGATOR_CERTS: {{cf-loggregator-certs}}
-      CF_NETWORKING: {{cf-networking}}
-      DATADOG_API_KEY: {{datadog-api-key}}
-      DATADOG_METRIC_PREFIX: "datadog.gamora.nozzle."
-      IAAS: gcp
-  - put: cf-deployment
-    params:
-      manifest: manifests/cf.yml
-      releases:
-      - diego-release/*.tgz
-      - cflinuxfs2-release/*.tgz
-      - grootfs-release-tarball/*.tgz
-      - garden-runc-release-bosh/*.tgz
-      - datadog-nozzle-release/*.tgz
-      stemcells:
-      - gamora-bosh-stemcell/*.tgz
-  - task: enable-docker-feature-flag
-    file: grootfs-release-develop/ci/tasks/enable-docker-feature-flag.yml
-    params:
-      CF_USERNAME: {{gamora-cf-username}}
-      CF_PASSWORD: {{gamora-cf-password}}
-
-- name: CATs
-  serial_groups:
-  - deploy-cf
-  plan:
-  - aggregate:
-    - get: cf-acceptance-tests
-    - get: cats-concourse-task
-    - get: grootfs-release-develop
-      trigger: true
-      passed: [deploy-cf]
-  - task: generate-cats-config-json
-    file: grootfs-release-develop/ci/tasks/generate-cats-config-json.yml
-    params:
-      CF_PASSWORD: {{gamora-cf-password}}
-      CF_API: grootfs-gamora.cf-app.com
-  - task: run-cats
-    file: cats-concourse-task/task.yml
-
-- name: gamora-vizzini
-  serial_groups:
-  - deploy-cf
-  plan:
-  - aggregate:
-    - get: vizzini-time-trigger
-      trigger: true
-    - get: grootfs-release-develop
-      trigger: true
-      passed: [deploy-cf]
-      params:
-        submodules: none
-  - task: run-vizzini
-    privileged: true
-    file: grootfs-release-develop/ci/tasks/vizzini.yml
-    params:
-      BOSH_TARGET: {{gamora-bosh-target}}
-      BOSH_CLIENT: {{gamora-bosh-username}}
-      BOSH_CLIENT_SECRET: {{gamora-bosh-password}}
-      BOSH_CERTIFICATES: {{gamora-bosh-certificates}}
-      BOSH_DEPLOYMENT: cf
-      ERRAND_NAME: vizzini
-    on_failure:
-      task: publish-datadog-event
-      file: grootfs-release-develop/ci/tasks/publish-datadog-event.yml
-      params:
-        DATADOG_API_KEY: {{datadog-api-key}}
-        EVENT_NAME: "vizzini-failed-gamora"
-        TAG: gamora
-
 - name: deliver
   plan:
   - get: grootfs-bench-release
@@ -1365,7 +1197,6 @@ jobs:
   - get: grootfs-release-develop
     trigger: true
     passed:
-    - CATs
     - GATs
     - btrfs-performance-tests
     - xfs-performance-tests

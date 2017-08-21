@@ -62,8 +62,6 @@ load_vars_file() {
   echo "dockerhub-password: $(lpass show 'Shared-Garden/cf-garden-docker' --password)" >> $VARS_FILE
   echo "gamora-bosh-username: $(lpass show 'Shared-Garden/grootfs-deployments\gamora/bosh-director' --username)" >> $VARS_FILE
   echo "gamora-bosh-password: $(lpass show 'Shared-Garden/grootfs-deployments\gamora/bosh-director' --password)" >> $VARS_FILE
-  echo "gamora-cf-username: $(lpass show 'Shared-Garden/grootfs-deployments\gamora/cf-creds' --username)" >> $VARS_FILE
-  echo "gamora-cf-password: $(lpass show 'Shared-Garden/grootfs-deployments\gamora/cf-creds' --password)" >> $VARS_FILE
   echo "aws-access-key-id: $(lpass show "Shared-Garden/grootfs-deployments\thanos/aws-keys" --username)" >> $VARS_FILE
   echo "aws-secret-access-key: $(lpass show "Shared-Garden/grootfs-deployments\thanos/aws-keys" --password)" >> $VARS_FILE
   echo "thanos-bosh-username: $(lpass show 'Shared-Garden/grootfs-deployments\thanos/bosh-director' --username)" >> $VARS_FILE
@@ -84,14 +82,6 @@ set_main_pipeline() {
     --var grootfs-release-private-yaml="$(lpass show 'Shared-Garden/grootfs-release-private.yml' --notes)" \
     --var gamora-bosh-certificates="$gamora_bosh_certs" \
     --var gamora-root-ca-cert="$gamora_ca_cert" \
-    --var cf-secrets="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/cf-secrets' --notes)" \
-    --var cf-uaa-certs="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/cf-uaa-certs' --notes)" \
-    --var cf-etcd-certs="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/cf-etcd-certs' --notes)" \
-    --var cf-cc-certs="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/cf-cc-certs' --notes)" \
-    --var cf-consul-certs="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/cf-consul-certs' --notes)" \
-    --var cf-diego-certs="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/cf-diego-certs' --notes)" \
-    --var cf-loggregator-certs="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/cf-loggregator-certs' --notes)" \
-    --var cf-networking="$(lpass show 'Shared-Garden/grootfs-deployments\gamora/cf-networking' --notes)"
 
   expose_pipeline $pipeline_name
 }
