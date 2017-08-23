@@ -29,11 +29,11 @@ echo "$DIEGO_CREDENTIALS" | python -c 'import yaml; import sys; print yaml.load(
 echo "$DIEGO_CREDENTIALS" | python -c 'import yaml; import sys; print yaml.load(sys.stdin).get("diego_bbs_client").get("certificate")' > client.crt
 echo "$BOSH_CERTIFICATES" > certificates.yml
 
-bosh2 int --path "/certs/ca_cert" certificates.yml > ca_cert.crt
-bosh2 -e $BOSH_TARGET --ca-cert ca_cert.crt alias-env bosh-director
-bosh2 -e bosh-director --client $BOSH_CLIENT --client-secret $BOSH_CLIENT_SECRET login
-DIEGO_BRAIN_ADDRESS=$(bosh2 -e bosh-director -d cf vms | awk '/diego-brain/ {print $4}')
-DIEGO_API_ADDRESS=$(bosh2 -e bosh-director -d cf vms | awk '/diego-api/ {print $4}')
+bosh int --path "/certs/ca_cert" certificates.yml > ca_cert.crt
+bosh -e $BOSH_TARGET --ca-cert ca_cert.crt alias-env bosh-director
+bosh -e bosh-director --client $BOSH_CLIENT --client-secret $BOSH_CLIENT_SECRET login
+DIEGO_BRAIN_ADDRESS=$(bosh -e bosh-director -d cf vms | awk '/diego-brain/ {print $4}')
+DIEGO_API_ADDRESS=$(bosh -e bosh-director -d cf vms | awk '/diego-api/ {print $4}')
 SSH_PROXY_PASSWORD=$(echo "$DIEGO_CREDENTIALS" | python -c 'import yaml; import sys; print yaml.load(sys.stdin).get("ssh_proxy_diego_credentials")')
 
 EXITSTATUS=0

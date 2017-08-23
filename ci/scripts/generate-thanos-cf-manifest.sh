@@ -30,7 +30,7 @@ echo "$CF_DIEGO_CERTS" > diego-certs.yml
 echo "$CF_LOGGREGATOR_CERTS" > loggregator-certs.yml
 echo "$CF_NETWORKING" > cf-networking.yml
 
-bosh2 int \
+bosh int \
   --var=system_domain=${CF_SYSTEM_DOMAIN} \
   --var=uaa_scim_users_admin_password="${CF_PASSWORD}"\
   --var=cf_admin_password="${CF_PASSWORD}"\

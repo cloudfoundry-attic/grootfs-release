@@ -26,7 +26,7 @@ cd dev-release
 git config --global user.email "cf-garden+garden-gnome@pivotal.io"
 git config --global user.name "I am Groot CI"
 
-bosh2 -n create-release --final --sha2 --version "$VERSION" --tarball ${BUILD_FOLDER}/final-release/${NAME}-${VERSION}.tgz  --name ${NAME}
+bosh -n create-release --final --sha2 --version "$VERSION" --tarball ${BUILD_FOLDER}/final-release/${NAME}-${VERSION}.tgz  --name ${NAME}
 git add -A
 git commit -m "release v${VERSION}"
 

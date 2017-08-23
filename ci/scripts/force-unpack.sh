@@ -20,15 +20,15 @@ export CLEAN
 
 echo "$BOSH_CERTIFICATES" > certificates.yml
 
-bosh2 int --path "/certs/ca_cert" certificates.yml > ca_cert.crt
-bosh2 -e $BOSH_TARGET --ca-cert ca_cert.crt alias-env bosh-director
-bosh2 -e bosh-director --client $BOSH_CLIENT --client-secret $BOSH_CLIENT_SECRET login
+bosh int --path "/certs/ca_cert" certificates.yml > ca_cert.crt
+bosh -e $BOSH_TARGET --ca-cert ca_cert.crt alias-env bosh-director
+bosh -e bosh-director --client $BOSH_CLIENT --client-secret $BOSH_CLIENT_SECRET login
 
-for cell in $(bosh2 -e bosh-director -d cf vms | awk '/'"$CELL_NAME"'\// {print $1}')
+for cell in $(bosh -e bosh-director -d cf vms | awk '/'"$CELL_NAME"'\// {print $1}')
 do
-  bosh2 -e bosh-director -d cf ssh $cell -c "sudo touch /var/vcap/packages/cflinuxfs2/*"
+  bosh -e bosh-director -d cf ssh $cell -c "sudo touch /var/vcap/packages/cflinuxfs2/*"
   if $CLEAN; then
-    bosh2 -e bosh-director -d cf ssh $cell -c "sudo /var/vcap/packages/grootfs/bin/grootfs --config /var/vcap/jobs/grootfs/config/grootfs_config.yml clean --threshold-bytes 0"
-    bosh2 -e bosh-director -d cf ssh $cell -c "sudo /var/vcap/packages/grootfs/bin/grootfs --config /var/vcap/jobs/grootfs/config/privileged_grootfs_config.yml clean --threshold-bytes 0"
+    bosh -e bosh-director -d cf ssh $cell -c "sudo /var/vcap/packages/grootfs/bin/grootfs --config /var/vcap/jobs/grootfs/config/grootfs_config.yml clean --threshold-bytes 0"
+    bosh -e bosh-director -d cf ssh $cell -c "sudo /var/vcap/packages/grootfs/bin/grootfs --config /var/vcap/jobs/grootfs/config/privileged_grootfs_config.yml clean --threshold-bytes 0"
   fi
 done
