@@ -33,14 +33,8 @@ main() {
       echo "Setting dummy pipeline"
       set_main_pipeline
     ;;
-    "thanos")
-      pipeline_name="thanos"
-      pipeline_file="thanos.yml"
-      echo "Setting thanos pipeline"
-      set_thanos_pipeline
-    ;;
     *)
-      echo "Usage: reconfigure-pipeline.sh <grootfs|thanos|dummy>"
+      echo "Usage: reconfigure-pipeline.sh <grootfs|dummy>"
     ;;
   esac
 
@@ -62,12 +56,6 @@ load_vars_file() {
   echo "dockerhub-password: $(lpass show 'Shared-Garden/cf-garden-docker' --password)" >> $VARS_FILE
   echo "gamora-bosh-username: $(lpass show 'Shared-Garden/grootfs-deployments\gamora/bosh-director' --username)" >> $VARS_FILE
   echo "gamora-bosh-password: $(lpass show 'Shared-Garden/grootfs-deployments\gamora/bosh-director' --password)" >> $VARS_FILE
-  echo "aws-access-key-id: $(lpass show "Shared-Garden/grootfs-deployments\thanos/aws-keys" --username)" >> $VARS_FILE
-  echo "aws-secret-access-key: $(lpass show "Shared-Garden/grootfs-deployments\thanos/aws-keys" --password)" >> $VARS_FILE
-  echo "thanos-bosh-username: $(lpass show 'Shared-Garden/grootfs-deployments\thanos/bosh-director' --username)" >> $VARS_FILE
-  echo "thanos-bosh-password: $(lpass show 'Shared-Garden/grootfs-deployments\thanos/bosh-director' --password)" >> $VARS_FILE
-  echo "thanos-cf-username: $(lpass show 'Shared-Garden/grootfs-deployments\thanos/cf-creds' --username)" >> $VARS_FILE
-  echo "thanos-cf-password: $(lpass show 'Shared-Garden/grootfs-deployments\thanos/cf-creds' --password)" >> $VARS_FILE
 }
 
 set_main_pipeline() {
@@ -82,28 +70,6 @@ set_main_pipeline() {
     --var grootfs-release-private-yaml="$(lpass show 'Shared-Garden/grootfs-release-private.yml' --notes)" \
     --var gamora-bosh-certificates="$gamora_bosh_certs" \
     --var gamora-root-ca-cert="$gamora_ca_cert" \
-
-  expose_pipeline $pipeline_name
-}
-
-set_thanos_pipeline() {
-  export thanos_bosh_certs="$(lpass show 'Shared-Garden/grootfs-deployments\thanos/certificates' --notes)"
-  thanos_ca_cert=$(ruby -e 'require "yaml"; puts YAML.load(ENV["thanos_bosh_certs"])["certs"]["ca_cert"]')
-
-  fly --target="$flyrc_target" set-pipeline --pipeline=$pipeline_name \
-    --config=ci/${pipeline_file} --load-vars-from=$HOME/workspace/grootfs-ci-secrets/vars/$vars_name.yml \
-    --load-vars-from=$VARS_FILE \
-    --var gnome-private-key="$(lpass show 'Shared-Garden/grootfs-deployments/github-garden-gnome' --notes)" \
-    --var thanos-bosh-certificates="$thanos_bosh_certs" \
-    --var thanos-root-ca-cert="$thanos_ca_cert" \
-    --var thanos-cf-secrets="$(lpass show 'Shared-Garden/grootfs-deployments\thanos/cf-secrets' --notes)" \
-    --var thanos-cf-uaa-certs="$(lpass show 'Shared-Garden/grootfs-deployments\thanos/cf-uaa-certs' --notes)" \
-    --var thanos-cf-etcd-certs="$(lpass show 'Shared-Garden/grootfs-deployments\thanos/cf-etcd-certs' --notes)" \
-    --var thanos-cf-cc-certs="$(lpass show 'Shared-Garden/grootfs-deployments\thanos/cf-cc-certs' --notes)" \
-    --var thanos-cf-consul-certs="$(lpass show 'Shared-Garden/grootfs-deployments\thanos/cf-consul-certs' --notes)" \
-    --var thanos-cf-diego-certs="$(lpass show 'Shared-Garden/grootfs-deployments\thanos/cf-diego-certs' --notes)" \
-    --var thanos-cf-loggregator-certs="$(lpass show 'Shared-Garden/grootfs-deployments\thanos/cf-loggregator-certs' --notes)" \
-    --var thanos-cf-networking="$(lpass show 'Shared-Garden/grootfs-deployments\thanos/cf-networking' --notes)"
 
   expose_pipeline $pipeline_name
 }
