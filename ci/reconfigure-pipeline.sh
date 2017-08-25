@@ -56,6 +56,8 @@ load_vars_file() {
   echo "dockerhub-password: $(lpass show 'Shared-Garden/cf-garden-docker' --password)" >> $VARS_FILE
   echo "gamora-bosh-username: $(lpass show 'Shared-Garden/grootfs-deployments\gamora/bosh-director' --username)" >> $VARS_FILE
   echo "gamora-bosh-password: $(lpass show 'Shared-Garden/grootfs-deployments\gamora/bosh-director' --password)" >> $VARS_FILE
+  echo "aws-access-key-id: $(lpass show "Shared-Garden/grootfs-deployments\thanos/aws-keys" --username)" >> $VARS_FILE
+  echo "aws-secret-access-key: $(lpass show "Shared-Garden/grootfs-deployments\thanos/aws-keys" --password)" >> $VARS_FILE
 }
 
 set_main_pipeline() {
