@@ -1037,9 +1037,9 @@ jobs:
       - get: grootfs-ci-secrets
       - get: dev-release
         resource: grootfs-release-develop
-        passed: [deploy-grootfs-bench]
+        passed: [deliver]
       - get: grootfs-release-develop
-        passed: [deploy-grootfs-bench]
+        passed: [deliver]
       - get: version
         resource: grootfs-release-version
         params:
