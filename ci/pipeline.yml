@@ -40,7 +40,7 @@ groups:
   - bump-minor-grootfs-diagnostics-release
   - bump-patch-grootfs-diagnostics-release
   - grootfs-diagnostics-merge-master-into-develop
-- name: bench-release
+- name: bench
   jobs:
   - grootfs-bench
   - bump-grootfs-bench-release
