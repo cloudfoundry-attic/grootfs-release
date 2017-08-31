@@ -407,6 +407,7 @@ jobs:
   plan:
   - aggregate:
     - get: grootfs-git-repo
+      passed: [grootfs]
       trigger: true
     - get: grootfs-periodic-test-timer
       trigger: true
