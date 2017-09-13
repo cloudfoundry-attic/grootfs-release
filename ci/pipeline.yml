@@ -344,7 +344,7 @@ resources:
 - name: grootfs-periodic-test-timer
   type: time
   source:
-    interval: 45m
+    interval: 20m
 
 - name: shed-periodic-timer
   type: time
