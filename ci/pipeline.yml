@@ -496,6 +496,7 @@ jobs:
   - aggregate:
     - get: grootfs-git-repo
       trigger: true
+      passed: [grootfs]
     - get: grootfs-periodic-test-timer
       trigger: true
   - do:
