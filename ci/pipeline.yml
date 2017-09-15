@@ -431,7 +431,7 @@ jobs:
     - get: grootfs-git-repo
       passed: [grootfs]
       trigger: true
-    - get: grootfs-big-image-periodic-test-timer
+    - get: grootfs-periodic-test-timer
       trigger: true
   - do:
     - task: make
@@ -497,7 +497,7 @@ jobs:
     - get: grootfs-git-repo
       trigger: true
       passed: [grootfs]
-    - get: grootfs-periodic-test-timer
+    - get: grootfs-big-image-periodic-test-timer
       trigger: true
   - do:
     - task: make
