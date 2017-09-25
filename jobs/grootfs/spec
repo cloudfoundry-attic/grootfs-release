@@ -43,6 +43,3 @@ properties:
   grootfs.use_persistent_disk:
     description: "EXPERIMENTAL: If true, places the image store on /var/vcap/store. If false (the default), uses /var/vcap/data"
     default: false
-  grootfs.external_logdevice_size_in_mb:
-    description: "EXPERIMENTAL: Size of the XFS external log device in megabytes. 0 means disabled."
-    default: 0

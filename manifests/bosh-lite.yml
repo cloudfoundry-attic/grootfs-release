@@ -21,7 +21,6 @@ jobs:
       grootfs:
         driver: overlay-xfs
         store_size_bytes: 1073741824
-        external_logdevice_size_in_mb: 512
 
 networks:
   - name: grootfs
