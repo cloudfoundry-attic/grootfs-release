@@ -1321,7 +1321,7 @@ jobs:
     - GATs
     - btrfs-performance-tests
     - xfs-performance-tests
-    - test-upgrade
+    # - test-upgrade
   - put: grootfs-tracker
     params:
       repos:
