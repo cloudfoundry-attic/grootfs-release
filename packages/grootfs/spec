@@ -8,3 +8,4 @@ files:
   - code.cloudfoundry.org/grootfs/Makefile
   - code.cloudfoundry.org/grootfs/**/*.go
   - code.cloudfoundry.org/grootfs/**/*.s
+  - code.cloudfoundry.org/idmapper/**/*.go

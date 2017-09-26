@@ -9,7 +9,7 @@ cp -ra * ${BOSH_INSTALL_TARGET}/src
 
 mkdir ${BOSH_INSTALL_TARGET}/bin
 pushd ${BOSH_INSTALL_TARGET}/src/code.cloudfoundry.org/grootfs
-  make
+  make cf
   mv {grootfs,drax,tardis} ${BOSH_INSTALL_TARGET}/bin
 popd
 
