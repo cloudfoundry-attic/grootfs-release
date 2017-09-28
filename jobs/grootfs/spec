@@ -16,7 +16,7 @@ packages:
 
 consumes:
   - name: rootless_link
-    type: bool
+    type: garden_rootless_link
     optional: true
 
 properties:
