@@ -80,7 +80,6 @@ various reasons. See the [grootfs job spec](jobs/grootfs/spec) for more info on
 what these properties do:
 - `dropsonde_port`
 - `log_level`
-- `store_size_bytes`
 - `driver`
 - `skip_mount`
 
@@ -114,19 +113,16 @@ BOSH.
 
 Depending on the `driver` property, the release will create a btrfs or xfs volumes.
 The release will never recreate this volume on an update if the file
-already exists, even if you change it's size in the manifest. Current flow:
+already exists. Current flow:
 
 * If there's no volume file: create volume file -> format with btrfs/xfs -> mount
 * If there's a volume file: check if it's formatted with btrfs/xfs
   * if yes -> mount
   * if no -> format with btrfs/xfs -> mount
 
-When using the btrfs driver, only one btrfs volume will be created with `store_size` bytes,
-and internally it will be split into two subfolders (privileged and unprivileged)
-for the privileged and unprivileged stores.
-
-When using the xfs driver two volumes will be created, one for privileged and one
-for unprivileged containers. Each one of them with `store_size` bytes.
+Two volumes will be created, one for privileged and one for unprivileged 
+containers, they will have a sparse file of the size of the parent disk as 
+the backing store device.
 
 Even though garden will be calling grootfs as root, the unprivileged store
 will be owned by the user ~4294967294 (or the max uid possible), in order to
