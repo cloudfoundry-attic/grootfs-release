@@ -14,6 +14,11 @@ packages:
   - xfs-progs
   - grootfs
 
+consumes:
+  - name: rootless_link
+    type: garden_rootless_link
+    optional: true
+
 properties:
   grootfs.driver:
     description: "Filesystem driver to use."
