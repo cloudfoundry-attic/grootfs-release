@@ -12,6 +12,11 @@
       grootfs:
         log_level: debug
         driver: overlay-xfs
+        blobstore:
+          tls:
+            cert: ((blobstore_tls.certificate))
+            key: ((blobstore_tls.private_key))
+            ca_cert: ((blobstore_tls.ca))
 
 - type: replace
   path: /instance_groups/name=diego-cell/jobs/name=garden/properties/garden/image_plugin?

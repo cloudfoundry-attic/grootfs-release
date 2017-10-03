@@ -1,12 +1,15 @@
 ---
 name: grootfs
 templates:
-  bin/btrfs-setup.erb: bin/btrfs-setup
-  bin/overlay-xfs-setup.erb: bin/overlay-xfs-setup
-  bin/utils.erb: bin/utils
-  bin/pre-start.erb: bin/pre-start
-  config/grootfs_config.yml.erb: config/grootfs_config.yml
+  bin/btrfs-setup.erb:                      bin/btrfs-setup
+  bin/overlay-xfs-setup.erb:                bin/overlay-xfs-setup
+  bin/utils.erb:                            bin/utils
+  bin/pre-start.erb:                        bin/pre-start
+  config/grootfs_config.yml.erb:            config/grootfs_config.yml
   config/privileged_grootfs_config.yml.erb: config/privileged_grootfs_config.yml
+  certs/blobstore.crt.erb:                  certs/blobstore.crt
+  certs/blobstore.cert.erb:                 certs/blobstore.cert
+  certs/blobstore.key.erb:                  certs/blobstore.key
 
 packages:
   - idmapper
@@ -38,6 +41,13 @@ properties:
   grootfs.skip_mount:
     description: "Do not mount image root filesystem automatically, just return the mount information."
     default: false
+
+  grootfs.blobstore.tls.cert:
+    description: "PEM-encoded TLS certificate that can be used for client auth"
+  grootfs.blobstore.tls.key:
+    description: "PEM-encoded TLS client key"
+  grootfs.blobstore.tls.ca_cert:
+    description: "PEM-encoded TLS client CA certificate for droplet download"
 
   grootfs.use_persistent_disk:
     description: "EXPERIMENTAL: If true, places the image store on /var/vcap/store. If false (the default), uses /var/vcap/data"
