@@ -11,13 +11,11 @@ metron_endpoint: 127.0.0.1:<%= dropsonde_port %>
 <% end %>
 
 create:
-  with_clean: <%= p("grootfs.graph_cleanup_threshold_in_mb") >= 0 %>
+  with_clean: true
   without_mount: <%= p("grootfs.skip_mount") %>
   insecure_registries: <%= p('grootfs.insecure_docker_registry_list') %>
   skip_layer_validation: true
   blobstore_client_certificates_path: /var/vcap/jobs/grootfs/certs
 
 clean:
-  <% if p("grootfs.graph_cleanup_threshold_in_mb") >= 0 %>
-  threshold_bytes: <%= p("grootfs.graph_cleanup_threshold_in_mb") * 1048576 %>
-  <% end %>
+  cache_bytes: <%= p("grootfs.cache_size_bytes") %>
