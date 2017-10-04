@@ -4,9 +4,9 @@ set -e
 export PACKAGES=/var/vcap/packages
 export PATH=$PACKAGES/zlib/bin:$PATH
 
-tar xvzf zlib/zlib-1.2.8.tar.gz
+tar xvzf zlib/zlib-1.2.11.tar.gz
 (
-  cd zlib-1.2.8
+  cd zlib-1.2.11
   ./configure --prefix=$BOSH_INSTALL_TARGET
   make
   make install prefix=$BOSH_INSTALL_TARGET
