@@ -4,7 +4,6 @@ groups:
   jobs:
   - grootfs
   - grootfs-periodic
-  - grootfs-big-image-periodic
   - deliver
   - shed
   - shed-periodic
@@ -28,7 +27,6 @@ groups:
   jobs:
   - grootfs
   - grootfs-periodic
-  - grootfs-big-image-periodic
   - bump-dependencies
   - bump-grootfs-release
   - create-grootfs-release
@@ -351,11 +349,6 @@ resources:
   source:
     interval: 20m
 
-- name: grootfs-big-image-periodic-test-timer
-  type: time
-  source:
-    interval: 5m
-
 jobs:
 - name: grootfs
   serial: true
@@ -493,65 +486,6 @@ jobs:
         icon_url: {{slack-alert-icon-url}}
         channel: {{slack-alert-channel}}
         text: "<!subteam^S1U0HSJ9E|grootfsteam>: Grootfs periodic failed. http://grootfs.ci.cf-app.com/teams/main/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
-
-- name: grootfs-big-image-periodic
-  serial_groups:
-  - periodic
-  serial: true
-  public: true
-  plan:
-  - aggregate:
-    - get: grootfs-git-repo
-      trigger: true
-      passed: [grootfs]
-    - get: grootfs-big-image-periodic-test-timer
-      trigger: true
-  - do:
-    - task: make
-      tags: ["unstable"]
-      privileged: true
-      file: grootfs-git-repo/ci/tasks/make.yml
-    - aggregate:
-      - task: integration-tests-OVERLAY+XFS (ROOT)
-        tags: ["unstable"]
-        privileged: true
-        file: grootfs-git-repo/ci/tasks/big-image-test.yml
-        params:
-          REGISTRY_USERNAME: {{dockerhub-username}}
-          REGISTRY_PASSWORD: {{dockerhub-password}}
-          GROOTFS_TEST_UID: 0
-          GROOTFS_TEST_GID: 0
-          VOLUME_DRIVER: overlay-xfs
-      - task: integration-tests-OVERLAY+XFS (GROOT)
-        tags: ["unstable"]
-        privileged: true
-        file: grootfs-git-repo/ci/tasks/big-image-test.yml
-        params:
-          REGISTRY_USERNAME: {{dockerhub-username}}
-          REGISTRY_PASSWORD: {{dockerhub-password}}
-          GROOTFS_TEST_UID: 1000
-          GROOTFS_TEST_GID: 1000
-          VOLUME_DRIVER: overlay-xfs
-      - task: integration-tests-BTRFS (ROOT)
-        tags: ["unstable"]
-        privileged: true
-        file: grootfs-git-repo/ci/tasks/big-image-test.yml
-        params:
-          REGISTRY_USERNAME: {{dockerhub-username}}
-          REGISTRY_PASSWORD: {{dockerhub-password}}
-          VOLUME_DRIVER: btrfs
-          GROOTFS_TEST_UID: 0
-          GROOTFS_TEST_GID: 0
-      - task: integration-tests-BTRFS (GROOT)
-        tags: ["unstable"]
-        privileged: true
-        file: grootfs-git-repo/ci/tasks/big-image-test.yml
-        params:
-          REGISTRY_USERNAME: {{dockerhub-username}}
-          REGISTRY_PASSWORD: {{dockerhub-password}}
-          GROOTFS_TEST_UID: 1000
-          GROOTFS_TEST_GID: 1000
-          VOLUME_DRIVER: btrfs
 
 - name: bump-dependencies
   public: true
