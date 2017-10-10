@@ -486,6 +486,13 @@ jobs:
           GROOTFS_TEST_UID: 1000
           GROOTFS_TEST_GID: 1000
           VOLUME_DRIVER: btrfs
+    on_failure:
+      put: slack-alert
+      params:
+        username: {{slack-alert-username}}
+        icon_url: {{slack-alert-icon-url}}
+        channel: {{slack-alert-channel}}
+        text: "<!subteam^S1U0HSJ9E|grootfsteam>: Grootfs periodic failed. http://grootfs.ci.cf-app.com/teams/main/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
 
 - name: grootfs-big-image-periodic
   serial_groups:
