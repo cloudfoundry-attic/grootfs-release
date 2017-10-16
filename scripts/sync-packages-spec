@@ -1,0 +1,35 @@
+#!/bin/bash
+set -e -x
+
+if ! which gosub >/dev/null 2>&1 ; then
+  echo "gosub not found. In the global $GOPATH, try: go get github.com/vito/gosub"
+  exit 1
+fi
+
+ROOT_DIR_PATH=$(cd "$(dirname "$0")"/.. && pwd)
+
+pushd "$ROOT_DIR_PATH"/packages/grootfs
+  {
+    cat spec | grep -v '# gosub'
+    GOOS=linux gosub list \
+      -a code.cloudfoundry.org/idmapper/cmd/newuidmap \
+      -a code.cloudfoundry.org/idmapper/cmd/newgidmap \
+      -a code.cloudfoundry.org/idmapper/cmd/maximus \
+      | sed -e 's/\(.*\)/  - \1\/*.go # gosub/g'
+  } > spec.new
+
+  mv spec.new spec
+popd
+
+pushd "$ROOT_DIR_PATH"/packages/idmapper
+  {
+    cat spec | grep -v '# gosub'
+    GOOS=linux gosub list \
+      -a code.cloudfoundry.org/idmapper/cmd/newuidmap \
+      -a code.cloudfoundry.org/idmapper/cmd/newgidmap \
+      -a code.cloudfoundry.org/idmapper/cmd/maximus \
+      | sed -e 's/\(.*\)/  - \1\/*.go # gosub/g'
+  } > spec.new
+
+  mv spec.new spec
+popd

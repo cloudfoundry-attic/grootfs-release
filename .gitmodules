@@ -1,7 +1,11 @@
-[submodule "src/code.cloudfoundry.org/grootfs"]
-	path = src/code.cloudfoundry.org/grootfs
-	url = https://github.com/cloudfoundry/grootfs
-	branch = master
 [submodule "src/code.cloudfoundry.org/idmapper"]
 	path = src/code.cloudfoundry.org/idmapper
 	url = https://github.com/cloudfoundry/idmapper
+	branch = master
+[submodule "src/code.cloudfoundry.org/grootfs"]
+	path = src/code.cloudfoundry.org/grootfs
+	url = https://github.com/cloudfoundry/grootfs
+[submodule "src/github.com/opencontainers/runtime-spec"]
+	path = src/github.com/opencontainers/runtime-spec
+	url = https://github.com/opencontainers/runtime-spec
+	branch = master
