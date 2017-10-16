@@ -1,11 +1,9 @@
 #!/bin/bash
 
-store_mountpoint() {
-  echo "/var/vcap/<%= p('grootfs.use_persistent_disk') ? 'store': 'data' %>"
-}
+export store_mountpoint="/var/vcap/data"
 
 vcap_data_filesystem() {
-  store="$(store_mountpoint | sed 's|/|\\/|g')"
+  store="$(echo $store_mountpoint | sed 's|/|\\/|g')"
   echo $(df --print-type | awk '/'"$store"\$'/ {print $2}')
 }
 
@@ -89,7 +87,7 @@ volume_size() {
       return
     fi
   <% end %>
-  echo "$(( $(df --output=size  $(store_mountpoint) | sed 1d) * 1024 ))"
+  echo "$(( $(df --output=size  $store_mountpoint | sed 1d) * 1024 ))"
 }
 
 delete_store() {

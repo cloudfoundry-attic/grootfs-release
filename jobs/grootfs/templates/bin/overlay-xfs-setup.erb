@@ -9,7 +9,7 @@ main() {
 
   export PATH=/var/vcap/packages/grootfs/bin:/var/vcap/packages/xfs-progs/sbin:$PATH
 
-  mkdir -p "$(store_mountpoint)/grootfs/store"
+  mkdir -p "${store_mountpoint}/grootfs/store"
 
   pre_validate_store
   create_loop_devices
@@ -27,7 +27,7 @@ main() {
 pre_init_store() {
   local store_name=$1
   local store_config=$2
-  local store_path="$(store_mountpoint)/grootfs/store/${store_name}"
+  local store_path="${store_mountpoint}/grootfs/store/${store_name}"
 
   converge_store ${store_name}
 }
@@ -64,9 +64,9 @@ tardis_setup() {
 converge_store() {
   local store_type=$1
 
-  local old_volume_path="$(store_mountpoint)/grootfs/volume_${store_type}"
-  local new_volume_path="$(store_mountpoint)/grootfs/store/${store_type}.backing-store"
-  local store_path="$(store_mountpoint)/grootfs/store/${store_type}"
+  local old_volume_path="${store_mountpoint}/grootfs/volume_${store_type}"
+  local new_volume_path="${store_mountpoint}/grootfs/store/${store_type}.backing-store"
+  local store_path="${store_mountpoint}/grootfs/store/${store_type}"
 
   if mount | grep $old_volume_path | grep xfs
   then
