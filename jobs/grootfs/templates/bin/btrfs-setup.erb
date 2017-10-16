@@ -7,11 +7,11 @@ main() {
 
   export PATH=/var/vcap/packages/grootfs/bin:/var/vcap/packages/btrfs-progs/bin:$PATH
 
-  local privileged_store_path=$(store_mountpoint)/grootfs/store/privileged
-  local privileged_volume_file=$(store_mountpoint)/grootfs/store/privileged.backing-store
+  local privileged_store_path=${store_mountpoint}/grootfs/store/privileged
+  local privileged_volume_file=${store_mountpoint}/grootfs/store/privileged.backing-store
   local privileged_config=/var/vcap/jobs/grootfs/config/privileged_grootfs_config.yml
-  local unprivileged_store_path=$(store_mountpoint)/grootfs/store/unprivileged
-  local unprivileged_volume_file=$(store_mountpoint)/grootfs/store/unprivileged.backing-store
+  local unprivileged_store_path=${store_mountpoint}/grootfs/store/unprivileged
+  local unprivileged_volume_file=${store_mountpoint}/grootfs/store/unprivileged.backing-store
   local unprivileged_config=/var/vcap/jobs/grootfs/config/grootfs_config.yml
 
   create_loop_devices
@@ -91,9 +91,9 @@ enable_btrfs_quotas() {
 converge_store() {
   local store_type=$1
 
-  local old_volume_path=$(store_mountpoint)/grootfs/volume_${store_type}
-  local new_volume_path=$(store_mountpoint)/grootfs/store/${store_type}.backing-store
-  local store_path=$(store_mountpoint)/grootfs/store/${store_type}
+  local old_volume_path=${store_mountpoint}/grootfs/volume_${store_type}
+  local new_volume_path=${store_mountpoint}/grootfs/store/${store_type}.backing-store
+  local store_path=${store_mountpoint}/grootfs/store/${store_type}
 
   if mount | grep $old_volume_path | grep btrfs
   then
