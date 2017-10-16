@@ -48,7 +48,3 @@ properties:
     description: "PEM-encoded TLS client key"
   grootfs.blobstore.tls.ca_cert:
     description: "PEM-encoded TLS client CA certificate for droplet download"
-
-  grootfs.use_persistent_disk:
-    description: "EXPERIMENTAL: If true, places the image store on /var/vcap/store. If false (the default), uses /var/vcap/data"
-    default: false
