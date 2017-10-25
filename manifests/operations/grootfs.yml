@@ -3,6 +3,7 @@
   value:
     name: grootfs
     version: latest
+
 - type: replace
   path: /instance_groups/name=diego-cell/jobs/-
   value:
@@ -12,11 +13,23 @@
       grootfs:
         log_level: debug
         driver: overlay-xfs
-        blobstore:
-          tls:
-            cert: ((blobstore_tls.certificate))
-            key: ((blobstore_tls.private_key))
-            ca_cert: ((blobstore_tls.ca))
+        remote_layer_tls:
+          cert: ((grootfs_remote_layer_tls.certificate))
+          key: ((grootfs_remote_layer_tls.private_key))
+          ca_cert: ((grootfs_remote_layer_tls.ca))
+
+- type: replace
+  path: /variables/-
+  value:
+    name: grootfs_remote_layer_tls
+    type: certificate
+    options:
+      ca: service_cf_internal_ca
+      common_name: cell.service.cf.internal
+      extended_key_usage:
+      - client_auth
+      - server_auth
+      alternative_names: ["*.cell.service.cf.internal"]
 
 - type: replace
   path: /instance_groups/name=diego-cell/jobs/name=garden/properties/garden/image_plugin?
