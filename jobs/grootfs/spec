@@ -7,9 +7,9 @@ templates:
   bin/pre-start.erb:                        bin/pre-start
   config/grootfs_config.yml.erb:            config/grootfs_config.yml
   config/privileged_grootfs_config.yml.erb: config/privileged_grootfs_config.yml
-  certs/blobstore.crt.erb:                  certs/blobstore.crt
-  certs/blobstore.cert.erb:                 certs/blobstore.cert
-  certs/blobstore.key.erb:                  certs/blobstore.key
+  certs/remote-layer.crt.erb:               certs/remote-layer.crt
+  certs/remote-layer.cert.erb:              certs/remote-layer.cert
+  certs/remote-layer.key.erb:               certs/remote-layer.key
 
 packages:
   - idmapper
@@ -42,9 +42,9 @@ properties:
     description: "Do not mount image root filesystem automatically, just return the mount information."
     default: false
 
-  grootfs.blobstore.tls.cert:
+  grootfs.remote_layer_tls.cert:
     description: "PEM-encoded TLS certificate that can be used for client auth"
-  grootfs.blobstore.tls.key:
+  grootfs.remote_layer_tls.key:
     description: "PEM-encoded TLS client key"
-  grootfs.blobstore.tls.ca_cert:
-    description: "PEM-encoded TLS client CA certificate for droplet download"
+  grootfs.remote_layer_tls.ca_cert:
+    description: "PEM-encoded TLS client CA certificate for layer download"

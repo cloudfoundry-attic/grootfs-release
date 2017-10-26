@@ -15,7 +15,7 @@ create:
   without_mount: <%= p("grootfs.skip_mount") %>
   insecure_registries: <%= p('grootfs.insecure_docker_registry_list') %>
   skip_layer_validation: true
-  blobstore_client_certificates_path: /var/vcap/jobs/grootfs/certs
+  remote_layer_client_certificates_path: /var/vcap/jobs/grootfs/certs
 
 clean:
   cache_bytes: <%= p("grootfs.cache_size_bytes") %>
