@@ -86,6 +86,47 @@ There should be no need to recreate cells when transitioning to GrootFS, though
 you may wish to do so anyway in order to clear out any cruft left behind by
 Garden-runC's previous image management implementation.
 
+### garden_rootless_link
+
+By default the `grootfs-release` will consume the `rootless_link` produced by `garden-runc-release`
+when it's available. This is used to enable the rootless experimental feature on
+grootfs, enabling it to run as an unprivileged user.
+
+Normally there's no extra step to be taken when configuring grootfs here, it will
+deploy accordingly to garden's configuration.
+
+But in case you have more than one `job` producing the link (e.g. multiple diego-cell types),
+you'll need to implicitly produce and consume the links for each of them. For example:
+
+
+```
+- name: diego-cell-z1
+  jobs:
+  - name: grootfs
+    release: grootfs
+    consumes:
+      rootless_link: {from: garden-rootless-link-z1}
+  - name: garden
+    release: garden-runc
+    provides:
+      rootless_link: {as: garden-rootless-link-z1}
+...
+- name: diego-cell-z2
+  jobs:
+  - name: grootfs
+    release: grootfs
+    consumes:
+      rootless_link: {from: garden-rootless-link-z2}
+  - name: garden
+    release: garden-runc
+    provides:
+      rootless_link: {as: garden-rootless-link-z2}
+```
+
+This will allow bosh to know which link to consume, and make sure that it's
+the one produced by the collocated garden-runc release.
+
+
 ### Drivers
 
 It's possible to chose a filesystem driver to use by providing the `grootfs.driver`
@@ -119,8 +160,8 @@ already exists. Current flow:
   * if yes -> mount
   * if no -> format with btrfs/xfs -> mount
 
-Two volumes will be created, one for privileged and one for unprivileged 
-containers, they will have a sparse file of the size of the parent disk as 
+Two volumes will be created, one for privileged and one for unprivileged
+containers, they will have a sparse file of the size of the parent disk as
 the backing store device.
 
 Even though garden will be calling grootfs as root, the unprivileged store
@@ -132,20 +173,23 @@ allow the running user of the container to have access to it's filesystem.
 In order to help us extend GrootFS, we recommend opening a Github issue to
 describe the proposed features or changes. We also welcome pull requests.
 
-## Shipped packages
+## Troubleshooting
 
-* btrfs-progs 4.4.1
-* e2fsprogs 1.43.3
-* autoconf 2.69
-* automake 1.15
-* gettext 0.19.8.1
-* libtool 2.4.6
-* pkg-config 0.29
-* lzo 2.09
-* util-linux 2.28
-* zlib 1.2.8
-* go 1.7.5
-* xfsprogs 4.3.0
+
+1. Multiple instance groups provide links of type 'garden_rootless_link':
+
+  ```
+  L Error: Unable to process links for deployment. Errors are:
+    - Multiple instance groups provide links of type 'garden_rootless_link'. Cannot decide which one to use for instance group 'garden-btrfs'.
+       garden-grootfs-2.garden-btrfs.garden.rootless_link
+       garden-grootfs-2.garden-overlay-xfs.garden.rootless_link
+    - Multiple instance groups provide links of type 'garden_rootless_link'. Cannot decide which one to use for instance group 'garden-overlay-xfs'.
+       garden-grootfs-2.garden-btrfs.garden.rootless_link
+       garden-grootfs-2.garden-overlay-xfs.garden.rootless_link
+  ```
+
+  Check [garden rootless link](#garden_rootless_link)
+
 
 ## License
 
