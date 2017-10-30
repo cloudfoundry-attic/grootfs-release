@@ -16,20 +16,27 @@ the one which suits your needs best:
 
 ### Using the new BOSH Operations File feature
 
-Our supported way to add GrootFS to a CloudFoundry / Diego deployment is by applying a GrootFS
-[BOSH Operations file](https://github.com/cppforlife/go-patch/blob/master/docs/examples.md) to
-your existing Diego deployment manifest. In
-order to use operations files, you will need to be using the new [Golang-based BOSH CLI](https://github.com/cloudfoundry/bosh-cli).
+Our supported way to add GrootFS
+to a Cloud Foundry / Diego deployment
+is by applying a GrootFS [BOSH Operations file](https://github.com/cppforlife/go-patch/blob/master/docs/examples.md)
+to your existing Diego deployment manifest.
+In order to use operations files,
+you will need to use the new [Golang-based BOSH CLI](https://github.com/cloudfoundry/bosh-cli).
 
-The GrootFS operations file is located here: `grootfs-release/manifests/operations/grootfs.yml`.
-It contains a description of the manifest changes BOSH needs to make to your existing deployment
-in order to add GrootFS. You may need to edit the file to ensure that the referenced job names
-match those in your existing CF / Diego deployment. Once you've checked this, run:
+The GrootFS operations file is located in cf-deployment:
+[`operations/experimental/use-grootfs.yml`](https://github.com/cloudfoundry/cf-deployment/blob/master/operations/experimental/use-grootfs.yml).
+It contains a description of the manifest changes
+BOSH needs to make to your existing deployment
+in order to add GrootFS.
+You may need to edit the file
+to ensure that the referenced job names match
+those in your existing CF / Diego deployment.
+Once you've checked this, run:
 
 ```
 bosh deploy \
-  --ops-file grootfs-release/manifests/operations/grootfs.yml \
-  your-existing-cf-and-diego-manifest.yml
+  --ops-file operations/experimental/use-grootfs.yml \
+  cf-deployment.yml
 ```
 
 ### Modifying manifests manually
