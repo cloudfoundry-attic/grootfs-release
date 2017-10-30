@@ -42,9 +42,9 @@ properties:
     description: "Do not mount image root filesystem automatically, just return the mount information."
     default: false
 
-  grootfs.remote_layer_tls.cert:
-    description: "PEM-encoded TLS certificate that can be used for client auth"
-  grootfs.remote_layer_tls.key:
-    description: "PEM-encoded TLS client key"
-  grootfs.remote_layer_tls.ca_cert:
-    description: "PEM-encoded TLS client CA certificate for layer download"
+  tls.cert:
+    description: "PEM-encoded tls certificate that can be used for client or server auth"
+  tls.key:
+    description: "PEM-encoded tls client key"
+  tls.ca_cert:
+    description: "PEM-encoded tls client CA certificate for asset upload/download"
