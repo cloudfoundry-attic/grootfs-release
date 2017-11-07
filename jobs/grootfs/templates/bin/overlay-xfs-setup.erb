@@ -11,7 +11,6 @@ main() {
 
   mkdir -p "${store_mountpoint}/grootfs/store"
 
-  pre_validate_store
   create_loop_devices
   permit_device_control
 
@@ -77,16 +76,6 @@ converge_store() {
     mv $old_volume_path $new_volume_path
     mount -t xfs -o remount,noatime,pquota,nobarrier $new_volume_path $store_path
   fi
-}
-
-pre_validate_store() {
-  <% if p('grootfs.driver') == 'overlay-xfs' %>
-    if [ $(vcap_data_filesystem) = "xfs" ]; then
-      echo "Filesystem already XFS. Set 'grootfs.store_size_bytes property' to 0"
-      exit 1
-    fi
-  <% end %>
-  return
 }
 
 main
