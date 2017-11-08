@@ -36,7 +36,7 @@ properties:
     description: "A list of IP:PORT tuples that we allow pulling docker images from using self-signed certificates."
     default: []
   grootfs.graph_cleanup_threshold_in_mb:
-    description: "Total size of all filesystem layers downloaded from Docker registries before graph cleanup is activated. -1 disables graph cleanup."
+    description: "Total size of all container image filesystem layers before graph cleanup is activated. -1 disables graph cleanup."
     default: -1
   grootfs.skip_mount:
     description: "Do not mount image root filesystem automatically, just return the mount information."
