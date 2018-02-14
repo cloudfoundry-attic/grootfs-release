@@ -1,5 +1,7 @@
 # GrootFS (BOSH release) [![slack.cloudfoundry.org](https://slack.cloudfoundry.org/badge.svg)](https://slack.cloudfoundry.org)
 
+**DEPRECATED. grootfs-release has been merged into [garden-runc-release](https://github.com/cloudfoundry/garden-runc-release).**
+
 A [BOSH](http://docs.cloudfoundry.org/bosh/) release for deploying
 [GrootFS](https://github.com/cloudfoundry/grootfs).
 
